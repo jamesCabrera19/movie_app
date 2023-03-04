@@ -16,21 +16,118 @@ import { Text } from "./text";
 import { theme as movieTheme } from "../styles";
 import { ImageLoader } from "./utils";
 const img_src = `https://image.tmdb.org/t/p/w500/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
-//
-const Items = (iterator, sizePercent, buttonPosition) => {
-    const arr = [];
-    for (let index = 0; index < iterator; index++) {
-        arr.push(
-            <MyCard
-                key={index}
-                sizePercent={sizePercent}
-                buttonPosition={buttonPosition ? buttonPosition : null}
-            />
-        );
-    }
-    return arr;
-};
 
+//
+const data = [
+    {
+        adult: false,
+        overview:
+            "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
+        release_date: "2016-09-02",
+        genre_ids: [18],
+        id: 283552,
+        original_title: "The Light Between Oceans",
+        original_language: "en",
+        title: "The Light Between Oceans",
+        popularity: 4.546151,
+        vote_count: 11,
+        video: false,
+        vote_average: 4.41,
+        poster_path: "/22z44LPkMyf5nyyXvv8qQLsbom.jpg",
+        backdrop_path: "/22z44LPkMyf5nyyXvv8qQLsbom.jpg",
+    },
+    {
+        adult: false,
+        overview:
+            "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
+        release_date: "2016-09-02",
+        genre_ids: [18],
+        id: 283552,
+        original_title: "The Light Between Oceans",
+        original_language: "en",
+        title: "The Light Between Oceans",
+
+        popularity: 4.546151,
+        vote_count: 11,
+        video: false,
+        vote_average: 4.41,
+        poster_path: "/sv1xJUazXeYqALzczSZ3O6nkH75.jpg",
+        backdrop_path: "/xDMIl84Qo5Tsu62c9DGWhmPI67A.jpg",
+    },
+
+    {
+        adult: false,
+        overview:
+            "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
+        release_date: "2016-09-02",
+        genre_ids: [18],
+        id: 283552,
+        original_title: "The Light Between Oceans",
+        original_language: "en",
+        title: "The Light Between Oceans",
+
+        popularity: 4.546151,
+        vote_count: 11,
+        video: false,
+        vote_average: 4.41,
+        backdrop_path: "/b1Y8SUb12gPHCSSSNlbX4nB3IKy.jpg",
+        poster_path: "/kuf6dutpsT0vSVehic3EZIqkOBt.jpg",
+    },
+    {
+        adult: false,
+        overview:
+            "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
+        release_date: "2016-09-02",
+        genre_ids: [18],
+        id: 283552,
+        original_title: "The Light Between Oceans",
+        original_language: "en",
+        title: "The Light Between Oceans",
+
+        popularity: 4.546151,
+        vote_count: 11,
+        video: false,
+        vote_average: 4.41,
+        backdrop_path: "/9Rq14Eyrf7Tu1xk0Pl7VcNbNh1n.jpg",
+        poster_path: "/qi9r5xBgcc9KTxlOLjssEbDgO0J.jpg",
+    },
+    {
+        adult: false,
+        overview:
+            "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
+        release_date: "2016-09-02",
+        genre_ids: [18],
+        id: 283552,
+        original_title: "The Light Between Oceans",
+        original_language: "en",
+        title: "The Light Between Oceans",
+
+        popularity: 4.546151,
+        vote_count: 11,
+        video: false,
+        vote_average: 4.41,
+        backdrop_path: "/AsEgGeccI32SwMBkxpwhOkhbzmF.jpg",
+        poster_path: "/v5CfpzxoJDkZxjZAizClFdlEF0U.jpg",
+    },
+    {
+        adult: false,
+        overview:
+            "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
+        release_date: "2016-09-02",
+        genre_ids: [18],
+        id: 283552,
+        original_title: "The Light Between Oceans",
+        original_language: "en",
+        title: "The Light Between Oceans",
+
+        popularity: 4.546151,
+        vote_count: 11,
+        video: false,
+        vote_average: 4.41,
+        backdrop_path: "/k4V6EvpcOsu8CX10JD0H53lFXLq.jpg",
+        poster_path: "/cmWTZj9zzT9KFt3XyL0gssL7Ig8.jpg",
+    },
+];
 function renderTooltip(props) {
     let colors = {};
     //Sometimes, props.popper.state is undefined.
@@ -166,7 +263,7 @@ function AppleButton({ customStyle }) {
         </>
     );
 }
-const MyCard = ({ sizePercent, buttonPosition, id }) => {
+const MyCard = ({ sizePercent, buttonPosition, image }) => {
     return (
         <div
             style={{
@@ -177,7 +274,9 @@ const MyCard = ({ sizePercent, buttonPosition, id }) => {
         >
             <Image
                 alt="Movie Poster"
-                src={img_src}
+                // src={img_src}
+                loader={ImageLoader}
+                src={image}
                 width={230 * -sizePercent + 230}
                 height={130 * -sizePercent + 130}
                 style={{
@@ -199,11 +298,11 @@ const CardRow = ({ title }) => {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
-    const openModal = (movieID) => (e) => {
+    const openModal = (movie) => (e) => {
         e.preventDefault();
-        const id = movieID;
+        const { id } = movie;
         router.push(`${router.pathname}/?movie=${id}`);
-        setMovie({});
+        setMovie(movie);
         handleShow();
     };
 
@@ -219,26 +318,6 @@ const CardRow = ({ title }) => {
             // when clicked
             console.log(movieIds);
         };
-    const data = [
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-    ];
 
     return (
         <div style={{ marginLeft: 20, marginRight: 20, padding: 0 }}>
@@ -268,12 +347,12 @@ const CardRow = ({ title }) => {
                 }}
             >
                 {data.map((el, idx) => (
-                    <div onClick={openModal(el.id)}>
+                    <div onClick={openModal(el)}>
                         <MyCard
                             key={el.id}
                             sizePercent={-0.0}
                             buttonPosition={null}
-                            id={el.id}
+                            image={el.backdrop_path}
                         />
                     </div>
                 ))}
@@ -285,15 +364,25 @@ const CardRow = ({ title }) => {
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
+                animation
+                contentClassName="bg-transparent border-0"
             >
-                <Modal.Body>
+                <Modal.Body
+                    style={{
+                        borderRadius: 10,
+                        padding: 0,
+                        margin: 0,
+                        // border: "1px solid red",
+                        width: 733,
+                        height: 412,
+                    }}
+                >
                     <div
                         style={{
-                            cursor: "pointer",
+                            // cursor: "pointer",
                             marginBottom: 20,
                             display: "flex",
                             justifyContent: "center",
-                            marginLeft: 10,
                             borderRadius: 10,
                         }}
                         // onClick={closeModal()}
@@ -302,21 +391,37 @@ const CardRow = ({ title }) => {
                             alt="Movie Poster"
                             loader={ImageLoader}
                             src={movie.backdrop_path}
-                            width={650}
-                            height={450}
-                            style={{ borderRadius: 10 }}
+                            width={733}
+                            height={412}
+                            style={{}}
                         />
                     </div>
-                    <div>
-                        <h1>{movie.original_title}</h1>
-                        <p>{movie.overview}</p>
-                        <div>
-                            <h3>{movie.release_date}</h3>
-                            <h3>{movie.vote_average}</h3>
-                            <h3>
-                                Mature Content: {movie.adult ? "Yes" : "No"}
-                            </h3>
-                            <h3>{movie.original_language}</h3>
+                    <div
+                        style={{
+                            marginTop: -300,
+                            display: "flex",
+                            justifyContent: "space-between",
+                            border: "1px solid blue",
+                            paddingRight: 20,
+                            paddingLeft: 20,
+                        }}
+                    >
+                        <div
+                            style={{
+                                width: "30%",
+                            }}
+                        >
+                            <Text variant="headlineExtraSmall">
+                                {movie.title}
+                            </Text>
+                            <Text>{movie.overview}</Text>
+                        </div>
+                        <div style={{}}>
+                            <Text variant="headlineExtraSmall">
+                                {movie.release_date}
+                            </Text>
+                            <Text>{movie.vote_average}</Text>
+                            <Text>{movie.original_language}</Text>
                         </div>
                     </div>
                 </Modal.Body>
@@ -330,26 +435,7 @@ const CardRowMini = ({ sizePercent }) => {
     const handleClick = (movieID) => (e) => {
         console.log("get movie: ", movieID);
     };
-    const data = [
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-        {
-            id: uuid(),
-        },
-    ];
+
     return (
         <div
             style={{
@@ -383,6 +469,7 @@ const CardRowMini = ({ sizePercent }) => {
                             key={el.id}
                             sizePercent={0.26}
                             buttonPosition={{ left: 130 }}
+                            image={el.backdrop_path}
                         />
                     </div>
                 ))}

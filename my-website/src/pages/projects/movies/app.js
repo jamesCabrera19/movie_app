@@ -6,13 +6,17 @@ import Image from "next/image";
 import Link from "next/link";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+//
+import { Context as MovieContext } from "../../../../context/movieContext";
+//
+
 import { Text } from "./components/text";
 import { theme as movieTheme } from "./styles";
 import { CardRow, CardRowMini } from "./components/cardRow";
 import { NavigationBar } from "./components/navigationBar";
 
 function MovieCover({}) {
-    const img_src = `https://image.tmdb.org/t/p/w500/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
+    const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
     const handleClick = () => (e) => {
         console.log("Opent Modal");
@@ -32,8 +36,8 @@ function MovieCover({}) {
             // border: "1px solid red",
         },
         imageContainer: {
-            height: 300,
             width: "100%",
+            height: 412.8,
             // border: "1px solid blue",
         },
     };
@@ -48,8 +52,8 @@ function MovieCover({}) {
                     // loader={ImageLoader}
                     src={img_src}
                     quality={100}
-                    width={500}
-                    height={300}
+                    width={733.6}
+                    height={412.8}
                     style={{ borderRadius: 10 }}
                 />
             </div>
@@ -98,7 +102,9 @@ function AppContent({}) {
 }
 
 function MoviesApp() {
+    const { state } = useContext(MovieContext);
     const theme = movieTheme;
+    // console.log(state.allMovies);
 
     return (
         <div style={{ backgroundColor: theme.backgroundColor }}>
