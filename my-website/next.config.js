@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+    reactStrictMode: true,
+    images: {
+        domains: ["picsum.photos", "fastly.picsum.photos", "image.tmdb.org"],
+        // formats: ["image/avif", "image/webp"],
+    },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
