@@ -318,7 +318,30 @@ const CardRow = ({ title }) => {
             // when clicked
             console.log(movieIds);
         };
-
+    const styles = {
+        modal: {
+            body: {
+                padding: 0,
+                margin: 0,
+                // border: "1px solid red",
+                width: 733,
+                height: 412,
+            },
+            imageContainer: {
+                borderRadius: 10,
+                marginBottom: 20,
+                display: "flex",
+                justifyContent: "center",
+            },
+            textContainer: {
+                marginTop: -250,
+                display: "flex",
+                justifyContent: "space-between",
+                paddingRight: 20,
+                paddingLeft: 20,
+            },
+        },
+    };
     return (
         <div style={{ marginLeft: 20, marginRight: 20, padding: 0 }}>
             <div
@@ -367,61 +390,60 @@ const CardRow = ({ title }) => {
                 animation
                 contentClassName="bg-transparent border-0"
             >
-                <Modal.Body
-                    style={{
-                        borderRadius: 10,
-                        padding: 0,
-                        margin: 0,
-                        // border: "1px solid red",
-                        width: 733,
-                        height: 412,
-                    }}
-                >
-                    <div
-                        style={{
-                            // cursor: "pointer",
-                            marginBottom: 20,
-                            display: "flex",
-                            justifyContent: "center",
-                            borderRadius: 10,
-                        }}
-                        // onClick={closeModal()}
-                    >
+                <Modal.Body style={styles.modal.body}>
+                    <div style={styles.modal.imageContainer}>
                         <Image
                             alt="Movie Poster"
                             loader={ImageLoader}
                             src={movie.backdrop_path}
                             width={733}
                             height={412}
-                            style={{}}
+                            style={{ borderRadius: 10 }}
                         />
                     </div>
-                    <div
-                        style={{
-                            marginTop: -300,
-                            display: "flex",
-                            justifyContent: "space-between",
-                            border: "1px solid blue",
-                            paddingRight: 20,
-                            paddingLeft: 20,
-                        }}
-                    >
+                    <div style={styles.modal.textContainer}>
                         <div
                             style={{
-                                width: "30%",
+                                width: "50%",
+                                backgroundColor: "rgba(82, 82, 82, 0.2)",
                             }}
                         >
-                            <Text variant="headlineExtraSmall">
+                            <Text
+                                variant="headlineExtraSmall"
+                                color={theme.fontColor}
+                            >
                                 {movie.title}
                             </Text>
-                            <Text>{movie.overview}</Text>
+                            <Text color={theme.fontColor}>
+                                {movie.overview}
+                            </Text>
                         </div>
-                        <div style={{}}>
-                            <Text variant="headlineExtraSmall">
+                        <div
+                            style={
+                                {
+                                    // width: "20%",
+                                    // backgroundColor: "rgba(82, 82, 82, 0.2)",
+                                }
+                            }
+                        >
+                            <Text
+                                variant="headlineExtraSmall"
+                                color={theme.fontColor}
+                            >
                                 {movie.release_date}
                             </Text>
-                            <Text>{movie.vote_average}</Text>
-                            <Text>{movie.original_language}</Text>
+                            <Text
+                                variant="headlineExtraSmall"
+                                color={theme.fontColor}
+                            >
+                                {movie.vote_average}
+                            </Text>
+                            <Text
+                                variant="headlineExtraSmall"
+                                color={theme.fontColor}
+                            >
+                                {movie.original_language}
+                            </Text>
                         </div>
                     </div>
                 </Modal.Body>
