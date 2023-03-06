@@ -10,12 +10,12 @@ import Popover from "react-bootstrap/Popover";
 import Toast from "react-bootstrap/Toast";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
+import { ModalBody } from "./modal";
 
 //
 import { Text } from "./text";
 import { theme as movieTheme } from "../styles";
 import { ImageLoader } from "./utils";
-const img_src = `https://image.tmdb.org/t/p/w500/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
 //
 const data = [
@@ -289,7 +289,29 @@ const MyCard = ({ sizePercent, buttonPosition, image }) => {
     );
 };
 
-const CardRow = ({ title }) => {
+const RowTitle = ({ onClick, title }) => {
+    const theme = movieTheme;
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "0 0 -35px 0",
+            }}
+        >
+            <Text variant="headlineSmall" color={theme.fontColor}>
+                {title}
+            </Text>
+            <div onClick={onClick()} style={{ cursor: "pointer" }}>
+                <Text color={theme.fontColorSecondary}>See All</Text>
+            </div>
+        </div>
+    );
+};
+
+const CardRow = ({ title, movieIDS, bigRow }) => {
     const theme = movieTheme;
     const router = useRouter();
     // modal controls
@@ -319,185 +341,88 @@ const CardRow = ({ title }) => {
             console.log(movieIds);
         };
     const styles = {
-        modal: {
-            body: {
-                padding: 0,
-                margin: 0,
-                // border: "1px solid red",
-                width: 733,
-                height: 412,
-            },
-            imageContainer: {
-                borderRadius: 10,
-                marginBottom: 20,
-                display: "flex",
-                justifyContent: "center",
-            },
-            textContainer: {
-                marginTop: -250,
-                display: "flex",
-                justifyContent: "space-between",
-                paddingRight: 20,
-                paddingLeft: 20,
-            },
+        bigContainer: { marginLeft: 20, marginRight: 20, padding: 0 },
+        smallContainer: {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            alignItems: "flex-start",
+            marginTop: -130,
+            height: 200,
+            width: "80%",
+            overflowX: "scroll",
+            overflowY: "hidden",
+        },
+        bigRowContainer: {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            overflowX: "scroll",
+            height: 200,
+        },
+        smallRowContainer: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
         },
     };
+
     return (
-        <div style={{ marginLeft: 20, marginRight: 20, padding: 0 }}>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    margin: "0 0 -35px 0",
-                }}
-            >
-                <Text variant="headlineSmall" color={theme.fontColor}>
-                    {title}
-                </Text>
-                <div onClick={handleSeeAll()} style={{ cursor: "pointer" }}>
-                    <Text color={theme.fontColorSecondary}>See All</Text>
-                </div>
-            </div>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    overflowX: "scroll",
-                    height: 200,
-                }}
-            >
-                {data.map((el, idx) => (
-                    <div onClick={openModal(el)}>
-                        <MyCard
-                            key={el.id}
-                            sizePercent={-0.0}
-                            buttonPosition={null}
-                            image={el.backdrop_path}
-                        />
+        <div style={bigRow ? styles.bigContainer : styles.smallContainer}>
+            {bigRow ? (
+                <>
+                    <RowTitle title={title} onClick={handleSeeAll} />
+                    <div style={styles.bigRowContainer}>
+                        {data.map((el) => (
+                            <div onClick={openModal(el)}>
+                                <MyCard
+                                    key={el.id}
+                                    sizePercent={-0.0}
+                                    buttonPosition={null}
+                                    image={el.backdrop_path}
+                                />
+                            </div>
+                        ))}
                     </div>
-                ))}
-            </div>
+                </>
+            ) : (
+                <>
+                    <div style={{ marginLeft: 10 }}>
+                        <Text
+                            variant="headlineExtraSmall"
+                            color={theme.fontColor}
+                        >
+                            Up Next
+                        </Text>
+                    </div>
+                    <div style={styles.smallRowContainer}>
+                        {data.map((el, idx) => (
+                            <div onClick={openModal(el)}>
+                                <MyCard
+                                    key={el.id}
+                                    sizePercent={0.26}
+                                    buttonPosition={{ left: 130 }}
+                                    image={el.backdrop_path}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
+
             <Modal
-                show={show}
-                onHide={closeModal()}
-                // backdrop="static"
-                size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
-                centered
-                animation
                 contentClassName="bg-transparent border-0"
+                onHide={closeModal()}
+                show={show}
+                animation
+                size="lg"
+                centered
             >
-                <Modal.Body style={styles.modal.body}>
-                    <div style={styles.modal.imageContainer}>
-                        <Image
-                            alt="Movie Poster"
-                            loader={ImageLoader}
-                            src={movie.backdrop_path}
-                            width={733}
-                            height={412}
-                            style={{ borderRadius: 10 }}
-                        />
-                    </div>
-                    <div style={styles.modal.textContainer}>
-                        <div
-                            style={{
-                                width: "50%",
-                                backgroundColor: "rgba(82, 82, 82, 0.2)",
-                            }}
-                        >
-                            <Text
-                                variant="headlineExtraSmall"
-                                color={theme.fontColor}
-                            >
-                                {movie.title}
-                            </Text>
-                            <Text color={theme.fontColor}>
-                                {movie.overview}
-                            </Text>
-                        </div>
-                        <div
-                            style={
-                                {
-                                    // width: "20%",
-                                    // backgroundColor: "rgba(82, 82, 82, 0.2)",
-                                }
-                            }
-                        >
-                            <Text
-                                variant="headlineExtraSmall"
-                                color={theme.fontColor}
-                            >
-                                {movie.release_date}
-                            </Text>
-                            <Text
-                                variant="headlineExtraSmall"
-                                color={theme.fontColor}
-                            >
-                                {movie.vote_average}
-                            </Text>
-                            <Text
-                                variant="headlineExtraSmall"
-                                color={theme.fontColor}
-                            >
-                                {movie.original_language}
-                            </Text>
-                        </div>
-                    </div>
-                </Modal.Body>
+                <ModalBody {...movie} />
             </Modal>
         </div>
     );
 };
 
-const CardRowMini = ({ sizePercent }) => {
-    const theme = movieTheme;
-    const handleClick = (movieID) => (e) => {
-        console.log("get movie: ", movieID);
-    };
-
-    return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-end",
-                alignItems: "flex-start",
-                marginTop: -130,
-                height: 200,
-                width: "80%",
-                overflowX: "scroll",
-                overflowY: "hidden",
-            }}
-        >
-            <div style={{ marginLeft: 10 }}>
-                <Text variant="headlineExtraSmall" color={theme.fontColor}>
-                    Up Next
-                </Text>
-            </div>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    // border: "1px solid red",
-                }}
-            >
-                {data.map((el, idx) => (
-                    <div onClick={handleClick(el.id)}>
-                        <MyCard
-                            key={el.id}
-                            sizePercent={0.26}
-                            buttonPosition={{ left: 130 }}
-                            image={el.backdrop_path}
-                        />
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export { CardRow, CardRowMini };
+export { CardRow, ModalBody };

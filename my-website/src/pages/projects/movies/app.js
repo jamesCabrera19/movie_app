@@ -12,8 +12,9 @@ import { Context as MovieContext } from "../../../../context/movieContext";
 
 import { Text } from "./components/text";
 import { theme as movieTheme } from "./styles";
-import { CardRow, CardRowMini } from "./components/cardRow";
+import { CardRow } from "./components/cardRow";
 import { NavigationBar } from "./components/navigationBar";
+import { ModalBody } from "react-bootstrap";
 
 function MovieCover({}) {
     const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
@@ -45,7 +46,7 @@ function MovieCover({}) {
         <div style={styles.container}>
             <div
                 style={{ ...styles.imageContainer, ...styles.flex }}
-                onClick={handleClick()}
+                onClick={handleClick("abcd")}
             >
                 <Image
                     alt="Movie Poster"
@@ -57,7 +58,8 @@ function MovieCover({}) {
                     style={{ borderRadius: 10 }}
                 />
             </div>
-            <CardRowMini />
+
+            <CardRow onClick={handleClick} />
         </div>
     );
 }
@@ -65,12 +67,12 @@ function AppContent({}) {
     const data = [
         {
             id: 0,
-            header_text: "My Library",
+            header_text: "Popular",
             ids: [],
         },
         {
             id: 1,
-            header_text: "What to Watch",
+            header_text: "Top Rated",
             ids: [],
         },
         {
@@ -80,7 +82,7 @@ function AppContent({}) {
         },
         {
             id: 3,
-            header_text: "New Movies",
+            header_text: "Upcoming",
             ids: [],
         },
     ];
@@ -90,27 +92,110 @@ function AppContent({}) {
 
     return (
         <>
+            <MovieCover />
             {data.map((el) => (
                 <CardRow
                     key={el.id}
                     title={el.header_text}
                     onClick={handleClick}
+                    bigRow
+                    seeAll
                 />
             ))}
         </>
     );
 }
 
+function WatchNow() {
+    return <AppContent />;
+}
+function MyMovies() {
+    return (
+        <div>
+            <Text>This is myMovies Section</Text>
+        </div>
+    );
+}
+function TVShows() {
+    return (
+        <div>
+            <Text>this is TVShows section</Text>
+        </div>
+    );
+}
+function MyLibrary() {
+    return (
+        <div>
+            <Text>this is MyLibrary section</Text>
+        </div>
+    );
+}
+function MySettings() {
+    return (
+        <div>
+            <Text>this is MySettings section</Text>
+        </div>
+    );
+}
 function MoviesApp() {
-    const { state } = useContext(MovieContext);
     const theme = movieTheme;
-    // console.log(state.allMovies);
-
+    const [navigation, setNavigation] = useState([
+        {
+            title: "Watch Now",
+            active: true,
+            id: 0,
+            component: <WatchNow />,
+        },
+        {
+            title: "My Movies",
+            active: false,
+            id: 1,
+            component: <MyMovies />,
+        },
+        {
+            title: "TV Shows",
+            active: false,
+            id: 2,
+            component: <TVShows />,
+        },
+        {
+            title: "Library",
+            active: false,
+            id: 3,
+            component: <MyLibrary />,
+        },
+        {
+            title: "Settings",
+            active: false,
+            id: 4,
+            component: <MySettings />,
+        },
+    ]);
+    const handleNavigation = (title) => (e) => {
+        setNavigation((prev) => {
+            // function => one button will ALWAYS be selected, no matter what.
+            // to do this. we find the button that was pressed.
+            // we find the button by title.
+            const match = prev.find((el) => el.title === title);
+            // we then filter out buttons that do not match the title
+            const el = prev.filter((el) => el.title !== title);
+            // once we have the Selected button we change its Active property to true.
+            match.active = true;
+            // to ensure that no other Buttons are selected we loop over them and change their Active property to false
+            el.forEach((el) => (el.active = false));
+            // finally, we sort out the array of buttons and save them to an array return it
+            const result = [match, ...el].sort((a, b) => a.id - b.id);
+            return result;
+        });
+    };
     return (
         <div style={{ backgroundColor: theme.backgroundColor }}>
-            <NavigationBar />
-            <MovieCover />
-            <AppContent />
+            <NavigationBar
+                myNavigationState={navigation}
+                handleNavigation={handleNavigation}
+            />
+            {/* <AppContent /> */}
+            {navigation.filter((el) => el.active)[0].component}
         </div>
     );
 }

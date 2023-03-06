@@ -4,7 +4,7 @@ import movieApi from "../movieApi/index";
 const movieDataReducer = (state, action) => {
     switch (action.type) {
         case "get_movies":
-            return { ...state, allMovies: action.payload };
+            return { ...state, movies: action.payload };
         default:
             return state;
     }
