@@ -134,6 +134,58 @@ const ModalBody = (props) => {
     );
 };
 
+// const MyModal_v2 = () => {
+//     const {
+//         state: { movies },
+//     } = useContext(MovieContext);
+//     const [show, setShow] = useState(false);
+//     const handleClose = () => setShow(false);
+//     const handleShow = () => setShow(true);
+
+//     const [movie, setMovie] = useState({
+//         backdrop_path: img_src,
+//         title: "Movie App",
+//         overview:
+//             "App created with the most recent versions of React, NextJS, useContext API, and Axios.",
+//         release_date: "11/11/22",
+//         vote_average: 10,
+//         original_language: "EN",
+//     });
+//     const openModal = (movieID) => (e) => {
+//         e.preventDefault();
+//         // router.push(`${router.pathname}/?movie=${movieID}`);
+//         const theMovie = movies.filter((el) => el.id === movieID)[0];
+//         setMovie(theMovie);
+//         handleShow();
+//     };
+
+//     const closeModal = () => (e) => {
+//         // router.push(router.pathname, undefined, { shallow: true });
+//         handleClose();
+//     };
+
+//     return (
+//         <MyModal show={show} onClick={closeModal} movie={movie}>
+//             <div
+//                 style={{
+//                     display: "flex",
+//                     flexWrap: "wrap",
+//                     justifyContent: "space-between",
+//                 }}
+//             >
+//                 {movies.map((el) => (
+//                     <MyCard
+//                         onClick={openModal}
+//                         key={el.id}
+//                         poster={el.backdrop_path}
+//                         movieID={el.id}
+//                     />
+//                 ))}
+//             </div>
+//         </MyModal>
+//     );
+// };
+
 function MyModal({ children, onClick, show, movie }) {
     return (
         <>

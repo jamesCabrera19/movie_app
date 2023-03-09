@@ -1,43 +1,20 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
-
-import { useRouter } from "next/router";
-import Overlay from "react-bootstrap/Overlay";
-import Image from "next/image";
-import Link from "next/link";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
+import React, { useState } from "react";
 //
-import { Context as MovieContext } from "../../../../context/movieContext";
+import { Context as MovieContext } from "./context/movieContext";
 import NavigationContext from "./context/navigation";
 //
-
-import { Text } from "./components/text";
 import { theme as movieTheme } from "./styles";
-import { CardRow } from "./components/cardRow";
 import { NavigationBar } from "./components/navigationBar";
-import { ModalBody } from "react-bootstrap";
 // screens
 import MyMovies from "./screens/myMovies";
 import TVShows from "./screens/tvShows";
 import MySettings from "./screens/settings";
 import WatchNow from "./screens/watchNow";
-
-function MyResults() {
-    const { handleNavigation } = useContext(NavigationContext);
-    console.log(handleNavigation);
-    return (
-        <div>
-            <Text>this is MyResults section</Text>
-            <button onClick={handleNavigation("Watch Now")}>
-                go to watch now
-            </button>
-        </div>
-    );
-}
+import MyResults from "./screens/results";
 
 function MoviesApp() {
     const theme = movieTheme;
-    const [navigation, setNavigation] = useState([
+    const initState = [
         {
             title: "Watch Now",
             active: true,
@@ -69,49 +46,43 @@ function MoviesApp() {
             id: 5,
             component: <MyResults />,
         },
-    ]);
+    ];
+    const [navigation, setNavigation] = useState(initState);
 
     const handleNavigation =
-        (title = "") =>
+        (location = "", params = {}) =>
         (e) => {
             setNavigation((prev) => {
                 // function => one button will ALWAYS be selected, no matter what.
                 // to do this. we find the button that was pressed.
                 // we find the button by title.
-                const match = prev.find((el) => el.title === title);
-                // we then filter out buttons that do not match the title
-                const el = prev.filter((el) => el.title !== title);
+                const match = prev.find((el) => el.title === location);
+                // we then filter out the Match from the array
                 // once we have the Selected button we change its Active property to true.
                 match.active = true;
+                const el = prev.filter((el) => el.title !== location);
                 // to ensure that no other Buttons are selected we loop over them and change their Active property to false
                 el.forEach((el) => (el.active = false));
+                // passing params if any to the state object
+                const x = { ...match, params };
                 // finally, we sort out the array of buttons and save them to an array return it
-                const result = [match, ...el].sort((a, b) => a.id - b.id);
+                const result = [x, ...el].sort((a, b) => a.id - b.id);
                 return result;
             });
         };
-    const handleProps =
-        (props = []) =>
-        (e) =>
-            console.log(props);
+
     return (
         <div style={{ backgroundColor: theme.backgroundColor }}>
             <NavigationBar
                 myNavigationState={navigation}
                 handleNavigation={handleNavigation}
             />
-            {/* <AppContent /> */}
+
             <NavigationContext.Provider
                 value={{
                     handleNavigation,
-                    locations: [
-                        "Watch Now",
-                        "My Movies",
-                        "TV Shows",
-                        "Settings",
-                        "Results",
-                    ],
-                    params: null,
+                    // params should be minimal not intended for large objects
+                    params: navigation.filter((el) => el.active)[0].params,
                 }}
             >
                 {navigation.filter((el) => el.active)[0].component}

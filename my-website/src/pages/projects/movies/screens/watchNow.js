@@ -82,7 +82,9 @@ function MovieCover({}) {
     );
 }
 
-function WatchNow() {
+function WatchNow({ props }) {
+    const { handleNavigation, params } = useContext(NavigationContext);
+
     return (
         <>
             <MovieCover />

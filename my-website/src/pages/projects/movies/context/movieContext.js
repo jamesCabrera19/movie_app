@@ -1,5 +1,5 @@
-import createDataContext from "./index";
-import movieApi from "../movieApi/index";
+import createDataContext from "../../../../../context/index";
+import movieApi from "../movieAPI/index";
 
 const movieDataReducer = (state, action) => {
     switch (action.type) {

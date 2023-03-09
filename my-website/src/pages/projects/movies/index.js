@@ -4,8 +4,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 //
-import { Provider as MovieProvider } from "../../../../context/movieContext";
-import { Context as MovieContext } from "../../../../context/movieContext";
+import { Provider as MovieProvider } from "./context/movieContext";
+import { Context as MovieContext } from "./context/movieContext";
 
 import MoviesApp from "./app";
 

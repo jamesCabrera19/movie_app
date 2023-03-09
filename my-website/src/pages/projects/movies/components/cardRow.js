@@ -120,10 +120,9 @@ const data = [
     },
 ];
 
-const RowTitle = ({ onClick, title }) => {
+const RowTitle = ({ title }) => {
     const theme = movieTheme;
-    const { handleNavigation, locations, params } =
-        useContext(NavigationContext);
+    const { handleNavigation } = useContext(NavigationContext);
 
     return (
         <div
@@ -139,7 +138,9 @@ const RowTitle = ({ onClick, title }) => {
                 {title}
             </Text>
             <div
-                onClick={handleNavigation("Results")}
+                onClick={handleNavigation("Results", {
+                    ids: ["a", "b", "c"],
+                })}
                 style={{ cursor: "pointer" }}
             >
                 <Text color={theme.fontColorSecondary}>See All</Text>
@@ -164,8 +165,6 @@ const CardRow = ({ title, movieIDS, bigRow, onClick }) => {
     };
     const closeModal = () => (e) => handleClose();
     //
-
-    const handleSeeAll = () => console.log("");
 
     const styles = {
         bigContainer: { marginLeft: 20, marginRight: 20, padding: 0 },
@@ -198,7 +197,7 @@ const CardRow = ({ title, movieIDS, bigRow, onClick }) => {
         <div style={bigRow ? styles.bigContainer : styles.smallContainer}>
             {bigRow ? (
                 <>
-                    <RowTitle title={title} onClick={handleSeeAll} />
+                    <RowTitle title={title} />
                     <MyModal show={show} onClick={closeModal} movie={movie}>
                         <div style={styles.bigRowContainer}>
                             {data.map((el) => (
