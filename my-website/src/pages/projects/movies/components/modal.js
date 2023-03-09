@@ -22,7 +22,7 @@ const MyButton = ({ title }) => {
                 // marginRight: 20,
             }}
         >
-            <Text variant="headlineExtraSmall" color={theme.fontColor}>
+            <Text variant="headlineExtraSmall" color={"white"}>
                 {title}
             </Text>
         </div>
@@ -94,16 +94,11 @@ const ModalBody = (props) => {
                 />
             </div>
             <div style={styles.textContainer}>
-                <div
-                    style={{
-                        width: "50%",
-                        backgroundColor: "rgba(82, 82, 82, 0.2)",
-                    }}
-                >
-                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                <div style={{ width: "50%" }}>
+                    <Text variant="headlineExtraSmall" color={"white"}>
                         {title}
                     </Text>
-                    <Text color={theme.fontColor}>{overview}</Text>
+                    <Text color={"white"}>{overview}</Text>
                 </div>
                 <div
                     style={{
@@ -111,13 +106,13 @@ const ModalBody = (props) => {
                         backgroundColor: "rgba(100, 100, 100, 0.001)",
                     }}
                 >
-                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                    <Text variant="headlineExtraSmall" color={"white"}>
                         {release_date}
                     </Text>
-                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                    <Text variant="headlineExtraSmall" color={"white"}>
                         {vote_average}
                     </Text>
-                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                    <Text variant="headlineExtraSmall" color={"white"}>
                         {original_language}
                     </Text>
                 </div>
@@ -139,4 +134,23 @@ const ModalBody = (props) => {
     );
 };
 
-export { ModalBody };
+function MyModal({ children, onClick, show, movie }) {
+    return (
+        <>
+            {children}
+            <Modal
+                aria-labelledby="contained-modal-title-vcenter"
+                contentClassName="bg-transparent border-0"
+                onHide={onClick()}
+                show={show}
+                animation
+                size="lg"
+                centered
+            >
+                <ModalBody {...movie} />
+            </Modal>
+        </>
+    );
+}
+
+export { MyModal };

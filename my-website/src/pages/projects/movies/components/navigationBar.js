@@ -83,6 +83,9 @@ function NavigationBar({ myNavigationState, handleNavigation }) {
                 }}
             >
                 {myNavigationState.map((el, idx) => {
+                    if (el.title === "Results") {
+                        return null;
+                    }
                     return (
                         <NavigationButton
                             key={el.id}
