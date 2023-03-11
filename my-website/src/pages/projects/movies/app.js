@@ -64,6 +64,7 @@ function MoviesApp() {
                 // to ensure that no other Buttons are selected we loop over them and change their Active property to false
                 el.forEach((el) => (el.active = false));
                 // passing params if any to the state object
+
                 const x = { ...match, params };
                 // finally, we sort out the array of buttons and save them to an array return it
                 const result = [x, ...el].sort((a, b) => a.id - b.id);

@@ -72,7 +72,7 @@ function MyResults() {
         setMyMovies(movies.filter((el) => ids.includes(el.id)));
     };
     //
-    // console.log(myMovies);
+    // console.log(ids);
     return (
         <div>
             <Text>this is MyResults section</Text>
