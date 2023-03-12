@@ -17,7 +17,8 @@ import { ImageLoader, genres } from "../components/utils";
 import { Context as MovieContext } from "../context/movieContext";
 
 import NavigationContext from "../context/navigation";
-
+import { Rectangle } from "../components/testComponent";
+import { MovieOrganizer } from "../components/Helpers";
 //
 import { CardRow } from "../components/cardRow";
 
@@ -120,10 +121,10 @@ function WatchNow({ props }) {
                 );
             }
             return arr.filter(({ genre_ids }) => genre_ids.includes(target));
-        },
+        }, // filters movie by genre ID
         genresMap: function (genres = [], movies = []) {
             return genres.map(({ id }) => this.filterMovies(movies, id, true));
-        },
+        }, // callback
         moviesByGenre: function (genres = [], movies = []) {
             const names = this.getNames(genres);
             const obj = {};
@@ -135,11 +136,15 @@ function WatchNow({ props }) {
             }
             return obj;
         },
+        movies: {},
     };
 
-    console.log(params);
+    // console.log(helpers.moviesByGenre(genres, movies));
     // console.log(helpers.genresMap(genres, movies));
-    // console.log(helpers.filterMovies(movies, 28)[0].id);
+    const test = new MovieOrganizer(movies, genres, true);
+    const testIds = new MovieOrganizer(movies, genres, false);
+
+    console.log(test.moviesByGenre());
 
     // steps => find Genre => push item to selectedGenres => filterGenre()
 

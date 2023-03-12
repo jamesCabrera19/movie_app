@@ -1,13 +1,8 @@
-import React, { useState } from "react";
-
-import { useRouter } from "next/router";
-
-const img_src = `https://image.tmdb.org/t/p/w500/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
-
-class Rectangle {
-    constructor(movies, genres) {
+class MovieOrganizer {
+    constructor(movies, genres, onlyIDs) {
         this.movies = movies;
         this.genres = genres;
+        this.onlyIDs = onlyIDs;
     }
     getIds(arr = []) {
         return arr.map((el) => el.id);
@@ -15,8 +10,8 @@ class Rectangle {
     getNames() {
         return this.genres.map((el) => el.name);
     }
-    filterMovies(target = Number, getIds = Boolean) {
-        if (getIds) {
+    filterMovies(target = Number) {
+        if (this.onlyIDs) {
             return this.getIds(
                 this.movies.filter(({ genre_ids }) =>
                     genre_ids.includes(target)
@@ -28,9 +23,7 @@ class Rectangle {
         );
     }
     genresMap() {
-        return this.genres.map(({ id }) =>
-            this.filterMovies(this.movies, id, true)
-        );
+        return this.genres.map(({ id }) => this.filterMovies(id));
     }
     moviesByGenre() {
         const names = this.getNames(this.genres);
@@ -45,4 +38,4 @@ class Rectangle {
     }
 }
 
-export { Rectangle };
+export { MovieOrganizer };
