@@ -1,23 +1,12 @@
-import React, {
-    useContext,
-    useEffect,
-    useState,
-    useRef,
-    useCallback,
-} from "react";
+import React, { useContext } from "react";
 import { uuid } from "uuidv4";
-import { useRouter } from "next/router";
-import Overlay from "react-bootstrap/Overlay";
+//
 import Image from "next/image";
-import Link from "next/link";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
 //
 import { ImageLoader, genres } from "../components/utils";
 import { Context as MovieContext } from "../context/movieContext";
 
 import NavigationContext from "../context/navigation";
-import { Rectangle } from "../components/testComponent";
 import { MovieOrganizer } from "../components/Helpers";
 //
 import { CardRow } from "../components/cardRow";
@@ -80,83 +69,36 @@ function MovieCover({}) {
 
 function WatchNow({ props }) {
     const { handleNavigation, params } = useContext(NavigationContext);
-    const {
-        state: { movies },
-    } = useContext(MovieContext);
+    const { state } = useContext(MovieContext);
+    const movieLibrary = new MovieOrganizer(state.movies, genres, true);
+    const movies = movieLibrary.moviesByGenre();
 
-    const data = [
-        {
-            id: 0,
-            header_text: "Popular",
-            ids: [],
-        },
-        {
-            id: 1,
-            header_text: "Top Rated",
-            ids: [],
-        },
-        {
-            id: 2,
-            header_text: "Animated",
-            ids: [],
-        },
-        {
-            id: 3,
-            header_text: "Upcoming",
-            ids: [],
-        },
-    ];
-
-    const helpers = {
-        getIds: function (arr = []) {
-            return arr.map((el) => el.id);
-        },
-        getNames: function (arr = []) {
-            return arr.map((el) => el.name);
-        },
-        filterMovies: function (arr = [], target = Number, getIds = Boolean) {
-            if (getIds) {
-                return this.getIds(
-                    arr.filter(({ genre_ids }) => genre_ids.includes(target))
-                );
+    const returnMovieIds = function (obj = {}) {
+        const objs = [];
+        for (const [key, value] of Object.entries(obj)) {
+            if (value.length > 0 && !Array.isArray(key)) {
+                if (value.length > 3) {
+                    objs.push({
+                        id: uuid(),
+                        header_text: key,
+                        ids: Array.from(value),
+                    });
+                }
             }
-            return arr.filter(({ genre_ids }) => genre_ids.includes(target));
-        }, // filters movie by genre ID
-        genresMap: function (genres = [], movies = []) {
-            return genres.map(({ id }) => this.filterMovies(movies, id, true));
-        }, // callback
-        moviesByGenre: function (genres = [], movies = []) {
-            const names = this.getNames(genres);
-            const obj = {};
-            const m = this.genresMap(genres, movies); //[[]]
-            for (let i = 0; i < m.length; i++) {
-                const element = m[i];
-                const currentKey = names[i];
-                obj[currentKey] = element;
-            }
-            return obj;
-        },
-        movies: {},
+        }
+        return objs;
     };
-
-    // console.log(helpers.moviesByGenre(genres, movies));
-    // console.log(helpers.genresMap(genres, movies));
-    const test = new MovieOrganizer(movies, genres, true);
-    const testIds = new MovieOrganizer(movies, genres, false);
-
-    console.log(test.moviesByGenre());
-
-    // steps => find Genre => push item to selectedGenres => filterGenre()
 
     return (
         <>
             <MovieCover />
-            {data.map((el) => (
+
+            {returnMovieIds(movies).map((el) => (
                 <CardRow
                     key={el.id}
                     title={el.header_text}
                     bigRow={true}
-                    movieIDS={[]}
+                    movieIDS={el.ids}
                 />
             ))}
         </>

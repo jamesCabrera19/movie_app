@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 //
 import { useRouter } from "next/router";
 //
@@ -8,6 +8,8 @@ import { theme as movieTheme } from "../styles";
 import MyCard from "./myCard";
 //
 import NavigationContext from "../context/navigation";
+import { Context as MovieContext } from "../context/movieContext";
+
 //
 const data = [
     {
@@ -149,7 +151,10 @@ const RowTitle = ({ title }) => {
     );
 };
 
-const CardRow = ({ title, movieIDS, bigRow, onClick }) => {
+const CardRow = ({ title, movieIDS, bigRow }) => {
+    const {
+        state: { movies },
+    } = useContext(MovieContext);
     const theme = movieTheme;
     // modal controls
     const [show, setShow] = useState(false);
@@ -164,6 +169,12 @@ const CardRow = ({ title, movieIDS, bigRow, onClick }) => {
         handleShow();
     };
     const closeModal = () => (e) => handleClose();
+    const movieIds = movieIDS || [];
+
+    const result = useCallback(() => {
+        return movies.filter(({ id }) => movieIds.includes(id));
+    }, [movies]);
+
     //
 
     const styles = {
@@ -192,6 +203,7 @@ const CardRow = ({ title, movieIDS, bigRow, onClick }) => {
             alignItems: "center",
         },
     };
+    // console.log(movies.filter(({ id }) => movieIds.includes(id)));
 
     return (
         <div style={bigRow ? styles.bigContainer : styles.smallContainer}>
@@ -200,13 +212,14 @@ const CardRow = ({ title, movieIDS, bigRow, onClick }) => {
                     <RowTitle title={title} />
                     <MyModal show={show} onClick={closeModal} movie={movie}>
                         <div style={styles.bigRowContainer}>
-                            {data.map((el) => (
+                            {result().map((el) => (
                                 <div onClick={openModal(el)} key={el.id}>
                                     <MyCard
                                         poster={el.backdrop_path}
                                         movieID={el.id}
                                         sizePercent={-0.0}
                                         buttonPosition={null}
+                                        item={el}
                                     />
                                 </div>
                             ))}

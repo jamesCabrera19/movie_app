@@ -7,7 +7,7 @@ class MovieOrganizer {
     getIds(arr = []) {
         return arr.map((el) => el.id);
     }
-    getNames() {
+    getMovieGenres() {
         return this.genres.map((el) => el.name);
     }
     filterMovies(target = Number) {
@@ -26,7 +26,7 @@ class MovieOrganizer {
         return this.genres.map(({ id }) => this.filterMovies(id));
     }
     moviesByGenre() {
-        const names = this.getNames(this.genres);
+        const names = this.getMovieGenres(this.genres);
         const obj = {};
         const m = this.genresMap(this.genres, this.movies); //[[]]
         for (let i = 0; i < m.length; i++) {
