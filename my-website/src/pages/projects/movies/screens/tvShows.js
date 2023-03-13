@@ -8,7 +8,6 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { Text } from "../components/text";
 import { theme as movieTheme } from "../styles";
-import { MyModal } from "../components/modal";
 import { Context as MovieContext } from "../context/movieContext";
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";

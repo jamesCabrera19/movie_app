@@ -1,8 +1,6 @@
-import { useState, useContext, useCallback } from "react";
+import { useContext, useCallback } from "react";
 //
-import { useRouter } from "next/router";
-//
-import { MyModal } from "./modal";
+import { TheModal } from "./modal";
 import { Text } from "./text";
 import { theme as movieTheme } from "../styles";
 import MyCard from "./myCard";
@@ -122,7 +120,7 @@ const data = [
     },
 ];
 
-const RowTitle = ({ title }) => {
+const RowTitle = ({ title, movieIds }) => {
     const theme = movieTheme;
     const { handleNavigation } = useContext(NavigationContext);
 
@@ -141,7 +139,8 @@ const RowTitle = ({ title }) => {
             </Text>
             <div
                 onClick={handleNavigation("Results", {
-                    ids: ["a", "b", "c"],
+                    ids: movieIds,
+                    genre: title,
                 })}
                 style={{ cursor: "pointer" }}
             >
@@ -156,19 +155,6 @@ const CardRow = ({ title, movieIDS, bigRow }) => {
         state: { movies },
     } = useContext(MovieContext);
     const theme = movieTheme;
-    // modal controls
-    const [show, setShow] = useState(false);
-    const [movie, setMovie] = useState({});
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const openModal = (movie) => (e) => {
-        e.preventDefault();
-        const { id } = movie;
-        // router.push(`${router.pathname}/?movie=${id}`);
-        setMovie(movie);
-        handleShow();
-    };
-    const closeModal = () => (e) => handleClose();
     const movieIds = movieIDS || [];
 
     const result = useCallback(() => {
@@ -203,28 +189,24 @@ const CardRow = ({ title, movieIDS, bigRow }) => {
             alignItems: "center",
         },
     };
-    // console.log(movies.filter(({ id }) => movieIds.includes(id)));
 
     return (
         <div style={bigRow ? styles.bigContainer : styles.smallContainer}>
             {bigRow ? (
                 <>
-                    <RowTitle title={title} />
-                    <MyModal show={show} onClick={closeModal} movie={movie}>
-                        <div style={styles.bigRowContainer}>
-                            {result().map((el) => (
-                                <div onClick={openModal(el)} key={el.id}>
-                                    <MyCard
-                                        poster={el.backdrop_path}
-                                        movieID={el.id}
-                                        sizePercent={-0.0}
-                                        buttonPosition={null}
-                                        item={el}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </MyModal>
+                    <RowTitle title={title} movieIds={movieIds} />
+                    <div style={styles.bigRowContainer}>
+                        {result().map((el) => (
+                            <TheModal item={el}>
+                                <MyCard
+                                    poster={el.backdrop_path}
+                                    movieID={el.id}
+                                    sizePercent={-0.0}
+                                    buttonPosition={null}
+                                />
+                            </TheModal>
+                        ))}
+                    </div>
                 </>
             ) : (
                 <>
@@ -236,19 +218,17 @@ const CardRow = ({ title, movieIDS, bigRow }) => {
                             Up Next
                         </Text>
                     </div>
-                    <MyModal show={show} onClick={closeModal} movie={movie}>
-                        <div style={styles.smallRowContainer}>
-                            {data.map((el, idx) => (
-                                <div onClick={openModal(el)} key={el.id}>
-                                    <MyCard
-                                        poster={el.backdrop_path}
-                                        sizePercent={0.26}
-                                        buttonPosition={{ left: 130 }}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </MyModal>
+                    <div style={{ display: "flex" }}>
+                        {data.map((el) => (
+                            <TheModal item={el}>
+                                <MyCard
+                                    poster={el.backdrop_path}
+                                    sizePercent={0.26}
+                                    buttonPosition={{ left: 130 }}
+                                />
+                            </TheModal>
+                        ))}
+                    </div>
                 </>
             )}
         </div>

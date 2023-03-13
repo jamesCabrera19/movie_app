@@ -1,10 +1,20 @@
+import React, { useState } from "react";
+
 import Modal from "react-bootstrap/Modal";
 import { theme as movieTheme } from "../styles";
 import { ImageLoader } from "./utils";
 import Image from "next/image";
 import { Text } from "./text";
 
-const img_src = `https://image.tmdb.org/t/p/w500/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
+const initMovieProps = {
+    backdrop_path: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
+    title: "Movie App",
+    overview:
+        "App built utilizing the most latest versions of React, NextJS, React createContext API, and Axios.",
+    release_date: "11/11/22",
+    vote_average: 10,
+    original_language: "EN",
+};
 const MyButton = ({ title }) => {
     const theme = movieTheme;
 
@@ -40,31 +50,13 @@ const ModalBody = (props) => {
         original_language,
     } = props;
 
-    const buttons = [
-        {
-            id: 0,
-            icon: "like",
-            action: () => {},
-        },
-        {
-            id: 0,
-            icon: "like",
-            action: () => {},
-        },
-        {
-            id: 0,
-            icon: "like",
-            action: () => {},
-        },
-    ];
-
     const styles = {
         body: {
             padding: 0,
             margin: 0,
             // border: "1px solid red",
             width: 733,
-            height: 412,
+            // height: 412,
         },
         imageContainer: {
             borderRadius: 10,
@@ -134,66 +126,26 @@ const ModalBody = (props) => {
     );
 };
 
-// const MyModal_v2 = () => {
-//     const {
-//         state: { movies },
-//     } = useContext(MovieContext);
-//     const [show, setShow] = useState(false);
-//     const handleClose = () => setShow(false);
-//     const handleShow = () => setShow(true);
+function TheModal({ item, children }) {
+    // modal controls
+    const [movie, setMovie] = useState(initMovieProps);
+    const [show, setShow] = useState(false);
 
-//     const [movie, setMovie] = useState({
-//         backdrop_path: img_src,
-//         title: "Movie App",
-//         overview:
-//             "App created with the most recent versions of React, NextJS, useContext API, and Axios.",
-//         release_date: "11/11/22",
-//         vote_average: 10,
-//         original_language: "EN",
-//     });
-//     const openModal = (movieID) => (e) => {
-//         e.preventDefault();
-//         // router.push(`${router.pathname}/?movie=${movieID}`);
-//         const theMovie = movies.filter((el) => el.id === movieID)[0];
-//         setMovie(theMovie);
-//         handleShow();
-//     };
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const closeModal = () => (e) => handleClose();
+    const openModal = (movie) => (e) => {
+        setMovie(movie);
+        handleShow();
+    };
 
-//     const closeModal = () => (e) => {
-//         // router.push(router.pathname, undefined, { shallow: true });
-//         handleClose();
-//     };
-
-//     return (
-//         <MyModal show={show} onClick={closeModal} movie={movie}>
-//             <div
-//                 style={{
-//                     display: "flex",
-//                     flexWrap: "wrap",
-//                     justifyContent: "space-between",
-//                 }}
-//             >
-//                 {movies.map((el) => (
-//                     <MyCard
-//                         onClick={openModal}
-//                         key={el.id}
-//                         poster={el.backdrop_path}
-//                         movieID={el.id}
-//                     />
-//                 ))}
-//             </div>
-//         </MyModal>
-//     );
-// };
-
-function MyModal({ children, onClick, show, movie }) {
     return (
         <>
-            {children}
+            <div onClick={openModal(item)}>{children}</div>
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"
                 contentClassName="bg-transparent border-0"
-                onHide={onClick()}
+                onHide={closeModal()}
                 show={show}
                 animation
                 size="lg"
@@ -205,4 +157,4 @@ function MyModal({ children, onClick, show, movie }) {
     );
 }
 
-export { MyModal };
+export { TheModal };

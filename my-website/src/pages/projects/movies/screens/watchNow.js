@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useCallback } from "react";
 import { uuid } from "uuidv4";
 //
 import Image from "next/image";
@@ -6,7 +6,6 @@ import Image from "next/image";
 import { ImageLoader, genres } from "../components/utils";
 import { Context as MovieContext } from "../context/movieContext";
 
-import NavigationContext from "../context/navigation";
 import { MovieOrganizer } from "../components/Helpers";
 //
 import { CardRow } from "../components/cardRow";
@@ -68,31 +67,34 @@ function MovieCover({}) {
 }
 
 function WatchNow({ props }) {
-    const { handleNavigation, params } = useContext(NavigationContext);
     const { state } = useContext(MovieContext);
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
     const movies = movieLibrary.moviesByGenre();
 
-    const returnMovieIds = function (obj = {}) {
-        const objs = [];
-        for (const [key, value] of Object.entries(obj)) {
-            if (value.length > 0 && !Array.isArray(key)) {
-                if (value.length > 3) {
-                    objs.push({
-                        id: uuid(),
-                        header_text: key,
-                        ids: Array.from(value),
-                    });
+    // [{header_text:'Movie Genre: Action',id:'random string',
+    // ids:['Array of movies with the same Genre']}]
+    const returnMovieIds = useCallback(
+        (obj = {}) => {
+            const objs = [];
+            for (const [key, value] of Object.entries(obj)) {
+                if (value.length > 0 && !Array.isArray(key)) {
+                    if (value.length > 3) {
+                        objs.push({
+                            id: uuid(),
+                            header_text: key,
+                            ids: Array.from(value),
+                        });
+                    }
                 }
             }
-        }
-        return objs;
-    };
+            return objs;
+        },
+        [movies]
+    );
 
     return (
         <>
             <MovieCover />
-
             {returnMovieIds(movies).map((el) => (
                 <CardRow
                     key={el.id}

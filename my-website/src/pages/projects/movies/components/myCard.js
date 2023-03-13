@@ -8,7 +8,7 @@ import Popover from "react-bootstrap/Popover";
 import Toast from "react-bootstrap/Toast";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Text } from "./text";
-const img_src = `https://image.tmdb.org/t/p/w500/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
+const img_src = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
 function renderTooltip(props) {
     let colors = {};
@@ -156,7 +156,7 @@ const MyCard = ({ onClick, poster, movieID, sizePercent, buttonPosition }) => {
             <Image
                 alt="Movie Poster"
                 loader={ImageLoader}
-                src={poster}
+                src={poster ? poster : img_src}
                 width={230 * -sizePercent + 230}
                 height={130 * -sizePercent + 130}
                 style={{
