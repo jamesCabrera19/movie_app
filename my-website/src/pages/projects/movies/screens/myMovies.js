@@ -11,34 +11,43 @@ import { theme as movieTheme } from "../styles";
 import { TheModal } from "../components/modal";
 import { Context as MovieContext } from "../context/movieContext";
 import { ImageLoader } from "../components/utils";
-import MyCard from "../components/myCard";
 
 //
 
-function MyMovies({}) {
+const Content = () => {
     const {
         state: { movies },
     } = useContext(MovieContext);
-    const theme = movieTheme;
-
     return (
         <div
             style={{
                 display: "flex",
                 flexWrap: "wrap",
                 justifyContent: "space-between",
+                height: "100vh",
             }}
         >
             {movies.map((el) => (
-                <TheModal item={el}>
-                    <MyCard
-                        poster={el.backdrop_path}
-                        movieID={el.id}
-                        sizePercent={-0.0}
-                        buttonPosition={null}
-                    />
-                </TheModal>
+                <TheModal
+                    key={el.id}
+                    poster={el.backdrop_path}
+                    title={el.title}
+                    overview={el.overview}
+                    release_date={el.release_date}
+                    vote_average={el.vote_average}
+                    original_language={el.original_language}
+                    addButtonOptions={false}
+                />
             ))}
+        </div>
+    );
+};
+
+function MyMovies({}) {
+    const theme = movieTheme;
+    return (
+        <div style={{ backgroundColor: theme.backgroundColor }}>
+            <Content />
         </div>
     );
 }

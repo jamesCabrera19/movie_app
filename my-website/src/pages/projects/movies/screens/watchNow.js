@@ -1,5 +1,5 @@
 import React, { useContext, useCallback } from "react";
-import { uuid } from "uuidv4";
+const { v4: uuidv4 } = require("uuid");
 //
 import Image from "next/image";
 //
@@ -80,7 +80,7 @@ function WatchNow({ props }) {
                 if (value.length > 0 && !Array.isArray(key)) {
                     if (value.length > 3) {
                         objs.push({
-                            id: uuid(),
+                            id: uuidv4(),
                             header_text: key,
                             ids: Array.from(value),
                         });

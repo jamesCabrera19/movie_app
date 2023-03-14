@@ -1,32 +1,17 @@
 import { Text } from "../components/text";
 
-function ABC(props) {
+const Content = () => {
     return (
-        <div style={{ height: 200, border: "1px solid red", color: "white" }}>
-            <h1>hello</h1>
-            <button onClick={() => console.log("props: ", props)}>
-                read params
-            </button>
+        <div style={{ border: "1px solid red" }}>
+            <Text>this is MySettings section</Text>
         </div>
     );
-}
-const testing = {
-    component: function (params) {
-        return <ABC {...params} />;
-    },
-    params: function (params) {
-        console.log(params);
-        return this.component();
-    },
 };
+
 function MySettings() {
     return (
-        <div>
-            <Text>this is MySettings section</Text>
-            <button onClick={() => testing.params({ title: "QWERTY" })}>
-                Test
-            </button>
-            {testing.component()}
+        <div style={{ height: "100vh" }}>
+            <Content />
         </div>
     );
 }

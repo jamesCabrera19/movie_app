@@ -3,7 +3,6 @@ import React, { useContext, useState } from "react";
 import { Context as MovieContext } from "../context/movieContext";
 import NavigationContext from "../context/navigation";
 import { Text } from "../components/text";
-import MyCard from "../components/myCard";
 import { TheModal } from "../components/modal";
 
 function MyResults() {
@@ -29,14 +28,16 @@ function MyResults() {
                 {movies
                     .filter((el) => ids.includes(el.id))
                     .map((el) => (
-                        <TheModal item={el}>
-                            <MyCard
-                                poster={el.backdrop_path}
-                                movieID={el.id}
-                                sizePercent={-0.0}
-                                buttonPosition={null}
-                            />
-                        </TheModal>
+                        <TheModal
+                            key={el.id}
+                            poster={el.backdrop_path}
+                            title={el.title}
+                            overview={el.overview}
+                            release_date={el.release_date}
+                            vote_average={el.vote_average}
+                            original_language={el.original_language}
+                            addButtonOptions={false}
+                        />
                     ))}
             </div>
         </div>

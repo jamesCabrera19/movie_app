@@ -11,7 +11,6 @@ import { theme as movieTheme } from "../styles";
 import { Context as MovieContext } from "../context/movieContext";
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";
-import MyCard from "../components/myCard";
 import { CardRow } from "../components/cardRow";
 
 export default function TVShows() {

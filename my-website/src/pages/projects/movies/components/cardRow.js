@@ -3,11 +3,36 @@ import { useContext, useCallback } from "react";
 import { TheModal } from "./modal";
 import { Text } from "./text";
 import { theme as movieTheme } from "../styles";
-import MyCard from "./myCard";
 //
 import NavigationContext from "../context/navigation";
 import { Context as MovieContext } from "../context/movieContext";
-
+//
+const styles = {
+    bigContainer: { marginLeft: 20, marginRight: 20, padding: 0 },
+    smallContainer: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        alignItems: "flex-start",
+        marginTop: -130,
+        height: 200,
+        width: "80%",
+        overflowX: "scroll",
+        overflowY: "hidden",
+    },
+    bigRowContainer: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "center",
+        overflowX: "scroll",
+        height: 200,
+    },
+    smallRowContainer: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+};
 //
 const data = [
     {
@@ -16,7 +41,7 @@ const data = [
             "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
         release_date: "2016-09-02",
         genre_ids: [18],
-        id: 283552,
+        id: 123,
         original_title: "The Light Between Oceans",
         original_language: "en",
         title: "The Light Between Oceans",
@@ -33,7 +58,7 @@ const data = [
             "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
         release_date: "2016-09-02",
         genre_ids: [18],
-        id: 283552,
+        id: 1234,
         original_title: "The Light Between Oceans",
         original_language: "en",
         title: "The Light Between Oceans",
@@ -52,7 +77,7 @@ const data = [
             "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
         release_date: "2016-09-02",
         genre_ids: [18],
-        id: 283552,
+        id: 12345,
         original_title: "The Light Between Oceans",
         original_language: "en",
         title: "The Light Between Oceans",
@@ -70,7 +95,7 @@ const data = [
             "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
         release_date: "2016-09-02",
         genre_ids: [18],
-        id: 283552,
+        id: 123456,
         original_title: "The Light Between Oceans",
         original_language: "en",
         title: "The Light Between Oceans",
@@ -88,7 +113,7 @@ const data = [
             "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
         release_date: "2016-09-02",
         genre_ids: [18],
-        id: 283552,
+        id: 1234567,
         original_title: "The Light Between Oceans",
         original_language: "en",
         title: "The Light Between Oceans",
@@ -106,7 +131,7 @@ const data = [
             "A lighthouse keeper and his wife living off the coast of Western Australia raise a baby they rescue from an adrift rowboat.",
         release_date: "2016-09-02",
         genre_ids: [18],
-        id: 283552,
+        id: 12345678,
         original_title: "The Light Between Oceans",
         original_language: "en",
         title: "The Light Between Oceans",
@@ -157,38 +182,7 @@ const CardRow = ({ title, movieIDS, bigRow }) => {
     const theme = movieTheme;
     const movieIds = movieIDS || [];
 
-    const result = useCallback(() => {
-        return movies.filter(({ id }) => movieIds.includes(id));
-    }, [movies]);
-
-    //
-
-    const styles = {
-        bigContainer: { marginLeft: 20, marginRight: 20, padding: 0 },
-        smallContainer: {
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            alignItems: "flex-start",
-            marginTop: -130,
-            height: 200,
-            width: "80%",
-            overflowX: "scroll",
-            overflowY: "hidden",
-        },
-        bigRowContainer: {
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            overflowX: "scroll",
-            height: 200,
-        },
-        smallRowContainer: {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-        },
-    };
+    const result = movies.filter(({ id }) => movieIds.includes(id));
 
     return (
         <div style={bigRow ? styles.bigContainer : styles.smallContainer}>
@@ -196,15 +190,17 @@ const CardRow = ({ title, movieIDS, bigRow }) => {
                 <>
                     <RowTitle title={title} movieIds={movieIds} />
                     <div style={styles.bigRowContainer}>
-                        {result().map((el) => (
-                            <TheModal item={el}>
-                                <MyCard
-                                    poster={el.backdrop_path}
-                                    movieID={el.id}
-                                    sizePercent={-0.0}
-                                    buttonPosition={null}
-                                />
-                            </TheModal>
+                        {result.map((el) => (
+                            <TheModal
+                                key={el.id}
+                                poster={el.backdrop_path}
+                                title={el.title}
+                                overview={el.overview}
+                                release_date={el.release_date}
+                                vote_average={el.vote_average}
+                                original_language={el.original_language}
+                                addButtonOptions={false}
+                            />
                         ))}
                     </div>
                 </>
@@ -220,13 +216,16 @@ const CardRow = ({ title, movieIDS, bigRow }) => {
                     </div>
                     <div style={{ display: "flex" }}>
                         {data.map((el) => (
-                            <TheModal item={el}>
-                                <MyCard
-                                    poster={el.backdrop_path}
-                                    sizePercent={0.26}
-                                    buttonPosition={{ left: 130 }}
-                                />
-                            </TheModal>
+                            <TheModal
+                                key={el.id}
+                                poster={el.backdrop_path}
+                                title={el.title}
+                                overview={el.overview}
+                                release_date={el.release_date}
+                                vote_average={el.vote_average}
+                                original_language={el.original_language}
+                                addButtonOptions={true}
+                            />
                         ))}
                     </div>
                 </>

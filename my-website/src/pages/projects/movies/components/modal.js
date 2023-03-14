@@ -5,9 +5,10 @@ import { theme as movieTheme } from "../styles";
 import { ImageLoader } from "./utils";
 import Image from "next/image";
 import { Text } from "./text";
+import MyCard from "./myCard";
 
 const initMovieProps = {
-    backdrop_path: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
+    poster: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
     title: "Movie App",
     overview:
         "App built utilizing the most latest versions of React, NextJS, React createContext API, and Axios.",
@@ -41,14 +42,6 @@ const MyButton = ({ title }) => {
 
 const ModalBody = (props) => {
     const theme = movieTheme;
-    const {
-        backdrop_path,
-        title,
-        overview,
-        release_date,
-        vote_average,
-        original_language,
-    } = props;
 
     const styles = {
         body: {
@@ -79,7 +72,7 @@ const ModalBody = (props) => {
                 <Image
                     alt="Movie Poster"
                     loader={ImageLoader}
-                    src={backdrop_path}
+                    src={props.poster}
                     width={733}
                     height={412}
                     style={{ borderRadius: 10 }}
@@ -88,9 +81,9 @@ const ModalBody = (props) => {
             <div style={styles.textContainer}>
                 <div style={{ width: "50%" }}>
                     <Text variant="headlineExtraSmall" color={"white"}>
-                        {title}
+                        {props.title}
                     </Text>
-                    <Text color={"white"}>{overview}</Text>
+                    <Text color={"white"}>{props.overview}</Text>
                 </div>
                 <div
                     style={{
@@ -99,13 +92,13 @@ const ModalBody = (props) => {
                     }}
                 >
                     <Text variant="headlineExtraSmall" color={"white"}>
-                        {release_date}
+                        {props.release_date}
                     </Text>
                     <Text variant="headlineExtraSmall" color={"white"}>
-                        {vote_average}
+                        {props.vote_average}
                     </Text>
                     <Text variant="headlineExtraSmall" color={"white"}>
-                        {original_language}
+                        {props.original_language}
                     </Text>
                 </div>
             </div>
@@ -126,7 +119,7 @@ const ModalBody = (props) => {
     );
 };
 
-function TheModal({ item, children }) {
+function TheModal(props) {
     // modal controls
     const [movie, setMovie] = useState(initMovieProps);
     const [show, setShow] = useState(false);
@@ -134,14 +127,20 @@ function TheModal({ item, children }) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const closeModal = () => (e) => handleClose();
-    const openModal = (movie) => (e) => {
-        setMovie(movie);
+    const openModal = () => (e) => {
+        setMovie(props);
         handleShow();
     };
 
     return (
         <>
-            <div onClick={openModal(item)}>{children}</div>
+            <MyCard
+                poster={props.poster}
+                sizePercent={props.addButtonOptions ? 0.26 : 0.0}
+                buttonPosition={props.addButtonOptions ? { left: 130 } : null}
+                onClick={openModal}
+            />
+
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"
                 contentClassName="bg-transparent border-0"

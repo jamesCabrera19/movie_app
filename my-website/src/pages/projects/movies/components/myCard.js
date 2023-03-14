@@ -143,13 +143,18 @@ function AppleButton({ customStyle }) {
         </>
     );
 }
-const MyCard = ({ onClick, poster, movieID, sizePercent, buttonPosition }) => {
+const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
+    const options = {
+        height: sizePercent ? 130 * -sizePercent + 130 : 130,
+        width: sizePercent ? 230 * -sizePercent + 230 : 230,
+        button: buttonPosition ? buttonPosition : null,
+    };
     return (
         <div
-            onClick={onClick ? onClick(movieID) : null}
+            onClick={onClick ? onClick() : null}
             style={{
-                height: 130 * -sizePercent + 130,
-                width: 230 * -sizePercent + 230,
+                height: options.height,
+                width: options.width,
                 margin: 10,
             }}
         >
@@ -157,14 +162,14 @@ const MyCard = ({ onClick, poster, movieID, sizePercent, buttonPosition }) => {
                 alt="Movie Poster"
                 loader={ImageLoader}
                 src={poster ? poster : img_src}
-                width={230 * -sizePercent + 230}
-                height={130 * -sizePercent + 130}
+                height={options.height}
+                width={options.width}
                 style={{
                     borderRadius: 10,
                     boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
                 }}
             />
-            <AppleButton customStyle={{ ...buttonPosition }} />
+            <AppleButton customStyle={options.button} />
         </div>
     );
 };
