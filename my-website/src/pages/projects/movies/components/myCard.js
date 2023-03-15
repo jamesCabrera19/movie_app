@@ -8,6 +8,10 @@ import Popover from "react-bootstrap/Popover";
 import Toast from "react-bootstrap/Toast";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Text } from "./text";
+//
+import useUpNext from "../hooks/useUpNext";
+//
+
 const img_src = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
 function renderTooltip(props) {
@@ -103,28 +107,11 @@ function AppleButton({ customStyle }) {
     };
     return (
         <>
-            <ToastContainer position="top-center">
-                <Toast
-                    onClose={() => setShow(false)}
-                    show={show}
-                    delay={3000}
-                    autohide
-                    style={{ width: 200 }}
-                >
-                    <Toast.Header>
-                        <strong className="me-auto">
-                            ✔️ Movie Added to {toastTitle}
-                        </strong>
-                    </Toast.Header>
-                </Toast>
-            </ToastContainer>
-
             <OverlayTrigger
-                autohide
-                trigger="click"
+                trigger="hover"
                 placement="right"
                 overlay={renderTooltip}
-                delay={{ show: 250, hide: 400 }}
+                delay={{ show: 250, hide: 800 }}
                 popperConfig={{
                     colors: {
                         panelBackgroundColor: theme.panelBackgroundColor,
@@ -140,10 +127,27 @@ function AppleButton({ customStyle }) {
                     <div style={styles.dot} />
                 </div>
             </OverlayTrigger>
+
+            <ToastContainer position="top-center">
+                <Toast
+                    onClose={() => setShow(false)}
+                    show={show}
+                    delay={3000}
+                    autohide
+                    style={{ width: 200 }}
+                >
+                    <Toast.Header>
+                        <strong className="me-auto">
+                            ✔️ Movie Added to {toastTitle}
+                        </strong>
+                    </Toast.Header>
+                </Toast>
+            </ToastContainer>
         </>
     );
 }
 const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
+    //
     const options = {
         height: sizePercent ? 130 * -sizePercent + 130 : 130,
         width: sizePercent ? 230 * -sizePercent + 230 : 230,

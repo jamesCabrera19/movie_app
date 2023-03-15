@@ -67,7 +67,7 @@ const ModalBody = (props) => {
     };
 
     return (
-        <Modal.Body style={styles.body}>
+        <Modal.Body style={styles.body} onClick={() => console.log("sduysd")}>
             <div style={styles.imageContainer}>
                 <Image
                     alt="Movie Poster"
