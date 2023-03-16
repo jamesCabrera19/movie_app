@@ -9,69 +9,20 @@ import Toast from "react-bootstrap/Toast";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Text } from "./text";
 //
-import useUpNext from "../hooks/useUpNext";
+
 //
 
 const img_src = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
-function renderTooltip(props) {
-    let colors = {};
-    //Sometimes, props.popper.state is undefined.
-    //It runs this function enough times that state gets a value
-    if (props.popper.state) {
-        colors = { ...props.popper?.state?.options.colors };
-    }
-    const styles = {
-        body: {
-            border: `1px solid ${colors.panelBackgroundColor}`,
-            backgroundColor: colors.backgroundColor,
-            borderRadius: 10,
-            overflow: "hidden",
-        },
-        textContainer: {
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-        },
-        separator: {
-            width: "100%",
-            height: 1,
-            borderTop: "1px solid #a09f9d",
-            marginBottom: 8,
-        },
-        fontColor: colors.fontColor,
-    };
-
-    const TextClick = ({ text, title }) => (
-        <div
-            style={{ cursor: "pointer" }}
-            onClick={props.popper?.state?.options?.handleToast(title)}
-        >
-            <Text color={styles.fontColor}>{text}</Text>
-        </div>
-    );
-    return (
-        <Popover id="popover-basic" {...props}>
-            <Popover.Body style={styles.body}>
-                <div style={styles.textContainer}>
-                    <TextClick text="Add to Up Next" title="Up Next" />
-                    <div style={styles.separator} />
-                    <TextClick text="Add to My Movies" title="My Movies" />
-                </div>
-            </Popover.Body>
-        </Popover>
-    );
-}
-function AppleButton({ customStyle }) {
-    const [toastTitle, setToastTile] = useState("");
-    const [show, setShow] = useState(false);
+const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
     const theme = movieTheme;
 
-    const handleToast = (title) => (e) => {
-        setToastTile(title);
-        setShow(true);
+    //
+    const options = {
+        height: sizePercent ? 130 * -sizePercent + 130 : 130,
+        width: sizePercent ? 230 * -sizePercent + 230 : 230,
+        button: buttonPosition ? buttonPosition : null,
     };
-
     const styles = {
         container: {
             height: 30,
@@ -82,10 +33,9 @@ function AppleButton({ customStyle }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-evenly",
-            backgroundColor: theme.buttonColor,
+            backgroundColor: theme.themeColorToRGBA(0.1, theme.buttonColor),
             left: 190,
             bottom: 40,
-            ...customStyle,
         },
         dot: {
             borderRadius: 2.5,
@@ -93,65 +43,6 @@ function AppleButton({ customStyle }) {
             width: 5,
             backgroundColor: "white",
         },
-        toolTip: {
-            height: 60,
-            width: 150,
-            borderRadius: 10,
-            paddingLeft: 10,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            justifyContent: "space-evenly",
-            backgroundColor: theme.buttonColor,
-        },
-    };
-    return (
-        <>
-            <OverlayTrigger
-                trigger="hover"
-                placement="right"
-                overlay={renderTooltip}
-                delay={{ show: 250, hide: 800 }}
-                popperConfig={{
-                    colors: {
-                        panelBackgroundColor: theme.panelBackgroundColor,
-                        backgroundColor: theme.backgroundColor,
-                        fontColor: theme.fontColor,
-                    },
-                    handleToast,
-                }}
-            >
-                <div style={styles.container}>
-                    <div style={styles.dot} />
-                    <div style={styles.dot} />
-                    <div style={styles.dot} />
-                </div>
-            </OverlayTrigger>
-
-            <ToastContainer position="top-center">
-                <Toast
-                    onClose={() => setShow(false)}
-                    show={show}
-                    delay={3000}
-                    autohide
-                    style={{ width: 200 }}
-                >
-                    <Toast.Header>
-                        <strong className="me-auto">
-                            ✔️ Movie Added to {toastTitle}
-                        </strong>
-                    </Toast.Header>
-                </Toast>
-            </ToastContainer>
-        </>
-    );
-}
-const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
-    //
-    const options = {
-        height: sizePercent ? 130 * -sizePercent + 130 : 130,
-        width: sizePercent ? 230 * -sizePercent + 230 : 230,
-        button: buttonPosition ? buttonPosition : null,
     };
     return (
         <div
@@ -173,7 +64,11 @@ const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
                     boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
                 }}
             />
-            <AppleButton customStyle={options.button} />
+            <div style={{ ...styles.container, ...options.button }}>
+                <div style={styles.dot} />
+                <div style={styles.dot} />
+                <div style={styles.dot} />
+            </div>
         </div>
     );
 };

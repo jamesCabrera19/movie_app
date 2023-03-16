@@ -6,6 +6,7 @@ import { ImageLoader } from "./utils";
 import Image from "next/image";
 import { Text } from "./text";
 import MyCard from "./myCard";
+import useUpNext from "../hooks/useUpNext";
 
 const initMovieProps = {
     poster: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
@@ -15,12 +16,16 @@ const initMovieProps = {
     release_date: "11/11/22",
     vote_average: 10,
     original_language: "EN",
+    id: 129182,
 };
-const MyButton = ({ title }) => {
+const MyButton = ({ title, onClick }) => {
+    const [state, addToList, removeFromList] = useUpNext();
+
     const theme = movieTheme;
 
     return (
         <div
+            onClick={onClick()}
             style={{
                 padding: "6px 20px 0 20px",
                 width: 200,
@@ -41,7 +46,11 @@ const MyButton = ({ title }) => {
 };
 
 const ModalBody = (props) => {
+    const [state, addToList, removeFromList] = useUpNext();
     const theme = movieTheme;
+
+    const handleBackgroundClick = () => (e) =>
+        console.log("Open Video: ", props);
 
     const styles = {
         body: {
@@ -65,57 +74,95 @@ const ModalBody = (props) => {
             paddingLeft: 20,
         },
     };
-
+    const buttonData = [
+        {
+            title: "Play",
+            onClick: (id) => (e) => {
+                console.log("Play Movie: ", props.movieID);
+                removeFromList(props.movieID);
+            },
+            id: 0,
+        },
+        {
+            title: "Add to Up Next",
+            onClick: () => (e) => {
+                addToList(props.movieID);
+                console.log(props.movieID);
+            },
+            id: 1,
+        },
+        {
+            title: "Add to My Movies",
+            onClick: (id) => (e) => {
+                console.log(state);
+            },
+            id: 2,
+        },
+    ];
     return (
-        <Modal.Body style={styles.body} onClick={() => console.log("sduysd")}>
-            <div style={styles.imageContainer}>
-                <Image
-                    alt="Movie Poster"
-                    loader={ImageLoader}
-                    src={props.poster}
-                    width={733}
-                    height={412}
-                    style={{ borderRadius: 10 }}
-                />
-            </div>
-            <div style={styles.textContainer}>
-                <div style={{ width: "50%" }}>
-                    <Text variant="headlineExtraSmall" color={"white"}>
-                        {props.title}
-                    </Text>
-                    <Text color={"white"}>{props.overview}</Text>
+        <>
+            <Modal.Body style={styles.body}>
+                <div
+                    style={styles.imageContainer}
+                    onClick={handleBackgroundClick()}
+                >
+                    <Image
+                        alt="Movie Poster"
+                        loader={ImageLoader}
+                        src={props.poster}
+                        width={733}
+                        height={412}
+                        style={{ borderRadius: 10 }}
+                    />
+                </div>
+                <div style={styles.textContainer}>
+                    <div style={{ width: "50%" }}>
+                        <Text variant="headlineExtraSmall" color={"white"}>
+                            {props.title}
+                        </Text>
+                        <Text color={"white"}>{props.overview}</Text>
+                    </div>
+                    <div
+                        style={{
+                            backgroundColor: theme.themeColorToRGBA(
+                                0.009,
+                                theme.backgroundColor
+                            ),
+                        }}
+                    >
+                        <Text variant="headlineExtraSmall" color={"white"}>
+                            {props.release_date}
+                        </Text>
+                        <Text variant="headlineExtraSmall" color={"white"}>
+                            {props.vote_average}
+                        </Text>
+                        <Text variant="headlineExtraSmall" color={"white"}>
+                            {props.original_language}
+                        </Text>
+                    </div>
                 </div>
                 <div
                     style={{
-                        // width: "20%",
-                        backgroundColor: "rgba(100, 100, 100, 0.001)",
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "space-evenly",
+                        marginTop: 20,
                     }}
                 >
-                    <Text variant="headlineExtraSmall" color={"white"}>
-                        {props.release_date}
-                    </Text>
-                    <Text variant="headlineExtraSmall" color={"white"}>
-                        {props.vote_average}
-                    </Text>
-                    <Text variant="headlineExtraSmall" color={"white"}>
-                        {props.original_language}
-                    </Text>
-                </div>
-            </div>
-            <div
-                style={{
-                    display: "flex",
-                    width: "100%",
-                    justifyContent: "space-evenly",
-                    marginTop: 20,
-                }}
-            >
-                <MyButton title="Play" />
+                    {buttonData.map((el) => (
+                        <MyButton
+                            title={el.title}
+                            key={el.id}
+                            // id={props.movieID}
+                            onClick={el.onClick}
+                        />
+                    ))}
 
-                <MyButton title="Add to Up Next" />
-                <MyButton title="Add to My Movies" />
-            </div>
-        </Modal.Body>
+                    {/* <MyButton title="Add to Up Next" />
+                    <MyButton title="Add to My Movies" /> */}
+                </div>
+            </Modal.Body>
+        </>
     );
 };
 

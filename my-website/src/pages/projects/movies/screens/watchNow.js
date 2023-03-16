@@ -7,13 +7,14 @@ import { ImageLoader, genres } from "../components/utils";
 import { Context as MovieContext } from "../context/movieContext";
 
 import { MovieOrganizer } from "../components/Helpers";
+import useUpNext from "../hooks/useUpNext";
 //
 import { CardRow } from "../components/cardRow";
 
 //
 const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
-function MovieCover({}) {
+function ScreenCover({}) {
     const {
         state: { movies },
     } = useContext(MovieContext);
@@ -46,22 +47,19 @@ function MovieCover({}) {
     };
 
     return (
-        <div style={styles.container}>
-            <div
-                style={{ ...styles.imageContainer, ...styles.flex }}
-                onClick={handleClick("abcd")}
-            >
-                <Image
-                    alt="Movie Poster"
-                    loader={ImageLoader}
-                    src={movies.length !== 0 ? src.backdrop_path : img_src}
-                    quality={100}
-                    width={733.6}
-                    height={412.8}
-                    style={{ borderRadius: 10 }}
-                />
-            </div>
-            <CardRow />
+        <div
+            style={{ ...styles.imageContainer, ...styles.flex }}
+            onClick={handleClick("abcd")}
+        >
+            <Image
+                alt="Movie Poster"
+                loader={ImageLoader}
+                src={movies.length !== 0 ? src.backdrop_path : img_src}
+                quality={100}
+                width={733.6}
+                height={412.8}
+                style={{ borderRadius: 10 }}
+            />
         </div>
     );
 }
@@ -70,6 +68,7 @@ function WatchNow({ props }) {
     const { state } = useContext(MovieContext);
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
     const movies = movieLibrary.moviesByGenre();
+    const [movieList] = useUpNext();
 
     // [{header_text:'Movie Genre: Action',id:'random string',
     // ids:['Array of movies with the same Genre']}]
@@ -91,10 +90,20 @@ function WatchNow({ props }) {
         },
         [movies]
     );
-
+    console.log("render", movieList);
     return (
-        <>
-            <MovieCover />
+        <div>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <ScreenCover />
+                <CardRow movieIDS={[943822, 785084, 315162, 505642, 631842]} />
+            </div>
+
             {returnMovieIds(movies).map((el) => (
                 <CardRow
                     key={el.id}
@@ -103,7 +112,7 @@ function WatchNow({ props }) {
                     movieIDS={el.ids}
                 />
             ))}
-        </>
+        </div>
     );
 }
 export default WatchNow;

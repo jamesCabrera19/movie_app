@@ -6,6 +6,7 @@ import { theme as movieTheme } from "../styles";
 //
 import NavigationContext from "../context/navigation";
 import { Context as MovieContext } from "../context/movieContext";
+import MyCard from "./myCard";
 //
 const styles = {
     bigContainer: { marginLeft: 20, marginRight: 20, padding: 0 },
@@ -145,7 +146,7 @@ const data = [
     },
 ];
 
-const RowTitle = ({ title, movieIds }) => {
+const RowTitle = ({ title, movieIDS }) => {
     const theme = movieTheme;
     const { handleNavigation } = useContext(NavigationContext);
 
@@ -164,7 +165,7 @@ const RowTitle = ({ title, movieIds }) => {
             </Text>
             <div
                 onClick={handleNavigation("Results", {
-                    ids: movieIds,
+                    ids: movieIDS,
                     genre: title,
                 })}
                 style={{ cursor: "pointer" }}
@@ -175,24 +176,26 @@ const RowTitle = ({ title, movieIds }) => {
     );
 };
 
-const CardRow = ({ title, movieIDS, bigRow }) => {
+const CardRow = ({ title, bigRow, movieIDS }) => {
     const {
         state: { movies },
     } = useContext(MovieContext);
     const theme = movieTheme;
     const movieIds = movieIDS || [];
 
+    // filters movies from the main state
     const result = movies.filter(({ id }) => movieIds.includes(id));
-
     return (
         <div style={bigRow ? styles.bigContainer : styles.smallContainer}>
             {bigRow ? (
                 <>
-                    <RowTitle title={title} movieIds={movieIds} />
+                    <RowTitle title={title} movieIDS={movieIds} />
+
                     <div style={styles.bigRowContainer}>
                         {result.map((el) => (
                             <TheModal
                                 key={el.id}
+                                movieID={el.id}
                                 poster={el.backdrop_path}
                                 title={el.title}
                                 overview={el.overview}
@@ -215,17 +218,26 @@ const CardRow = ({ title, movieIDS, bigRow }) => {
                         </Text>
                     </div>
                     <div style={{ display: "flex" }}>
-                        {data.map((el) => (
-                            <TheModal
-                                key={el.id}
+                        {/*  onClick, poster, sizePercent, buttonPosition */}
+
+                        {result.map((el) => (
+                            <MyCard
+                                onClick={() => () => console.log(el.title)}
                                 poster={el.backdrop_path}
-                                title={el.title}
-                                overview={el.overview}
-                                release_date={el.release_date}
-                                vote_average={el.vote_average}
-                                original_language={el.original_language}
-                                addButtonOptions={true}
+                                sizePercent={0.26}
+                                buttonPosition={{ left: 130 }}
                             />
+                            // <TheModal
+                            //     key={el.id}
+                            //     movieID={el.id}
+                            //     poster={el.backdrop_path}
+                            //     title={el.title}
+                            //     overview={el.overview}
+                            //     release_date={el.release_date}
+                            //     vote_average={el.vote_average}
+                            //     original_language={el.original_language}
+                            //     addButtonOptions={true}
+                            // />
                         ))}
                     </div>
                 </>
