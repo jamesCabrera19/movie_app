@@ -27,11 +27,13 @@ const styles = {
         alignItems: "center",
         overflowX: "scroll",
         height: 200,
+        overflowY: "hidden",
     },
     smallRowContainer: {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        overflowY: "hidden",
     },
 };
 //
@@ -222,22 +224,12 @@ const CardRow = ({ title, bigRow, movieIDS }) => {
 
                         {result.map((el) => (
                             <MyCard
+                                key={el.id}
                                 onClick={() => () => console.log(el.title)}
                                 poster={el.backdrop_path}
                                 sizePercent={0.26}
                                 buttonPosition={{ left: 130 }}
                             />
-                            // <TheModal
-                            //     key={el.id}
-                            //     movieID={el.id}
-                            //     poster={el.backdrop_path}
-                            //     title={el.title}
-                            //     overview={el.overview}
-                            //     release_date={el.release_date}
-                            //     vote_average={el.vote_average}
-                            //     original_language={el.original_language}
-                            //     addButtonOptions={true}
-                            // />
                         ))}
                     </div>
                 </>

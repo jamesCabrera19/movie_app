@@ -14,15 +14,15 @@ function MyResults() {
     } = useContext(NavigationContext);
 
     return (
-        <div style={{ margin: 10 }}>
-            <div style={{ marginLeft: 10 }}>
-                <Text>{genre} Movies</Text>
+        <div style={{ height: "100vh" }}>
+            <div style={{ marginLeft: 100 }}>
+                <Text variant="headlineMedium">{genre} Movies</Text>
             </div>
             <div
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    justifyContent: "space-between",
+                    margin: "50px 100px 0 100px",
                 }}
             >
                 {movies

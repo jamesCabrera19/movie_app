@@ -3,26 +3,36 @@ import { useState } from "react";
 import Image from "next/image";
 import { ImageLoader } from "./utils";
 import { theme as movieTheme } from "../styles";
-import ToastContainer from "react-bootstrap/ToastContainer";
-import Popover from "react-bootstrap/Popover";
-import Toast from "react-bootstrap/Toast";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import { Text } from "./text";
+import useHover from "../hooks/useHover";
 //
 
+const IMG_SRC = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 //
-
-const img_src = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
-
-const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
+const MyBtn = ({ title, id }) => {
+    const [active, setActive] = useState(true);
     const theme = movieTheme;
 
-    //
-    const options = {
-        height: sizePercent ? 130 * -sizePercent + 130 : 130,
-        width: sizePercent ? 230 * -sizePercent + 230 : 230,
-        button: buttonPosition ? buttonPosition : null,
-    };
+    return (
+        <button
+            onClick={() => {
+                setActive((prev) => !prev);
+            }}
+            style={{
+                height: 40,
+                border: "none",
+                backgroundColor: theme.buttonColor,
+                color: active ? theme.buttonFontColor : theme.fontColor,
+            }}
+        >
+            {title}
+        </button>
+    );
+};
+
+const CardOverlay = ({ options, id }) => {
+    const theme = movieTheme;
+
+    const [hoverRef, isHovered] = useHover(3000);
     const styles = {
         container: {
             height: 30,
@@ -43,32 +53,71 @@ const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
             width: 5,
             backgroundColor: "white",
         },
+        overlay: {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: 80,
+            width: 150,
+            borderRadius: 10,
+            overflow: "hidden",
+        },
     };
     return (
+        <>
+            <div ref={hoverRef} style={{ ...styles.container, ...options }}>
+                <div style={styles.dot} />
+                <div style={styles.dot} />
+                <div style={styles.dot} />
+            </div>
+            {isHovered ? (
+                <div style={{ position: "relative", right: -150, top: -80 }}>
+                    <div style={styles.overlay}>
+                        <MyBtn title="add to Up Next" />
+                        <div
+                            style={{
+                                borderTop: `1px solid ${theme.backgroundColor}`,
+                            }}
+                        />
+                        <MyBtn title="add to My Movies" />
+                    </div>
+                </div>
+            ) : null}
+        </>
+    );
+};
+
+const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
+    const options = {
+        height: sizePercent ? 130 * -sizePercent + 130 : 130,
+        width: sizePercent ? 230 * -sizePercent + 230 : 230,
+        button: buttonPosition ? buttonPosition : null,
+    };
+
+    // console.log("MyCard render");
+
+    return (
         <div
-            onClick={onClick ? onClick() : null}
             style={{
                 height: options.height,
                 width: options.width,
                 margin: 10,
             }}
         >
-            <Image
-                alt="Movie Poster"
-                loader={ImageLoader}
-                src={poster ? poster : img_src}
-                height={options.height}
-                width={options.width}
-                style={{
-                    borderRadius: 10,
-                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
-                }}
-            />
-            <div style={{ ...styles.container, ...options.button }}>
-                <div style={styles.dot} />
-                <div style={styles.dot} />
-                <div style={styles.dot} />
+            <div onClick={onClick ? onClick() : null}>
+                <Image
+                    alt="Movie Poster"
+                    loader={ImageLoader}
+                    src={poster ? poster : IMG_SRC}
+                    height={options.height}
+                    width={options.width}
+                    style={{
+                        borderRadius: 10,
+                        boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
+                    }}
+                />
             </div>
+            <CardOverlay options={options.button} id={poster} />
         </div>
     );
 };
