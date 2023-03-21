@@ -7,7 +7,6 @@ export default (delay) => {
 
     const handleMouseOver = () => setValue(true);
     const handleMouseOut = () => setValue(false);
-
     useEffect(() => {
         const node = ref.current;
         const timer = (callback) => (e) => setTimeout(callback, delay);

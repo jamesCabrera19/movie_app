@@ -14,7 +14,7 @@ import { CardRow } from "../components/cardRow";
 //
 const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
-function ScreenCover({}) {
+function ScreenCover({ movie }) {
     const {
         state: { movies },
     } = useContext(MovieContext);
@@ -54,7 +54,7 @@ function ScreenCover({}) {
             <Image
                 alt="Movie Poster"
                 loader={ImageLoader}
-                src={movies.length !== 0 ? src.backdrop_path : img_src}
+                src={movie ? movie.backdrop_path : img_src}
                 quality={100}
                 width={733.6}
                 height={412.8}
@@ -68,11 +68,12 @@ function WatchNow({ props }) {
     const { state } = useContext(MovieContext);
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
     const movies = movieLibrary.moviesByGenre();
-    const [movieList] = useUpNext();
+    const [movieList, addToList, removeFromList] = useUpNext();
 
-    // [{header_text:'Movie Genre: Action',id:'random string',
+    // [{movie_genre:'Movie Genre: Action',id:'random string',
     // ids:['Array of movies with the same Genre']}]
     const returnMovieIds = useCallback(
+        // returns array of objects
         (obj = {}) => {
             const objs = [];
             for (const [key, value] of Object.entries(obj)) {
@@ -90,7 +91,7 @@ function WatchNow({ props }) {
         },
         [movies]
     );
-    console.log("render", movieList);
+
     return (
         <div>
             <div
@@ -100,9 +101,19 @@ function WatchNow({ props }) {
                     alignItems: "center",
                 }}
             >
-                <ScreenCover />
-                <CardRow movieIDS={[943822, 785084, 315162, 505642, 631842]} />
+                <ScreenCover
+                    movie={
+                        state.movies.filter(
+                            (e, i) =>
+                                i <= Math.floor(Math.random() * movies.length)
+                        )[0]
+                    }
+                />
+                <CardRow movieIDS={movieList} />
             </div>
+            <button onClick={() => console.log("movieList: ", movieList)}>
+                view ids
+            </button>
 
             {returnMovieIds(movies).map((el) => (
                 <CardRow

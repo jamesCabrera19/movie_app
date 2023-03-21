@@ -1,6 +1,6 @@
-import { useState, useReducer } from "react";
+import { useReducer, useState } from "react";
 
-const initState = [505642, 1077280, 1011679, 646389];
+let MY_SAVED_IDS = [315162, 631842];
 
 function reducer(state, action) {
     switch (action.type) {
@@ -14,16 +14,36 @@ function reducer(state, action) {
     }
 }
 
+// export default () => {
+//     const [state, dispatch] = useReducer(reducer, initState);
+
+//     function addToList(id = Number) {
+//         dispatch({ type: "add_to_list", payload: id });
+//     }
+
+//     const removeFromList = (id = Number) => {
+//         dispatch({ type: "remove", payload: id });
+//     };
+
+//     return [state, addToList, removeFromList];
+// };
+
 export default () => {
-    const [state, dispatch] = useReducer(reducer, initState);
+    const [savedIds, setSaveIds] = useState(MY_SAVED_IDS);
 
-    function addToList(id = Number) {
-        dispatch({ type: "add_to_list", payload: id });
-    }
-
-    const removeFromList = (id = Number) => {
-        dispatch({ type: "remove", payload: id });
+    const removeFromList = (id) => {
+        MY_SAVED_IDS = MY_SAVED_IDS.filter((el) => el !== id);
+        setSaveIds(MY_SAVED_IDS);
+    };
+    const addToList = (id) => {
+        if (!MY_SAVED_IDS.includes(id)) {
+            MY_SAVED_IDS.push(id);
+            setSaveIds((prev) => [...prev, id]);
+        }
+    };
+    const handleIt = (id) => {
+        initState.includes(id) ? deleteId(id) : saveId(id);
     };
 
-    return [state, addToList, removeFromList];
+    return [savedIds, addToList, removeFromList];
 };

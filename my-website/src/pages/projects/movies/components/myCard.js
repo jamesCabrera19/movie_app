@@ -4,11 +4,12 @@ import Image from "next/image";
 import { ImageLoader } from "./utils";
 import { theme as movieTheme } from "../styles";
 import useHover from "../hooks/useHover";
+import useUpNext from "../hooks/useUpNext";
 //
 
 const IMG_SRC = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 //
-const MyBtn = ({ title, id }) => {
+const OverlayButton = ({ title, onClick }) => {
     const [active, setActive] = useState(true);
     const theme = movieTheme;
 
@@ -16,6 +17,7 @@ const MyBtn = ({ title, id }) => {
         <button
             onClick={() => {
                 setActive((prev) => !prev);
+                onClick();
             }}
             style={{
                 height: 40,
@@ -31,7 +33,7 @@ const MyBtn = ({ title, id }) => {
 
 const CardOverlay = ({ options, id }) => {
     const theme = movieTheme;
-
+    const [state, addToList, removeFromList] = useUpNext();
     const [hoverRef, isHovered] = useHover(3000);
     const styles = {
         container: {
@@ -58,9 +60,39 @@ const CardOverlay = ({ options, id }) => {
             flexDirection: "column",
             justifyContent: "space-between",
             height: 80,
-            width: 150,
+            width: 190,
             borderRadius: 10,
             overflow: "hidden",
+        },
+    };
+    const addedOptions = {
+        right: options ? -100 : -150,
+        top: options ? -100 : -80,
+    };
+
+    // console.log(state);
+    const overviewButton = {
+        myMovies: {
+            title: "add to My Movies",
+            onClick: () => {
+                console.log("My Movies,", id);
+            },
+        },
+        upNext: {
+            title: "add to Up Next",
+            onClick: () => addToList(id),
+        },
+        view: {
+            title: "View",
+            onClick: () => {
+                console.log("View");
+            },
+        },
+        remove: {
+            title: "Remove from Up Next",
+            onClick: () => {
+                removeFromList(id);
+            },
         },
     };
     return (
@@ -71,15 +103,34 @@ const CardOverlay = ({ options, id }) => {
                 <div style={styles.dot} />
             </div>
             {isHovered ? (
-                <div style={{ position: "relative", right: -150, top: -80 }}>
+                <div
+                    style={{
+                        position: "relative",
+                        ...addedOptions,
+                    }}
+                >
                     <div style={styles.overlay}>
-                        <MyBtn title="add to Up Next" />
-                        <div
-                            style={{
-                                borderTop: `1px solid ${theme.backgroundColor}`,
-                            }}
-                        />
-                        <MyBtn title="add to My Movies" />
+                        {options ? (
+                            <>
+                                <OverlayButton {...overviewButton.remove} />
+                                <div
+                                    style={{
+                                        borderTop: `1px solid ${theme.backgroundColor}`,
+                                    }}
+                                />
+                                <OverlayButton {...overviewButton.view} />
+                            </>
+                        ) : (
+                            <>
+                                <OverlayButton {...overviewButton.upNext} />
+                                <div
+                                    style={{
+                                        borderTop: `1px solid ${theme.backgroundColor}`,
+                                    }}
+                                />
+                                <OverlayButton {...overviewButton.myMovies} />
+                            </>
+                        )}
                     </div>
                 </div>
             ) : null}
@@ -87,15 +138,12 @@ const CardOverlay = ({ options, id }) => {
     );
 };
 
-const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
+const MyCard = ({ onClick, poster, sizePercent, buttonPosition, id }) => {
     const options = {
         height: sizePercent ? 130 * -sizePercent + 130 : 130,
         width: sizePercent ? 230 * -sizePercent + 230 : 230,
         button: buttonPosition ? buttonPosition : null,
     };
-
-    // console.log("MyCard render");
-
     return (
         <div
             style={{
@@ -117,7 +165,7 @@ const MyCard = ({ onClick, poster, sizePercent, buttonPosition }) => {
                     }}
                 />
             </div>
-            <CardOverlay options={options.button} id={poster} />
+            <CardOverlay options={options.button} id={id} />
         </div>
     );
 };
