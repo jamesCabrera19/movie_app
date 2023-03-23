@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, useState } from "react";
 const { v4: uuidv4 } = require("uuid");
 //
 import Image from "next/image";
@@ -68,7 +68,7 @@ function WatchNow({ props }) {
     const { state } = useContext(MovieContext);
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
     const movies = movieLibrary.moviesByGenre();
-    const [movieList, addToList, removeFromList] = useUpNext();
+    const [movieList, addToList, removeFromList, list] = useUpNext();
 
     // [{movie_genre:'Movie Genre: Action',id:'random string',
     // ids:['Array of movies with the same Genre']}]
@@ -91,7 +91,7 @@ function WatchNow({ props }) {
         },
         [movies]
     );
-
+    console.log("rendering");
     return (
         <div>
             <div
@@ -109,9 +109,17 @@ function WatchNow({ props }) {
                         )[0]
                     }
                 />
-                <CardRow movieIDS={movieList} />
+                <CardRow
+                    movieIDS={movieList}
+                    add={addToList}
+                    remove={removeFromList}
+                />
             </div>
-            <button onClick={() => console.log("movieList: ", movieList)}>
+            <button
+                onClick={() =>
+                    console.log("state: ", movieList, "init state", list)
+                }
+            >
                 view ids
             </button>
 

@@ -16,8 +16,8 @@ const OverlayButton = ({ title, onClick }) => {
     return (
         <button
             onClick={() => {
-                setActive((prev) => !prev);
                 onClick();
+                setActive((prev) => !prev);
             }}
             style={{
                 height: 40,
@@ -31,9 +31,8 @@ const OverlayButton = ({ title, onClick }) => {
     );
 };
 
-const CardOverlay = ({ options, id }) => {
+const CardOverlay = ({ options, id, add, remove }) => {
     const theme = movieTheme;
-    const [state, addToList, removeFromList] = useUpNext();
     const [hoverRef, isHovered] = useHover(3000);
     const styles = {
         container: {
@@ -90,9 +89,7 @@ const CardOverlay = ({ options, id }) => {
         },
         remove: {
             title: "Remove from Up Next",
-            onClick: () => {
-                removeFromList(id);
-            },
+            onClick: () => remove(id),
         },
     };
     return (
@@ -138,7 +135,15 @@ const CardOverlay = ({ options, id }) => {
     );
 };
 
-const MyCard = ({ onClick, poster, sizePercent, buttonPosition, id }) => {
+const MyCard = ({
+    onClick,
+    poster,
+    sizePercent,
+    buttonPosition,
+    id,
+    add,
+    remove,
+}) => {
     const options = {
         height: sizePercent ? 130 * -sizePercent + 130 : 130,
         width: sizePercent ? 230 * -sizePercent + 230 : 230,
@@ -165,7 +170,12 @@ const MyCard = ({ onClick, poster, sizePercent, buttonPosition, id }) => {
                     }}
                 />
             </div>
-            <CardOverlay options={options.button} id={id} />
+            <CardOverlay
+                options={options.button}
+                id={id}
+                add={add}
+                remove={remove}
+            />
         </div>
     );
 };

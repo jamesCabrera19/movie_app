@@ -1,6 +1,6 @@
-import { useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 
-let MY_SAVED_IDS = [315162, 631842];
+let initState = [315162, 631842];
 
 function reducer(state, action) {
     switch (action.type) {
@@ -29,21 +29,24 @@ function reducer(state, action) {
 // };
 
 export default () => {
-    const [savedIds, setSaveIds] = useState(MY_SAVED_IDS);
+    const [state, setState] = useState(initState);
 
     const removeFromList = (id) => {
-        MY_SAVED_IDS = MY_SAVED_IDS.filter((el) => el !== id);
-        setSaveIds(MY_SAVED_IDS);
+        initState = state.filter((el) => el !== id);
+        setState(state.filter((el) => el !== id));
+        console.log("removeFromList ", id);
     };
     const addToList = (id) => {
-        if (!MY_SAVED_IDS.includes(id)) {
+        const res = state.includes(id);
+        if (!res) {
             MY_SAVED_IDS.push(id);
-            setSaveIds((prev) => [...prev, id]);
+            setState((prev) => [...prev, id]);
         }
     };
-    const handleIt = (id) => {
-        initState.includes(id) ? deleteId(id) : saveId(id);
-    };
 
-    return [savedIds, addToList, removeFromList];
+    // const handleIt = (id) => {
+    //     initState.includes(id) ? deleteId(id) : saveId(id);
+    // };
+
+    return [state, addToList, removeFromList, initState];
 };

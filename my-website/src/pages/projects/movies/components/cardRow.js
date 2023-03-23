@@ -39,7 +39,7 @@ const RowTitle = ({ title, movieIDS }) => {
     );
 };
 
-const CardRow = ({ title, bigRow, movieIDS }) => {
+const CardRow = ({ title, bigRow, movieIDS, add, remove }) => {
     const {
         state: { movies },
     } = useContext(MovieContext);
@@ -89,6 +89,8 @@ const CardRow = ({ title, bigRow, movieIDS }) => {
                                 poster={el.backdrop_path}
                                 sizePercent={0.26}
                                 buttonPosition={{ left: 130 }}
+                                add={add}
+                                remove={remove}
                             />
                         ))}
                     </div>
