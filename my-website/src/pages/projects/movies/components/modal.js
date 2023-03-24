@@ -48,7 +48,7 @@ const MyButton = ({ title, onClick }) => {
 const ModalBody = (props) => {
     const [state, addToList, removeFromList] = useUpNext();
     const theme = movieTheme;
-
+    const date = new Date(props.release_date);
     const handleBackgroundClick = () => (e) =>
         console.log("Open Video: ", props);
 
@@ -56,7 +56,7 @@ const ModalBody = (props) => {
         body: {
             padding: 0,
             margin: 0,
-            // border: "1px solid red",
+
             width: 733,
             // height: 412,
         },
@@ -67,11 +67,12 @@ const ModalBody = (props) => {
             justifyContent: "center",
         },
         textContainer: {
-            marginTop: -250,
             display: "flex",
-            justifyContent: "space-between",
+            marginTop: -412 / 2,
             paddingRight: 20,
             paddingLeft: 20,
+            position: "relative",
+            backgroundColor: theme.themeColorToRGBA(0.6, theme.backgroundColor),
         },
     };
     const buttonData = [
@@ -116,29 +117,35 @@ const ModalBody = (props) => {
                     />
                 </div>
                 <div style={styles.textContainer}>
-                    <div style={{ width: "50%" }}>
+                    <div>
                         <Text variant="headlineExtraSmall" color={"white"}>
                             {props.title}
                         </Text>
                         <Text color={"white"}>{props.overview}</Text>
-                    </div>
-                    <div
-                        style={{
-                            backgroundColor: theme.themeColorToRGBA(
-                                0.009,
-                                theme.backgroundColor
-                            ),
-                        }}
-                    >
-                        <Text variant="headlineExtraSmall" color={"white"}>
-                            {props.release_date}
-                        </Text>
-                        <Text variant="headlineExtraSmall" color={"white"}>
-                            {props.vote_average}
-                        </Text>
-                        <Text variant="headlineExtraSmall" color={"white"}>
-                            {props.original_language}
-                        </Text>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                            }}
+                        >
+                            <Text color={"white"}>{date.toDateString()}</Text>
+                            <div
+                                style={{
+                                    margin: "0 20px",
+                                }}
+                            >
+                                <Text
+                                    variant="headlineExtraSmall"
+                                    color={"white"}
+                                >
+                                    {props.vote_average}
+                                </Text>
+                            </div>
+
+                            <Text variant="headlineExtraSmall" color={"white"}>
+                                {props.original_language}
+                            </Text>
+                        </div>
                     </div>
                 </div>
                 <div
@@ -153,13 +160,9 @@ const ModalBody = (props) => {
                         <MyButton
                             title={el.title}
                             key={el.id}
-                            // id={props.movieID}
                             onClick={el.onClick}
                         />
                     ))}
-
-                    {/* <MyButton title="Add to Up Next" />
-                    <MyButton title="Add to My Movies" /> */}
                 </div>
             </Modal.Body>
         </>
@@ -167,6 +170,7 @@ const ModalBody = (props) => {
 };
 
 function TheModal(props) {
+    const { movieID, poster } = props;
     // modal controls
     const [movie, setMovie] = useState(initMovieProps);
     const [show, setShow] = useState(false);
@@ -181,12 +185,7 @@ function TheModal(props) {
 
     return (
         <>
-            <MyCard
-                poster={props.poster}
-                sizePercent={props.addButtonOptions ? 0.26 : 0.0}
-                buttonPosition={props.addButtonOptions ? { left: 130 } : null}
-                onClick={openModal}
-            />
+            <MyCard onClick={openModal} poster={poster} movieID={movieID} />
 
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"

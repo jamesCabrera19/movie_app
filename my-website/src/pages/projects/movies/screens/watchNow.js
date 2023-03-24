@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useState } from "react";
+import React, { useContext, useCallback, useState, useEffect } from "react";
 const { v4: uuidv4 } = require("uuid");
 //
 import Image from "next/image";
@@ -14,18 +14,18 @@ import { CardRow } from "../components/cardRow";
 //
 const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 
-function ScreenCover({ movie }) {
+function ScreenCover({}) {
     const {
         state: { movies },
     } = useContext(MovieContext);
 
+    const src = movies.filter(
+        (e, i) => i <= Math.floor(Math.random() * movies.length)
+    )[0];
     const handleClick = () => (e) => {
         console.log("Open Movie");
     };
 
-    const src = movies.filter(
-        (e, i) => i <= Math.floor(Math.random() * movies.length)
-    )[0];
     const styles = {
         flex: {
             display: "flex",
@@ -49,12 +49,12 @@ function ScreenCover({ movie }) {
     return (
         <div
             style={{ ...styles.imageContainer, ...styles.flex }}
-            onClick={handleClick("abcd")}
+            onClick={handleClick()}
         >
             <Image
                 alt="Movie Poster"
                 loader={ImageLoader}
-                src={movie ? movie.backdrop_path : img_src}
+                src={src ? src.backdrop_path : img_src}
                 quality={100}
                 width={733.6}
                 height={412.8}
@@ -63,6 +63,33 @@ function ScreenCover({ movie }) {
         </div>
     );
 }
+const XXX = ({ a, b }) => {
+    const [movieList, addToList, removeFromList, list] = useUpNext();
+    // const [state, setState] = useState(movies||[]);
+
+    return (
+        <>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                }}
+            >
+                <ScreenCover />
+                <CardRow movieIDS={a} />
+                <CardRow movieIDS={b} />
+            </div>
+            <button
+                onClick={() =>
+                    console.log("state: ", movieList, "init state", list)
+                }
+            >
+                view ids
+            </button>
+        </>
+    );
+};
 
 function WatchNow({ props }) {
     const { state } = useContext(MovieContext);
@@ -91,37 +118,10 @@ function WatchNow({ props }) {
         },
         [movies]
     );
-    console.log("rendering");
+
     return (
         <div>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                }}
-            >
-                <ScreenCover
-                    movie={
-                        state.movies.filter(
-                            (e, i) =>
-                                i <= Math.floor(Math.random() * movies.length)
-                        )[0]
-                    }
-                />
-                <CardRow
-                    movieIDS={movieList}
-                    add={addToList}
-                    remove={removeFromList}
-                />
-            </div>
-            <button
-                onClick={() =>
-                    console.log("state: ", movieList, "init state", list)
-                }
-            >
-                view ids
-            </button>
+            <XXX a={movieList} b={list} />
 
             {returnMovieIds(movies).map((el) => (
                 <CardRow

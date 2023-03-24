@@ -39,7 +39,7 @@ const RowTitle = ({ title, movieIDS }) => {
     );
 };
 
-const CardRow = ({ title, bigRow, movieIDS, add, remove }) => {
+const CardRow = ({ title, bigRow, movieIDS }) => {
     const {
         state: { movies },
     } = useContext(MovieContext);
@@ -65,7 +65,6 @@ const CardRow = ({ title, bigRow, movieIDS, add, remove }) => {
                                 release_date={el.release_date}
                                 vote_average={el.vote_average}
                                 original_language={el.original_language}
-                                addButtonOptions={false}
                             />
                         ))}
                     </div>
@@ -83,14 +82,12 @@ const CardRow = ({ title, bigRow, movieIDS, add, remove }) => {
                     <div style={{ display: "flex" }}>
                         {result.map((el) => (
                             <MyCard
-                                id={el.id}
-                                key={el.id}
                                 onClick={() => () => console.log(el.title)}
                                 poster={el.backdrop_path}
                                 sizePercent={0.26}
                                 buttonPosition={{ left: 130 }}
-                                add={add}
-                                remove={remove}
+                                movieID={el.id}
+                                key={el.id}
                             />
                         ))}
                     </div>
