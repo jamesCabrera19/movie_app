@@ -8,19 +8,16 @@ export default () => {
     const removeFromList = (id) => {
         console.log("removeFromList");
     };
+    const addToState = () => setState(initState);
+
     const addToList = (id) => {
         const movie = initState.includes(id);
-        if (movie) {
-            console.log("false");
-            return false;
-        } else {
-            console.log("addToList: ", id);
-            initState.push(id);
-        }
+        setState((prev) => {
+            if (!movie) {
+                [...prev, id];
+            }
+        });
     };
-    useEffect(() => {
-        setState(initState);
-    }, [initState]);
 
     // const handleIt = (id) => {
     //     initState.includes(id) ? deleteId(id) : saveId(id);

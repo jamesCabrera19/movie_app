@@ -5,6 +5,7 @@ import Image from "next/image";
 //
 import { ImageLoader, genres } from "../components/utils";
 import { Context as MovieContext } from "../context/movieContext";
+import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 
 import { MovieOrganizer } from "../components/Helpers";
 import useUpNext from "../hooks/useUpNext";
@@ -63,9 +64,8 @@ function ScreenCover({}) {
         </div>
     );
 }
-const XXX = ({ a, b }) => {
-    const [movieList, addToList, removeFromList, list] = useUpNext();
-    // const [state, setState] = useState(movies||[]);
+const UpNext = ({}) => {
+    const { state } = useContext(LikedMoviesContext);
 
     return (
         <>
@@ -77,16 +77,8 @@ const XXX = ({ a, b }) => {
                 }}
             >
                 <ScreenCover />
-                <CardRow movieIDS={a} />
-                <CardRow movieIDS={b} />
+                <CardRow movieIDS={state.upNext} />
             </div>
-            <button
-                onClick={() =>
-                    console.log("state: ", movieList, "init state", list)
-                }
-            >
-                view ids
-            </button>
         </>
     );
 };
@@ -95,7 +87,6 @@ function WatchNow({ props }) {
     const { state } = useContext(MovieContext);
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
     const movies = movieLibrary.moviesByGenre();
-    const [movieList, addToList, removeFromList, list] = useUpNext();
 
     // [{movie_genre:'Movie Genre: Action',id:'random string',
     // ids:['Array of movies with the same Genre']}]
@@ -121,7 +112,7 @@ function WatchNow({ props }) {
 
     return (
         <div>
-            <XXX a={movieList} b={list} />
+            <UpNext />
 
             {returnMovieIds(movies).map((el) => (
                 <CardRow

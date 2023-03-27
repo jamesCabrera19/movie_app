@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 
 import Modal from "react-bootstrap/Modal";
 import { theme as movieTheme } from "../styles";
@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Text } from "./text";
 import MyCard from "./myCard";
 import useUpNext from "../hooks/useUpNext";
+import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 
 const initMovieProps = {
     poster: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
@@ -19,8 +20,6 @@ const initMovieProps = {
     id: 129182,
 };
 const MyButton = ({ title, onClick }) => {
-    const [state, addToList, removeFromList] = useUpNext();
-
     const theme = movieTheme;
 
     return (
@@ -46,7 +45,11 @@ const MyButton = ({ title, onClick }) => {
 };
 
 const ModalBody = (props) => {
-    const [state, addToList, removeFromList] = useUpNext();
+    const {
+        state: { upNext, myMovies },
+        handleDispatch,
+    } = useContext(LikedMoviesContext); //upNext // myMovies
+
     const theme = movieTheme;
     const date = new Date(props.release_date);
     const handleBackgroundClick = () => (e) =>
@@ -80,22 +83,18 @@ const ModalBody = (props) => {
             title: "Play",
             onClick: (id) => (e) => {
                 console.log("Play Movie: ", props.movieID);
-                removeFromList(props.movieID);
             },
             id: 0,
         },
         {
             title: "Add to Up Next",
-            onClick: () => (e) => {
-                addToList(props.movieID);
-                console.log(props.movieID);
-            },
+            onClick: () => handleDispatch("up_next", props.movieID),
             id: 1,
         },
         {
             title: "Add to My Movies",
             onClick: (id) => (e) => {
-                console.log(state);
+                console.log("state");
             },
             id: 2,
         },
@@ -183,9 +182,18 @@ function TheModal(props) {
         handleShow();
     };
 
+    // * determine where or if the buttons prop has been passed down to Modal.
+    // * when user navigates to My Movies TheModal  should not include the following buttons:
+    // * 'Add to My Movies', this button title should be rename to "remove from My Movies"
+
     return (
         <>
-            <MyCard onClick={openModal} poster={poster} movieID={movieID} />
+            <MyCard
+                onClick={openModal}
+                poster={poster}
+                movieID={movieID}
+                buttons={props.buttons}
+            />
 
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"

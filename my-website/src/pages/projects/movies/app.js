@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 //
-import { Context as MovieContext } from "./context/movieContext";
 import NavigationContext from "./context/navigation";
+import { Provider as LikedMoviesProvider } from "./context/likedMoviesContext";
 //
 import { theme as movieTheme } from "./styles";
 import { NavigationBar } from "./components/navigationBar";
@@ -12,43 +12,42 @@ import MySettings from "./screens/settings";
 import WatchNow from "./screens/watchNow";
 import MyResults from "./screens/results";
 
-function MoviesApp() {
-    const theme = movieTheme;
-    const initState = [
-        {
-            title: "Watch Now",
-            active: true,
-            id: 0,
-            component: <WatchNow />,
-        },
-        {
-            title: "My Movies",
-            active: false,
-            id: 1,
-            component: <MyMovies />,
-        },
-        {
-            title: "TV Shows",
-            active: false,
-            id: 2,
-            component: <TVShows />,
-        },
+const initState = [
+    {
+        title: "Watch Now",
+        active: true,
+        id: 0,
+        component: <WatchNow />,
+    },
+    {
+        title: "My Movies",
+        active: false,
+        id: 1,
+        component: <MyMovies />,
+    },
+    {
+        title: "TV Shows",
+        active: false,
+        id: 2,
+        component: <TVShows />,
+    },
 
-        {
-            title: "Settings",
-            active: false,
-            id: 4,
-            component: <MySettings />,
-        },
-        {
-            title: "Results",
-            active: false,
-            id: 5,
-            component: <MyResults />,
-        },
-    ];
+    {
+        title: "Settings",
+        active: false,
+        id: 4,
+        component: <MySettings />,
+    },
+    {
+        title: "Results",
+        active: false,
+        id: 5,
+        component: <MyResults />,
+    },
+];
+function App() {
     const [navigation, setNavigation] = useState(initState);
-
+    const theme = movieTheme;
     const handleNavigation =
         (location = "", params = {}) =>
         (e) => {
@@ -89,6 +88,14 @@ function MoviesApp() {
                 {navigation.filter((el) => el.active)[0].component}
             </NavigationContext.Provider>
         </div>
+    );
+}
+
+function MoviesApp() {
+    return (
+        <LikedMoviesProvider>
+            <App />
+        </LikedMoviesProvider>
     );
 }
 

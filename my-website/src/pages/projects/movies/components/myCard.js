@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 
 import Image from "next/image";
 import { ImageLoader } from "./utils";
 import { theme as movieTheme } from "../styles";
 import useHover from "../hooks/useHover";
 import useUpNext from "../hooks/useUpNext";
+import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 //
 
 const IMG_SRC = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
@@ -32,9 +33,9 @@ const OverlayButton = ({ title, onClick }) => {
 };
 
 const CardOverlay = ({ options, movieID }) => {
-    const theme = movieTheme;
+    const { handleDispatch } = useContext(LikedMoviesContext);
     const [hoverRef, isHovered] = useHover(3000);
-    const [movieList, addToList, removeFromList, list] = useUpNext();
+    const theme = movieTheme;
 
     const styles = {
         container: {
@@ -71,27 +72,18 @@ const CardOverlay = ({ options, movieID }) => {
         top: options ? -100 : -80,
     };
 
-    // console.log(state);
     const overviewButton = {
         myMovies: {
             title: "add to My Movies",
-            onClick: () => {
-                console.log("My Movies,", movieList);
-            },
+            onClick: () => handleDispatch("my_movies", movieID),
         },
         upNext: {
             title: "add to Up Next",
-            onClick: () => addToList(movieID),
-        },
-        view: {
-            title: "View",
-            onClick: () => {
-                console.log("View");
-            },
+            onClick: () => handleDispatch("up_next", movieID),
         },
         remove: {
             title: "Remove from Up Next",
-            onClick: () => removeFromList(movieID),
+            onClick: () => handleDispatch("del_up_next", movieID),
         },
     };
 
