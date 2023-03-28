@@ -8,7 +8,6 @@ import { Context as MovieContext } from "../context/movieContext";
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 
 import { MovieOrganizer } from "../components/Helpers";
-import useUpNext from "../hooks/useUpNext";
 //
 import { CardRow } from "../components/cardRow";
 

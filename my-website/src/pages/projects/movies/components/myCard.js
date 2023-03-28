@@ -32,10 +32,12 @@ const OverlayButton = ({ title, onClick }) => {
     );
 };
 
-const CardOverlay = ({ options, movieID }) => {
+const CardOverlay = ({ options, movieID, switchButtons }) => {
     const { handleDispatch } = useContext(LikedMoviesContext);
     const [hoverRef, isHovered] = useHover(3000);
     const theme = movieTheme;
+    //
+    const Test = (props) => console.log(movieID);
 
     const styles = {
         container: {
@@ -67,24 +69,54 @@ const CardOverlay = ({ options, movieID }) => {
             overflow: "hidden",
         },
     };
-    const addedOptions = {
-        right: options ? -100 : -150,
-        top: options ? -100 : -80,
+
+    const buttonSwitch = {
+        title: switchButtons ? "remove from My Movies" : "add to My Movies",
+        dispatch: switchButtons ? "del_my_movies" : "my_movies",
     };
 
     const overviewButton = {
         myMovies: {
-            title: "add to My Movies",
-            onClick: () => handleDispatch("my_movies", movieID),
+            title: buttonSwitch.title,
+            onClick: (props) => handleDispatch(buttonSwitch.dispatch, movieID),
         },
         upNext: {
             title: "add to Up Next",
-            onClick: () => handleDispatch("up_next", movieID),
+            onClick: (props) => handleDispatch("up_next", movieID),
         },
         remove: {
             title: "Remove from Up Next",
-            onClick: () => handleDispatch("del_up_next", movieID),
+            onClick: (props) => handleDispatch("del_up_next", movieID),
         },
+    };
+    const SingleButton = () => {
+        return (
+            <div
+                style={{
+                    ...styles.overlay,
+                    backgroundColor: theme.buttonColor,
+                    justifyContent: "center",
+                    height: 60,
+                }}
+            >
+                <OverlayButton {...overviewButton.remove} />
+            </div>
+        );
+    };
+    const DoubleButton = () => {
+        return (
+            <div style={styles.overlay}>
+                <>
+                    <OverlayButton {...overviewButton.upNext} />
+                    <div
+                        style={{
+                            borderTop: `1px solid ${theme.backgroundColor}`,
+                        }}
+                    />
+                    <OverlayButton {...overviewButton.myMovies} />
+                </>
+            </div>
+        );
     };
 
     return (
@@ -98,40 +130,28 @@ const CardOverlay = ({ options, movieID }) => {
                 <div
                     style={{
                         position: "relative",
-                        ...addedOptions,
+                        right: options ? -100 : -150,
+                        top: options ? -100 : -80,
                     }}
                 >
-                    {options ? (
-                        <div
-                            style={{
-                                ...styles.overlay,
-                                backgroundColor: theme.buttonColor,
-                                justifyContent: "center",
-                                height: 60,
-                            }}
-                        >
-                            <OverlayButton {...overviewButton.remove} />
-                        </div>
-                    ) : (
-                        <div style={styles.overlay}>
-                            <>
-                                <OverlayButton {...overviewButton.upNext} />
-                                <div
-                                    style={{
-                                        borderTop: `1px solid ${theme.backgroundColor}`,
-                                    }}
-                                />
-                                <OverlayButton {...overviewButton.myMovies} />
-                            </>
-                        </div>
-                    )}
+                    {options ? <SingleButton /> : <DoubleButton />}
                 </div>
             ) : null}
         </>
     );
 };
 
-const MyCard = ({ onClick, poster, sizePercent, buttonPosition, movieID }) => {
+const MyCard = (props) => {
+    const {
+        onClick,
+        poster,
+        sizePercent,
+        buttonPosition,
+        movieID,
+        switchButtons,
+    } = props;
+    //
+    //
     const options = {
         height: sizePercent ? 130 * -sizePercent + 130 : 130,
         width: sizePercent ? 230 * -sizePercent + 230 : 230,
@@ -159,7 +179,11 @@ const MyCard = ({ onClick, poster, sizePercent, buttonPosition, movieID }) => {
                     }}
                 />
             </div>
-            <CardOverlay options={options.button} movieID={movieID} />
+            <CardOverlay
+                switchButtons={switchButtons}
+                options={options.button}
+                movieID={movieID}
+            />
         </div>
     );
 };

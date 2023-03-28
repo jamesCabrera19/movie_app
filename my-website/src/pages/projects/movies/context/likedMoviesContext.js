@@ -50,8 +50,8 @@ const likedMoviesReducer = (state, action) => {
     }
 };
 function handleDispatch(dispatch) {
-    return (location = "", movie = Number) => {
-        console.log("dispatch: ", location);
+    return (location = "", movie) => {
+        console.log("dispatch: ", location, "movie id: ", movie);
         dispatch({ type: location, payload: movie });
     };
 }

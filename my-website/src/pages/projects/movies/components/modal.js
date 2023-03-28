@@ -1,13 +1,19 @@
 import React, { useState, useContext } from "react";
-
-import Modal from "react-bootstrap/Modal";
-import { theme as movieTheme } from "../styles";
-import { ImageLoader } from "./utils";
+// NEXT JS
 import Image from "next/image";
+// BOOTSTRAP
+import Modal from "react-bootstrap/Modal";
+// OTHER
+import { ImageLoader } from "./utils";
+// COMPONENTS
 import { Text } from "./text";
 import MyCard from "./myCard";
-import useUpNext from "../hooks/useUpNext";
+// CONTEXT
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
+// THEME
+import { theme as movieTheme } from "../styles";
+//
+//
 
 const initMovieProps = {
     poster: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
@@ -19,134 +25,152 @@ const initMovieProps = {
     original_language: "EN",
     id: 129182,
 };
-const MyButton = ({ title, onClick }) => {
+const MyButton = ({ title, onClick, disable }) => {
     const theme = movieTheme;
+    //
 
     return (
-        <div
+        <button
             onClick={onClick()}
             style={{
-                padding: "6px 20px 0 20px",
+                height: 50,
                 width: 200,
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                cursor: "pointer",
+
+                cursor: disable ? "" : "pointer",
                 backgroundColor: theme.panelBackgroundColor,
                 borderRadius: 10,
-                // marginRight: 20,
+                border: "0px solid red",
             }}
+            disabled={disable}
         >
-            <Text variant="headlineExtraSmall" color={"white"}>
+            <Text
+                variant="headlineExtraSmall"
+                color={disable ? "grey" : "white"}
+            >
                 {title}
             </Text>
+        </button>
+    );
+};
+const ModalBodyText = ({ title, overview, vote, language, date }) => {
+    const theme = movieTheme;
+    return (
+        <div
+            style={{
+                display: "flex",
+                paddingRight: 20,
+                paddingLeft: 20,
+                position: "relative",
+                backgroundColor: theme.themeColorToRGBA(
+                    0.3,
+                    theme.backgroundColor
+                ),
+                borderRadius: 10,
+            }}
+        >
+            <div>
+                <Text variant="headlineExtraSmall" color={"white"}>
+                    {title}
+                </Text>
+                <Text color={"white"}>{overview}</Text>
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "flex-start",
+                    }}
+                >
+                    <Text variant="headlineExtraSmall" color={"white"}>
+                        {date}
+                    </Text>
+                    <div
+                        style={{
+                            margin: "0 20px",
+                        }}
+                    >
+                        <Text variant="headlineExtraSmall" color={"white"}>
+                            {vote}
+                        </Text>
+                    </div>
+
+                    <Text variant="headlineExtraSmall" color={"white"}>
+                        {language}
+                    </Text>
+                </div>
+            </div>
         </div>
     );
 };
-
+const ModalImage = ({ src, onClick }) => {
+    return (
+        <div
+            style={{
+                borderRadius: 10,
+                marginBottom: 20,
+                display: "flex",
+                justifyContent: "center",
+            }}
+            onClick={onClick()}
+        >
+            <Image
+                alt="Movie Poster"
+                loader={ImageLoader}
+                src={src}
+                width={733}
+                height={412}
+                style={{ borderRadius: 10 }}
+            />
+        </div>
+    );
+};
 const ModalBody = (props) => {
     const {
-        state: { upNext, myMovies },
         handleDispatch,
+        state: { upNext, myMovies },
     } = useContext(LikedMoviesContext); //upNext // myMovies
-
-    const theme = movieTheme;
-    const date = new Date(props.release_date);
+    //
+    const date = new Date(props.release_date).toDateString();
+    //
     const handleBackgroundClick = () => (e) =>
         console.log("Open Video: ", props);
+    //
+    const Test = (props) => console.log(props.movieID);
 
-    const styles = {
-        body: {
-            padding: 0,
-            margin: 0,
-
-            width: 733,
-            // height: 412,
-        },
-        imageContainer: {
-            borderRadius: 10,
-            marginBottom: 20,
-            display: "flex",
-            justifyContent: "center",
-        },
-        textContainer: {
-            display: "flex",
-            marginTop: -412 / 2,
-            paddingRight: 20,
-            paddingLeft: 20,
-            position: "relative",
-            backgroundColor: theme.themeColorToRGBA(0.6, theme.backgroundColor),
-        },
-    };
     const buttonData = [
         {
             title: "Play",
-            onClick: (id) => (e) => {
-                console.log("Play Movie: ", props.movieID);
-            },
-            id: 0,
+            onClick: (args) => (e) => Test(props),
         },
         {
             title: "Add to Up Next",
-            onClick: () => handleDispatch("up_next", props.movieID),
-            id: 1,
+            onClick: (args) => (e) => handleDispatch("up_next", props.movieID),
+            disable: upNext.includes(props.movieID),
         },
         {
             title: "Add to My Movies",
-            onClick: (id) => (e) => {
-                console.log("state");
-            },
-            id: 2,
+            onClick: (args) => (e) =>
+                handleDispatch("my_movies", props.movieID),
+            disable: myMovies.includes(props.movieID),
         },
     ];
     return (
         <>
-            <Modal.Body style={styles.body}>
-                <div
-                    style={styles.imageContainer}
-                    onClick={handleBackgroundClick()}
-                >
-                    <Image
-                        alt="Movie Poster"
-                        loader={ImageLoader}
-                        src={props.poster}
-                        width={733}
-                        height={412}
-                        style={{ borderRadius: 10 }}
-                    />
-                </div>
-                <div style={styles.textContainer}>
-                    <div>
-                        <Text variant="headlineExtraSmall" color={"white"}>
-                            {props.title}
-                        </Text>
-                        <Text color={"white"}>{props.overview}</Text>
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "flex-start",
-                            }}
-                        >
-                            <Text color={"white"}>{date.toDateString()}</Text>
-                            <div
-                                style={{
-                                    margin: "0 20px",
-                                }}
-                            >
-                                <Text
-                                    variant="headlineExtraSmall"
-                                    color={"white"}
-                                >
-                                    {props.vote_average}
-                                </Text>
-                            </div>
+            <Modal.Body style={{ padding: 0, margin: 0, width: 733 }}>
+                <ModalImage
+                    onClick={handleBackgroundClick}
+                    src={props.poster}
+                />
 
-                            <Text variant="headlineExtraSmall" color={"white"}>
-                                {props.original_language}
-                            </Text>
-                        </div>
-                    </div>
-                </div>
+                <ModalBodyText
+                    title={props.title}
+                    overview={props.overview}
+                    date={date}
+                    vote={props.vote_average}
+                    language={props.original_language}
+                />
+
                 <div
                     style={{
                         display: "flex",
@@ -155,11 +179,12 @@ const ModalBody = (props) => {
                         marginTop: 20,
                     }}
                 >
-                    {buttonData.map((el) => (
+                    {buttonData.map((el, idx) => (
                         <MyButton
-                            title={el.title}
-                            key={el.id}
                             onClick={el.onClick}
+                            title={el.title}
+                            key={idx}
+                            disable={el.disable}
                         />
                     ))}
                 </div>
@@ -189,10 +214,10 @@ function TheModal(props) {
     return (
         <>
             <MyCard
-                onClick={openModal}
                 poster={poster}
                 movieID={movieID}
-                buttons={props.buttons}
+                onClick={openModal}
+                switchButtons={props.switchButtons}
             />
 
             <Modal
