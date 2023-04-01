@@ -65,7 +65,6 @@ function ScreenCover({}) {
 }
 const UpNext = ({}) => {
     const { state } = useContext(LikedMoviesContext);
-
     return (
         <>
             <div
@@ -91,11 +90,12 @@ function WatchNow({ props }) {
     // ids:['Array of movies with the same Genre']}]
     const returnMovieIds = useCallback(
         // returns array of objects
-        (obj = {}) => {
+        (obj = {}, numberOfMovies) => {
+            const rowLength = numberOfMovies || 3;
             const objs = [];
             for (const [key, value] of Object.entries(obj)) {
                 if (value.length > 0 && !Array.isArray(key)) {
-                    if (value.length > 3) {
+                    if (value.length > rowLength) {
                         objs.push({
                             id: uuidv4(),
                             header_text: key,
@@ -106,14 +106,14 @@ function WatchNow({ props }) {
             }
             return objs;
         },
-        [movies]
+        [state.movies]
     );
 
     return (
         <div>
             <UpNext />
 
-            {returnMovieIds(movies).map((el) => (
+            {returnMovieIds(movies, 3).map((el) => (
                 <CardRow
                     key={el.id}
                     title={el.header_text}

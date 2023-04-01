@@ -25,8 +25,7 @@ const Content = () => {
             style={{
                 display: "flex",
                 flexWrap: "wrap",
-                justifyContent: "space-between",
-                height: "100vh",
+                justifyContent: "space-evenly",
             }}
         >
             {res().map((el) => (
@@ -50,7 +49,9 @@ const Content = () => {
 function MyMovies({}) {
     const theme = movieTheme;
     return (
-        <div style={{ backgroundColor: theme.backgroundColor }}>
+        <div
+            style={{ backgroundColor: theme.backgroundColor, height: "100vh" }}
+        >
             <Content />
         </div>
     );

@@ -38,7 +38,6 @@ const MyButton = ({ title, onClick, disable }) => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-
                 cursor: disable ? "" : "pointer",
                 backgroundColor: theme.panelBackgroundColor,
                 borderRadius: 10,
