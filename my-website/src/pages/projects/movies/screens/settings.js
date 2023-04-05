@@ -9,146 +9,128 @@ import MyCard from "../components/myCard";
 // import { NavigationBar } from "../components/navigationBar";
 import { Text } from "../components/text";
 import NavigationContext from "../context/navigation";
+import { NavigationBar } from "../components/navigationBar";
+
+const ActionButton = ({ children }) => {
+    const theme = movieTheme;
+
+    return (
+        <div
+            style={{
+                backgroundColor: theme.panelBackgroundColor,
+                borderRadius: 10,
+                height: 50,
+                display: "flex",
+                flexDirection: "row",
+            }}
+        >
+            {children}
+        </div>
+    );
+};
 
 const General = () => {
-    const { handleNavigation } = useContext(NavigationContext);
+    const { screenNavigator } = useContext(NavigationContext);
+    const theme = movieTheme;
+    console.log(theme);
     return (
-        <div>
-            <Text>Sync MyMovie Library</Text>
-            <Text>Display all available categories</Text>
-            <Text>Hide categories that contain less than one movie</Text>
-            <button
-                onClick={handleNavigation("Account", { bitch: "bitching" })}
+        <div style={{ marginLeft: 65, marginRight: 65 }}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    height: 100,
+                }}
             >
-                callback
-            </button>
+                <ActionButton
+                    title="Sync movies to device"
+                    placement="top"
+                    icon=""
+                >
+                    <Text>Sync movies to device</Text>
+                </ActionButton>
+
+                <ActionButton
+                    title="Sync movies to device"
+                    placement="top"
+                    icon=""
+                >
+                    <Text>Display all available categories</Text>
+                </ActionButton>
+                <ActionButton
+                    title="Sync movies to device"
+                    placement="top"
+                    icon=""
+                >
+                    <Text>Hide categories that contain less than 5 movies</Text>
+                </ActionButton>
+            </div>
         </div>
     );
 };
 const Account = () => {
-    const { handleNavigation, params } = useContext(NavigationContext);
+    const { screenNavigator, params } = useContext(NavigationContext);
     console.log(params);
+    const Details = ({ title, subtitle }) => (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "row",
+            }}
+        >
+            <Text>{title}: </Text>
+            <Text>{subtitle}</Text>
+        </div>
+    );
     return (
-        <div>
-            <Text>Account</Text>
-            <Text>Account</Text>
-            <Text>Account</Text>
+        <div style={{ marginLeft: 65 }}>
+            <Details title={"Account"} subtitle={"email@email.com"} />
+            <Details title={"Chage Email"} subtitle={"new email"} />
+
+            <Details title={"Password"} subtitle={"******"} />
+            <Details title={"Credits Remaining"} subtitle={30} />
         </div>
     );
 };
 const Playback = () => {
     return (
-        <div>
+        <div
+            style={{
+                height: "80%",
+                width: "90%",
+                border: "1px solid red",
+                display: "flex",
+                margin: "auto",
+            }}
+        >
             <Text>Playback</Text>
             <Text>Playback</Text>
             <Text>Playback</Text>
         </div>
     );
 };
-const initState = [
+const screens = [
     {
+        component: <General />,
         title: "General",
         active: true,
         id: 0,
-        component: <General />,
     },
     {
+        component: <Account />,
         title: "Account",
         active: false,
         id: 1,
-        component: <Account />,
     },
     {
+        component: <Playback />,
         title: "Playback",
         active: false,
         id: 2,
-        component: <Playback />,
     },
 ];
-const NavigationButton = ({ styles, title, onClick }) => {
-    return (
-        <div
-            style={{
-                padding: "10px 20px",
-                width: 200,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                ...styles,
-            }}
-            onClick={onClick(title)}
-        >
-            <Text variant="headlineExtraSmall" color={styles.fontColor}>
-                {title}
-            </Text>
-        </div>
-    );
-};
-function NavigationBar({ components, omit }) {
-    const [state, setState] = useState(components);
-    const theme = movieTheme;
-    //
-    const handleNavigation =
-        (location = "", params = {}) =>
-        (e) => {
-            setState((prev) => {
-                const match = prev.find((el) => el.title === location);
-                const el = prev.filter((el) => el.title !== location);
-                el.map((el) => (el.active = false));
-                match.active = true;
-                //
-                const x = { ...match, params: params ? params : null };
-                const res = [x, ...el].sort((a, b) => a.id - b.id);
-
-                return res;
-            });
-        };
-
-    return (
-        <>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-                <div
-                    style={{
-                        display: "flex",
-                        border: `1px solid ${theme.panelBackgroundColor}`,
-                        borderRadius: 10,
-                        marginTop: 65,
-                        marginBottom: 65,
-                        overflow: "hidden",
-                    }}
-                >
-                    {state.map((el) => {
-                        if (el.title === omit) {
-                            return null;
-                        }
-                        return (
-                            <NavigationButton
-                                key={el.id}
-                                styles={{
-                                    backgroundColor: el.active
-                                        ? theme.panelBackgroundColor
-                                        : theme.backgroundColor,
-                                    fontColor: theme.fontColor,
-                                }}
-                                title={el.title}
-                                onClick={handleNavigation}
-                            />
-                        );
-                    })}
-                </div>
-            </div>
-            <NavigationContext.Provider
-                value={{
-                    handleNavigation,
-                    params: state.filter((el) => el.active)[0].params,
-                }}
-            >
-                {state.filter((el) => el.active)[0].component}
-            </NavigationContext.Provider>
-        </>
-    );
-}
 
 function MySettings() {
     const settings = {
@@ -166,18 +148,19 @@ function MySettings() {
             password: "string",
         },
     };
+
     return (
         <div style={{ height: "100vh" }}>
             <div
                 style={{
                     height: 600,
                     width: 700,
-                    border: "1px solid red",
                     margin: "auto",
                     borderRadius: 10,
+                    border: "1px solid red",
                 }}
             >
-                <NavigationBar omit="" components={initState} />
+                <NavigationBar omit="" components={screens} />
             </div>
         </div>
     );

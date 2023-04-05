@@ -11,7 +11,7 @@ import MyCard from "./myCard";
 
 const RowTitle = ({ title, movieIDS }) => {
     const theme = movieTheme;
-    const { handleNavigation } = useContext(NavigationContext);
+    const { screenNavigator } = useContext(NavigationContext);
 
     return (
         <div
@@ -27,7 +27,7 @@ const RowTitle = ({ title, movieIDS }) => {
                 {title}
             </Text>
             <div
-                onClick={handleNavigation("Results", {
+                onClick={screenNavigator("Results", {
                     ids: movieIDS,
                     genre: title,
                 })}
@@ -117,6 +117,7 @@ const styles = {
         overflowX: "scroll",
         height: 200,
         overflowY: "hidden",
+        scrollbarWidth: "none",
     },
     smallRowContainer: {
         display: "flex",
