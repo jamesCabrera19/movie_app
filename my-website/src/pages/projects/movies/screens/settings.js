@@ -10,21 +10,73 @@ import MyCard from "../components/myCard";
 import { Text } from "../components/text";
 import NavigationContext from "../context/navigation";
 import { NavigationBar } from "../components/navigationBar";
+import { IoIosNotificationsOutline, IoMdArrowBack } from "react-icons/io";
+import { MdKeyboardArrowRight, MdOutlineCheck } from "react-icons/md";
+import { BsGearWideConnected } from "react-icons/bs";
+import { AiOutlineUser } from "react-icons/ai";
 
-const ActionButton = ({ children }) => {
+const ActionButton = ({ children, onClick }) => {
     const theme = movieTheme;
 
     return (
         <div
+            onClick={onClick ? onClick() : () => {}}
             style={{
-                backgroundColor: theme.panelBackgroundColor,
-                borderRadius: 10,
-                height: 50,
                 display: "flex",
-                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+                height: 50,
+                backgroundColor: theme.panelBackgroundColor,
+                cursor: "pointer",
             }}
         >
-            {children}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    width: "100%",
+                    height: 50,
+                    borderBottom: `1px solid ${theme.backgroundColor}`,
+                }}
+            >
+                <div
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        height: 50,
+                    }}
+                >
+                    {children}
+                </div>
+                <MdKeyboardArrowRight color={theme.fontColor} size={30} />
+            </div>
+        </div>
+    );
+};
+const MarginText = ({ text }) => {
+    const theme = movieTheme;
+    return (
+        <div
+            style={{
+                margin: "15px 10px 0 10px",
+            }}
+        >
+            <Text color={theme.fontColor}>{text}</Text>
+        </div>
+    );
+};
+const GoBackButton = ({}) => {
+    const { screenNavigator } = useContext(NavigationContext);
+    const theme = movieTheme;
+
+    return (
+        <div
+            onClick={screenNavigator("General")}
+            style={{ position: "absolute", marginTop: -120, cursor: "pointer" }}
+        >
+            <IoMdArrowBack color={theme.fontColor} size={40} />
         </div>
     );
 };
@@ -32,47 +84,58 @@ const ActionButton = ({ children }) => {
 const General = () => {
     const { screenNavigator } = useContext(NavigationContext);
     const theme = movieTheme;
-    console.log(theme);
+
     return (
-        <div style={{ marginLeft: 65, marginRight: 65 }}>
+        <div style={{}}>
             <div
                 style={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
                     justifyContent: "space-between",
-                    height: 100,
+                    // margin: "0 10px",
                 }}
             >
-                <ActionButton
-                    title="Sync movies to device"
-                    placement="top"
-                    icon=""
-                >
-                    <Text>Sync movies to device</Text>
+                <ActionButton>
+                    <IoIosNotificationsOutline
+                        color={theme.fontColor}
+                        size={25}
+                        style={{ marginLeft: 10 }}
+                    />
+                    <MarginText text="Notifications" />
                 </ActionButton>
 
-                <ActionButton
-                    title="Sync movies to device"
-                    placement="top"
-                    icon=""
-                >
-                    <Text>Display all available categories</Text>
+                <ActionButton onClick={() => screenNavigator("MyList")}>
+                    <MdOutlineCheck
+                        color={theme.fontColor}
+                        size={25}
+                        style={{ marginLeft: 10 }}
+                    />
+                    <MarginText text="My List" />
                 </ActionButton>
-                <ActionButton
-                    title="Sync movies to device"
-                    placement="top"
-                    icon=""
-                >
-                    <Text>Hide categories that contain less than 5 movies</Text>
+                <ActionButton>
+                    <BsGearWideConnected
+                        color={theme.fontColor}
+                        size={25}
+                        style={{ marginLeft: 10 }}
+                    />
+                    <MarginText text="App Settings" />
+                </ActionButton>
+                <ActionButton>
+                    <AiOutlineUser
+                        color={theme.fontColor}
+                        size={25}
+                        style={{ marginLeft: 10 }}
+                    />
+                    <MarginText text="Account" />
                 </ActionButton>
             </div>
         </div>
     );
 };
 const Account = () => {
-    const { screenNavigator, params } = useContext(NavigationContext);
-    console.log(params);
+    const { screenNavigator } = useContext(NavigationContext);
+
     const Details = ({ title, subtitle }) => (
         <div
             style={{
@@ -85,33 +148,33 @@ const Account = () => {
         </div>
     );
     return (
-        <div style={{ marginLeft: 65 }}>
-            <Details title={"Account"} subtitle={"email@email.com"} />
-            <Details title={"Chage Email"} subtitle={"new email"} />
-
-            <Details title={"Password"} subtitle={"******"} />
-            <Details title={"Credits Remaining"} subtitle={30} />
-        </div>
+        <>
+            <GoBackButton />
+            <div style={{ marginTop: -50 }}>
+                <Details title={"Account"} subtitle={"email@email.com"} />
+                <Details title={"Chage Email"} subtitle={"new email"} />
+                <Details title={"Password"} subtitle={"******"} />
+                <Details title={"Credits Remaining"} subtitle={30} />
+            </div>
+        </>
     );
 };
-const Playback = () => {
+const MyList = () => {
+    const { screenNavigator } = useContext(NavigationContext);
     return (
-        <div
-            style={{
-                height: "80%",
-                width: "90%",
-                border: "1px solid red",
-                display: "flex",
-                margin: "auto",
-            }}
-        >
-            <Text>Playback</Text>
-            <Text>Playback</Text>
-            <Text>Playback</Text>
-        </div>
+        <>
+            <GoBackButton />
+            <div style={{ marginTop: -50 }}>
+                <MyCard />
+            </div>
+        </>
     );
 };
-const screens = [
+const AppSettings = () => {
+    return <Text>This is the app settings</Text>;
+};
+
+const SCREENS = [
     {
         component: <General />,
         title: "General",
@@ -125,42 +188,31 @@ const screens = [
         id: 1,
     },
     {
-        component: <Playback />,
-        title: "Playback",
+        component: <MyList />,
+        title: "MyList",
         active: false,
         id: 2,
     },
+    {
+        component: <AppSettings />,
+        title: "AppSettings",
+        active: false,
+        id: 3,
+    },
 ];
-
 function MySettings() {
-    const settings = {
-        settings: {
-            videoSource: ["youtube", "video"],
-            sync: "allow database fetching",
-            videoQuality: ["1080p", "720p", "420p"],
-            categories: "allow all categories",
-            hideCategories: "hide categories that contain less than 5 items",
-        },
-        account: {
-            credits: Number,
-            devices: ["iOS", "web"],
-            email: "string",
-            password: "string",
-        },
-    };
-
     return (
         <div style={{ height: "100vh" }}>
             <div
                 style={{
-                    height: 600,
+                    height: 500,
                     width: 700,
                     margin: "auto",
                     borderRadius: 10,
                     border: "1px solid red",
                 }}
             >
-                <NavigationBar omit="" components={screens} />
+                <NavigationBar omit="all" components={SCREENS} />
             </div>
         </div>
     );

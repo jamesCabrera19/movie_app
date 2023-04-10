@@ -28,6 +28,7 @@ function NavigationBar({ components, omit }) {
     const [state, setState] = useState(components);
     const theme = movieTheme;
     //
+
     const screenNavigator =
         (screen = "", params = {}) =>
         (e) => {
@@ -58,7 +59,7 @@ function NavigationBar({ components, omit }) {
                     }}
                 >
                     {state.map((el) => {
-                        if (el.title === omit) {
+                        if (el.title === omit || omit === "all") {
                             return null;
                         }
                         return (
