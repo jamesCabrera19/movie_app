@@ -1,23 +1,33 @@
 import { useRef, useCallback, useEffect, useState, useContext } from "react";
+//
 import Image from "next/image";
-const { v4: uuidv4 } = require("uuid");
-
-import useHover from "../hooks/useHover";
-import { theme as movieTheme } from "../styles";
 import { ImageLoader } from "../components/utils";
-import MyCard from "../components/myCard";
-// import { NavigationBar } from "../components/navigationBar";
-import { Text } from "../components/text";
+// context
 import NavigationContext from "../context/navigation";
+import { Context as MovieContext } from "../context/movieContext";
+
+// hooks
+import useHover from "../hooks/useHover";
+// components
 import { NavigationBar } from "../components/navigationBar";
+import MyCard from "../components/myCard";
+import { Text } from "../components/text";
+// styles
+import { theme as movieTheme } from "../styles";
+import _styles from "./test.module.css";
+// icons
 import { IoIosNotificationsOutline, IoMdArrowBack } from "react-icons/io";
 import { MdKeyboardArrowRight, MdOutlineCheck } from "react-icons/md";
 import { BsGearWideConnected } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
+// other
+const { v4: uuidv4 } = require("uuid");
+//
+//
+//
 
 const ActionButton = ({ children, onClick }) => {
     const theme = movieTheme;
-
     return (
         <div
             onClick={onClick ? onClick() : () => {}}
@@ -80,20 +90,84 @@ const GoBackButton = ({}) => {
         </div>
     );
 };
+const SpinningRow = () => {
+    const {
+        state: { movies },
+    } = useContext(MovieContext);
+    const [state, setState] = useState(0);
+
+    return (
+        <>
+            <div className={_styles.container}>
+                <div className={_styles.parent}>
+                    {movies.map((el) => {
+                        return (
+                            <Image
+                                key={el.id}
+                                alt="Movie Poster"
+                                loader={ImageLoader}
+                                src={el.poster_path}
+                                height={100}
+                                width={70}
+                                style={{
+                                    borderRadius: 10,
+                                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
+                                    margin: "0 5px",
+                                }}
+                            />
+                        );
+                    })}
+                </div>
+                <div className={_styles.parent}>
+                    {movies.map((el) => {
+                        return (
+                            <Image
+                                key={el.id}
+                                alt="Movie Poster"
+                                loader={ImageLoader}
+                                src={el.poster_path}
+                                height={100}
+                                width={70}
+                                style={{
+                                    borderRadius: 10,
+                                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
+                                    margin: "0 5px",
+                                }}
+                            />
+                        );
+                    })}
+                </div>
+            </div>
+        </>
+    );
+};
 
 const General = () => {
     const { screenNavigator } = useContext(NavigationContext);
     const theme = movieTheme;
+    const signOut = () => (e) => {
+        console.log("Sign out Function");
+    };
 
     return (
-        <div style={{}}>
+        <>
+            <div
+                style={{
+                    // border: "1px solid red",
+                    marginTop: -100,
+                    marginBottom: 50,
+                }}
+            >
+                <SpinningRow />
+            </div>
             <div
                 style={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
                     justifyContent: "space-between",
-                    // margin: "0 10px",
+                    borderRadius: 10,
+                    overflow: "hidden",
                 }}
             >
                 <ActionButton>
@@ -130,7 +204,20 @@ const General = () => {
                     <MarginText text="Account" />
                 </ActionButton>
             </div>
-        </div>
+            <div
+                onClick={signOut()}
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    marginTop: 50,
+                    cursor: "pointer",
+                }}
+            >
+                <Text variant="headlineExtraSmall">Sign Out</Text>
+                <Text>last updated 04/11/2023</Text>
+            </div>
+        </>
     );
 };
 const Account = () => {
@@ -201,15 +288,16 @@ const SCREENS = [
     },
 ];
 function MySettings() {
+    const theme = movieTheme;
     return (
         <div style={{ height: "100vh" }}>
             <div
                 style={{
-                    height: 500,
+                    // height: 500,
                     width: 700,
                     margin: "auto",
                     borderRadius: 10,
-                    border: "1px solid red",
+                    border: `1px solid ${theme.panelBackgroundColor}`,
                 }}
             >
                 <NavigationBar omit="all" components={SCREENS} />
