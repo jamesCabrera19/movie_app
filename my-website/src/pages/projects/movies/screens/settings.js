@@ -24,10 +24,48 @@ import { AiOutlineUser } from "react-icons/ai";
 const { v4: uuidv4 } = require("uuid");
 //
 //
-//
+// components to import
+const SpinningRow = () => {
+    const NUMBER_OF_IMAGES = 18;
+    const {
+        state: { movies },
+    } = useContext(MovieContext);
 
+    const images = movies
+        .filter((el, idx) => idx <= NUMBER_OF_IMAGES)
+        .map((el) => (
+            <div className={_styles.slide} key={el.id}>
+                <Image
+                    alt="Movie Poster"
+                    loader={ImageLoader}
+                    src={el.poster_path}
+                    height={100}
+                    width={70}
+                    style={{
+                        borderRadius: 10,
+                        boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
+                        margin: "0 5px",
+                    }}
+                />
+            </div>
+        ));
+
+    return (
+        <>
+            <div className={_styles.slider}>
+                <div className={_styles.slideTrack}>
+                    {images}
+                    {images}
+                </div>
+            </div>
+        </>
+    );
+};
+
+//
 const ActionButton = ({ children, onClick }) => {
     const theme = movieTheme;
+
     return (
         <div
             onClick={onClick ? onClick() : () => {}}
@@ -39,6 +77,7 @@ const ActionButton = ({ children, onClick }) => {
                 height: 50,
                 backgroundColor: theme.panelBackgroundColor,
                 cursor: "pointer",
+                // border: "1px solid red",
             }}
         >
             <div
@@ -51,16 +90,7 @@ const ActionButton = ({ children, onClick }) => {
                     borderBottom: `1px solid ${theme.backgroundColor}`,
                 }}
             >
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        height: 50,
-                    }}
-                >
-                    {children}
-                </div>
-                <MdKeyboardArrowRight color={theme.fontColor} size={30} />
+                {children}
             </div>
         </div>
     );
@@ -90,57 +120,6 @@ const GoBackButton = ({}) => {
         </div>
     );
 };
-const SpinningRow = () => {
-    const {
-        state: { movies },
-    } = useContext(MovieContext);
-    const [state, setState] = useState(0);
-
-    return (
-        <>
-            <div className={_styles.container}>
-                <div className={_styles.parent}>
-                    {movies.map((el) => {
-                        return (
-                            <Image
-                                key={el.id}
-                                alt="Movie Poster"
-                                loader={ImageLoader}
-                                src={el.poster_path}
-                                height={100}
-                                width={70}
-                                style={{
-                                    borderRadius: 10,
-                                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
-                                    margin: "0 5px",
-                                }}
-                            />
-                        );
-                    })}
-                </div>
-                <div className={_styles.parent}>
-                    {movies.map((el) => {
-                        return (
-                            <Image
-                                key={el.id}
-                                alt="Movie Poster"
-                                loader={ImageLoader}
-                                src={el.poster_path}
-                                height={100}
-                                width={70}
-                                style={{
-                                    borderRadius: 10,
-                                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
-                                    margin: "0 5px",
-                                }}
-                            />
-                        );
-                    })}
-                </div>
-            </div>
-        </>
-    );
-};
 
 const General = () => {
     const { screenNavigator } = useContext(NavigationContext);
@@ -149,11 +128,17 @@ const General = () => {
         console.log("Sign out Function");
     };
 
+    const actionButtons = [
+        {
+            title: "",
+            icon: "",
+        },
+    ];
+
     return (
         <>
             <div
                 style={{
-                    // border: "1px solid red",
                     marginTop: -100,
                     marginBottom: 50,
                 }}
@@ -171,37 +156,75 @@ const General = () => {
                 }}
             >
                 <ActionButton>
-                    <IoIosNotificationsOutline
-                        color={theme.fontColor}
-                        size={25}
-                        style={{ marginLeft: 10 }}
-                    />
-                    <MarginText text="Notifications" />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: 50,
+                        }}
+                    >
+                        <IoIosNotificationsOutline
+                            color={theme.fontColor}
+                            size={25}
+                            style={{ marginLeft: 10 }}
+                        />
+                        <MarginText text="Notifications" />
+                    </div>
+                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
                 </ActionButton>
 
                 <ActionButton onClick={() => screenNavigator("MyList")}>
-                    <MdOutlineCheck
-                        color={theme.fontColor}
-                        size={25}
-                        style={{ marginLeft: 10 }}
-                    />
-                    <MarginText text="My List" />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: 50,
+                        }}
+                    >
+                        <MdOutlineCheck
+                            color={theme.fontColor}
+                            size={25}
+                            style={{ marginLeft: 10 }}
+                        />
+
+                        <MarginText text="My List" />
+                    </div>
+                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
+                </ActionButton>
+
+                <ActionButton>
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: 50,
+                        }}
+                    >
+                        <BsGearWideConnected
+                            color={theme.fontColor}
+                            size={25}
+                            style={{ marginLeft: 10 }}
+                        />
+                        <MarginText text="App Settings" />
+                    </div>
+                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
                 </ActionButton>
                 <ActionButton>
-                    <BsGearWideConnected
-                        color={theme.fontColor}
-                        size={25}
-                        style={{ marginLeft: 10 }}
-                    />
-                    <MarginText text="App Settings" />
-                </ActionButton>
-                <ActionButton>
-                    <AiOutlineUser
-                        color={theme.fontColor}
-                        size={25}
-                        style={{ marginLeft: 10 }}
-                    />
-                    <MarginText text="Account" />
+                    <div
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: 50,
+                        }}
+                    >
+                        <AiOutlineUser
+                            color={theme.fontColor}
+                            size={25}
+                            style={{ marginLeft: 10 }}
+                        />
+                        <MarginText text="Account" />
+                    </div>
+                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
                 </ActionButton>
             </div>
             <div

@@ -1,24 +1,30 @@
-.container {
+.slider {
+    /* height: 150px; */
+    margin: auto;
+    position: relative;
+    display: grid;
+    place-items: center;
     overflow: hidden;
-    /* display: inline-block; */
-    white-space: nowrap;
-    /* height: 100px; */
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
-.parent {
-    display: inline-block;
-    animation: 5s primary infinite linear;
+.slideTrack {
+    display: flex;
+    width: calc(100px * 18);
+    /* calc(image height * number of items */
+    animation: scroll 40s linear infinite;
 }
-.item {
+.slide {
     height: 100px;
-    width: 70px;
+    width: 250px;
+    display: flex;
+    padding: 0px 10px;
 }
-
-@keyframes primary {
-    from {
+@keyframes scroll {
+    0% {
         transform: translateX(0);
     }
-    to {
-        transform: translateX(100%);
+    100% {
+        transform: translateX(calc(-100px * 9));
+        /* calc(image height * number of items/2 */
     }
 }
