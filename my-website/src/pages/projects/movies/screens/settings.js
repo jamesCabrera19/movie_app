@@ -16,10 +16,23 @@ import { Text } from "../components/text";
 import { theme as movieTheme } from "../styles";
 import _styles from "./test.module.css";
 // icons
-import { IoIosNotificationsOutline, IoMdArrowBack } from "react-icons/io";
-import { MdKeyboardArrowRight, MdOutlineCheck } from "react-icons/md";
-import { BsGearWideConnected } from "react-icons/bs";
+import {
+    IoIosNotificationsOutline,
+    IoMdArrowBack,
+    IoMdStats,
+} from "react-icons/io";
+import {
+    MdKeyboardArrowRight,
+    MdOutlineCheck,
+    MdOutlineTitle,
+    MdHistory,
+    MdPlayCircleOutline,
+} from "react-icons/md";
+import { BsGearWideConnected, BsDownload, BsPaletteFill } from "react-icons/bs";
 import { AiOutlineUser } from "react-icons/ai";
+import { FaAudioDescription } from "react-icons/fa";
+import { RiParentLine } from "react-icons/ri";
+import { SiThemoviedatabase } from "react-icons/si";
 // other
 const { v4: uuidv4 } = require("uuid");
 //
@@ -62,48 +75,16 @@ const SpinningRow = () => {
     );
 };
 
-//
-const ActionButton = ({ children, onClick }) => {
+const MarginText = ({ text, color }) => {
     const theme = movieTheme;
-
-    return (
-        <div
-            onClick={onClick ? onClick() : () => {}}
-            style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-                height: 50,
-                backgroundColor: theme.panelBackgroundColor,
-                cursor: "pointer",
-                // border: "1px solid red",
-            }}
-        >
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: "100%",
-                    height: 50,
-                    borderBottom: `1px solid ${theme.backgroundColor}`,
-                }}
-            >
-                {children}
-            </div>
-        </div>
-    );
-};
-const MarginText = ({ text }) => {
-    const theme = movieTheme;
+    const col = color ? color : theme.themeColorToRGBA(0.3, theme.fontColor);
     return (
         <div
             style={{
                 margin: "15px 10px 0 10px",
             }}
         >
-            <Text color={theme.fontColor}>{text}</Text>
+            <Text color={col}>{text}</Text>
         </div>
     );
 };
@@ -120,18 +101,173 @@ const GoBackButton = ({}) => {
         </div>
     );
 };
-
-const General = () => {
-    const { screenNavigator } = useContext(NavigationContext);
+const MyButtons = ({ buttons }) => {
     const theme = movieTheme;
+
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                borderRadius: 10,
+                overflow: "hidden",
+                width: "100%",
+                marginBottom: 20,
+            }}
+        >
+            {buttons.map((Item, idx) => (
+                <div
+                    onClick={
+                        Item.onClick
+                            ? Item.onClick({
+                                  type: idx === 0 ? Item.label : undefined,
+                              })
+                            : null
+                    }
+                    style={{
+                        display: "flex",
+                        width: "100%",
+                        height: 50,
+                        backgroundColor: theme.panelBackgroundColor,
+                        borderBottom: `1px solid ${theme.backgroundColor}`,
+                        cursor: "pointer",
+                    }}
+                >
+                    <div
+                        key={{ idx }}
+                        style={{
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                        }}
+                    >
+                        <div
+                            style={{
+                                display: "flex",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Item.Icon_A
+                                size={25}
+                                style={{ marginLeft: 10 }}
+                                color={theme.fontColorSecondary}
+                            />
+                            <MarginText
+                                text={Item.label}
+                                color={theme.fontColor}
+                            />
+                        </div>
+                        <div>
+                            {Item.Component ? (
+                                <Item.Component />
+                            ) : (
+                                <MdKeyboardArrowRight
+                                    color={theme.fontColor}
+                                    size={30}
+                                />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const GeneralButtonSelector = () => {
+    const { screenNavigator } = useContext(NavigationContext);
+
     const signOut = () => (e) => {
         console.log("Sign out Function");
     };
 
-    const actionButtons = [
+    const videoSettings = [
         {
-            title: "",
-            icon: "",
+            label: "Video Player Settings",
+            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
+            onClick: () => screenNavigator("VideoSettings"),
+            Component: null,
+        },
+        {
+            label: "Auto Play",
+            Icon_A: (props) => <MdPlayCircleOutline {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+
+        {
+            label: "Download Quality",
+            Icon_A: (props) => <BsDownload {...props} />,
+            Component: (props) => (
+                <MarginText text="Low, Medium, High, Ultra High" />
+            ),
+        },
+        {
+            label: "Subtitles/Captions",
+            Icon_A: (props) => <MdOutlineTitle {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+        {
+            label: "Audio Language",
+            Icon_A: (props) => <FaAudioDescription {...props} />,
+            Component: (props) => <MarginText text="En, Es, other" />,
+        },
+    ];
+    const generalSettings = [
+        {
+            label: "General Settings",
+            Icon_A: (props) => <BsGearWideConnected {...props} />,
+            onClick: () => screenNavigator("GeneralSettings"),
+            Component: null,
+        },
+        {
+            label: "Interface Themes",
+            Icon_A: (props) => <BsPaletteFill {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+        {
+            label: "Notifications",
+            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+        {
+            label: "Data Usage",
+            Icon_A: (props) => <IoMdStats {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+    ];
+    const userSettings = [
+        {
+            label: "Account Management",
+            Icon_A: (props) => <AiOutlineUser {...props} />,
+            onClick: () => screenNavigator("Account"),
+            Component: null,
+        },
+        {
+            label: "My List",
+            Icon_A: (props) => <SiThemoviedatabase {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+        {
+            label: "History and Privacy",
+            Icon_A: (props) => <MdHistory {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+        {
+            label: "Parental Controls",
+            Icon_A: (props) => <RiParentLine {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+    ];
+    const otherSettings = [
+        {
+            label: "Social Media Integration",
+            Icon_A: (props) => <MdPlayCircleOutline {...props} />,
+            onClick: () => (e) => {},
+            Component: (props) => <MarginText text="Many Buttons" />,
         },
     ];
 
@@ -145,88 +281,10 @@ const General = () => {
             >
                 <SpinningRow />
             </div>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-start",
-                    justifyContent: "space-between",
-                    borderRadius: 10,
-                    overflow: "hidden",
-                }}
-            >
-                <ActionButton>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            height: 50,
-                        }}
-                    >
-                        <IoIosNotificationsOutline
-                            color={theme.fontColor}
-                            size={25}
-                            style={{ marginLeft: 10 }}
-                        />
-                        <MarginText text="Notifications" />
-                    </div>
-                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
-                </ActionButton>
-
-                <ActionButton onClick={() => screenNavigator("MyList")}>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            height: 50,
-                        }}
-                    >
-                        <MdOutlineCheck
-                            color={theme.fontColor}
-                            size={25}
-                            style={{ marginLeft: 10 }}
-                        />
-
-                        <MarginText text="My List" />
-                    </div>
-                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
-                </ActionButton>
-
-                <ActionButton>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            height: 50,
-                        }}
-                    >
-                        <BsGearWideConnected
-                            color={theme.fontColor}
-                            size={25}
-                            style={{ marginLeft: 10 }}
-                        />
-                        <MarginText text="App Settings" />
-                    </div>
-                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
-                </ActionButton>
-                <ActionButton>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            height: 50,
-                        }}
-                    >
-                        <AiOutlineUser
-                            color={theme.fontColor}
-                            size={25}
-                            style={{ marginLeft: 10 }}
-                        />
-                        <MarginText text="Account" />
-                    </div>
-                    <MdKeyboardArrowRight color={theme.fontColor} size={30} />
-                </ActionButton>
-            </div>
+            <MyButtons buttons={generalSettings} />
+            <MyButtons buttons={videoSettings} />
+            <MyButtons buttons={userSettings} />
+            <MyButtons buttons={otherSettings} />
             <div
                 onClick={signOut()}
                 style={{
@@ -269,24 +327,31 @@ const Account = () => {
         </>
     );
 };
-const MyList = () => {
+const VideoSettings = () => {
     const { screenNavigator } = useContext(NavigationContext);
     return (
         <>
             <GoBackButton />
             <div style={{ marginTop: -50 }}>
-                <MyCard />
+                <Text>Video Settings</Text>
             </div>
         </>
     );
 };
-const AppSettings = () => {
-    return <Text>This is the app settings</Text>;
+const GeneralSettings = () => {
+    return (
+        <>
+            <GoBackButton />
+            <div style={{ marginTop: -50 }}>
+                <Text>General Settings</Text>
+            </div>
+        </>
+    );
 };
 
 const SCREENS = [
     {
-        component: <General />,
+        component: <GeneralButtonSelector />,
         title: "General",
         active: true,
         id: 0,
@@ -298,14 +363,14 @@ const SCREENS = [
         id: 1,
     },
     {
-        component: <MyList />,
-        title: "MyList",
+        component: <VideoSettings />,
+        title: "VideoSettings",
         active: false,
         id: 2,
     },
     {
-        component: <AppSettings />,
-        title: "AppSettings",
+        component: <GeneralSettings />,
+        title: "GeneralSettings",
         active: false,
         id: 3,
     },
@@ -313,14 +378,14 @@ const SCREENS = [
 function MySettings() {
     const theme = movieTheme;
     return (
-        <div style={{ height: "100vh" }}>
+        <div style={{}}>
             <div
                 style={{
                     // height: 500,
                     width: 700,
                     margin: "auto",
                     borderRadius: 10,
-                    border: `1px solid ${theme.panelBackgroundColor}`,
+                    border: `0px solid ${theme.panelBackgroundColor}`,
                 }}
             >
                 <NavigationBar omit="all" components={SCREENS} />
