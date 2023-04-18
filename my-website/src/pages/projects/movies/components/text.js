@@ -44,6 +44,7 @@ const Text = ({ variant, color, children }) => {
                     {children}
                 </h3>
             );
+
         case "headlineExtraSmall":
             return (
                 <h5 style={styles} className={Lato}>
@@ -53,7 +54,7 @@ const Text = ({ variant, color, children }) => {
 
         default:
             return (
-                <p style={{ ...styles, fontSize: 18 }} className={LatoNormal}>
+                <p style={{ ...styles, fontSize: 18 }} className={latoBold}>
                     {children}
                 </p>
             );

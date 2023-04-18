@@ -5,6 +5,7 @@ import { ImageLoader } from "../components/utils";
 // context
 import NavigationContext from "../context/navigation";
 import { Context as MovieContext } from "../context/movieContext";
+import { Context as ThemeContext } from "../context/themeContext";
 
 // hooks
 import useHover from "../hooks/useHover";
@@ -13,7 +14,7 @@ import { NavigationBar } from "../components/navigationBar";
 import MyCard from "../components/myCard";
 import { Text } from "../components/text";
 // styles
-import { theme as movieTheme } from "../styles";
+// import { theme as movieTheme } from "../styles";
 import _styles from "./test.module.css";
 // icons
 import {
@@ -33,6 +34,8 @@ import { AiOutlineUser } from "react-icons/ai";
 import { FaAudioDescription } from "react-icons/fa";
 import { RiParentLine } from "react-icons/ri";
 import { SiThemoviedatabase } from "react-icons/si";
+//
+import Form from "react-bootstrap/Form";
 // other
 const { v4: uuidv4 } = require("uuid");
 //
@@ -76,7 +79,9 @@ const SpinningRow = () => {
 };
 
 const MarginText = ({ text, color }) => {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     const col = color ? color : theme.themeColorToRGBA(0.3, theme.fontColor);
     return (
         <div
@@ -90,7 +95,9 @@ const MarginText = ({ text, color }) => {
 };
 const GoBackButton = ({}) => {
     const { screenNavigator } = useContext(NavigationContext);
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
 
     return (
         <div
@@ -102,7 +109,9 @@ const GoBackButton = ({}) => {
     );
 };
 const MyButtons = ({ buttons }) => {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
 
     return (
         <div
@@ -119,6 +128,7 @@ const MyButtons = ({ buttons }) => {
         >
             {buttons.map((Item, idx) => (
                 <div
+                    key={idx}
                     onClick={
                         Item.onClick
                             ? Item.onClick({
@@ -136,7 +146,6 @@ const MyButtons = ({ buttons }) => {
                     }}
                 >
                     <div
-                        key={{ idx }}
                         style={{
                             width: "100%",
                             display: "flex",
@@ -301,7 +310,7 @@ const GeneralButtonSelector = () => {
         </>
     );
 };
-const Account = () => {
+const AccountScreen = () => {
     const { screenNavigator } = useContext(NavigationContext);
 
     const Details = ({ title, subtitle }) => (
@@ -327,7 +336,7 @@ const Account = () => {
         </>
     );
 };
-const VideoSettings = () => {
+const VideoSettingsScreen = () => {
     const { screenNavigator } = useContext(NavigationContext);
     return (
         <>
@@ -338,14 +347,57 @@ const VideoSettings = () => {
         </>
     );
 };
-const GeneralSettings = () => {
+const GeneralSettingsScreen = () => {
+    const {
+        state: { theme },
+        switchTheme,
+    } = useContext(ThemeContext);
+    const [state, setState] = useState(true);
+    const [label, setLabel] = useState("Dark");
+
+    const handleThemeSwitch = () => {
+        if (theme.type === "dark") {
+            switchTheme("light");
+        } else {
+            switchTheme("dark");
+        }
+    };
+
+    const buttons = [
+        {
+            label: `Theme`,
+            Icon_A: (props) => <BsPaletteFill {...props} />,
+            Component: () => (
+                // <button onClick={() => handleThemeSwitch()}>
+                //     {theme.type}
+                // </button>
+                <Form.Switch
+                    onClick={() => handleThemeSwitch()}
+                    label={theme.type}
+                />
+            ),
+        },
+        {
+            label: "Notifications",
+            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+        {
+            label: "Data Usage",
+            Icon_A: (props) => <IoMdStats {...props} />,
+            Component: (props) => <MarginText text="Switch" />,
+        },
+    ];
     return (
-        <>
+        <div style={{ height: "70vh" }}>
             <GoBackButton />
-            <div style={{ marginTop: -50 }}>
-                <Text>General Settings</Text>
+            <div style={{}}>
+                <Text color={theme.fontColor} variant={"headlineSmall"}>
+                    General Settings
+                </Text>
+                <MyButtons buttons={buttons} />
             </div>
-        </>
+        </div>
     );
 };
 
@@ -357,26 +409,28 @@ const SCREENS = [
         id: 0,
     },
     {
-        component: <Account />,
+        component: <AccountScreen />,
         title: "Account",
         active: false,
         id: 1,
     },
     {
-        component: <VideoSettings />,
+        component: <VideoSettingsScreen />,
         title: "VideoSettings",
         active: false,
         id: 2,
     },
     {
-        component: <GeneralSettings />,
+        component: <GeneralSettingsScreen />,
         title: "GeneralSettings",
         active: false,
         id: 3,
     },
 ];
 function MySettings() {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     return (
         <div style={{}}>
             <div

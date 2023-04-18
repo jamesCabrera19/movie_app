@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { Text } from "./text";
-import { theme as movieTheme } from "../styles";
 import NavigationContext from "../context/navigation";
+import { Context as ThemeContext } from "../context/themeContext";
 
 const NavigationButton = ({ styles, title, onClick }) => {
     return (
@@ -26,8 +26,9 @@ const NavigationButton = ({ styles, title, onClick }) => {
 
 function NavigationBar({ components, omit }) {
     const [state, setState] = useState(components);
-    const theme = movieTheme;
-    //
+    const {
+        state: { theme },
+    } = useContext(ThemeContext); //
 
     const screenNavigator =
         (screen = "", params = {}) =>

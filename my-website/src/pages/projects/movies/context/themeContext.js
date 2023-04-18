@@ -1,3 +1,4 @@
+import createDataContext from "../../../../../context/index";
 const darkTheme = {
     type: "dark",
     backgroundColor: "#232323",
@@ -35,3 +36,24 @@ const lightTheme = {
         return `rgba(${r},${g},${b},${opacity})`;
     },
 };
+const themeReducer = (state, action) => {
+    switch (action.type) {
+        case "light":
+            return { theme: lightTheme };
+        case "dark":
+            return { theme: darkTheme };
+        default:
+            return state;
+    }
+};
+const switchTheme = (dispatch) => (type) => dispatch({ type: type });
+
+export const { Context, Provider } = createDataContext(
+    themeReducer,
+    {
+        switchTheme,
+    }, // action Functions
+    {
+        theme: darkTheme,
+    }
+);

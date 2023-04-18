@@ -1,11 +1,9 @@
 import { useContext, useEffect, useState, useRef, useCallback } from "react";
 
-import { useRouter } from "next/router";
-
-import { Text } from "../components/text";
-import { theme as movieTheme } from "../styles";
 import { TheModal } from "../components/modal";
 import { Context as MovieContext } from "../context/movieContext";
+import { Context as ThemeContext } from "../context/themeContext";
+
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 
 //
@@ -47,7 +45,10 @@ const Content = () => {
 };
 
 function MyMovies({}) {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
+
     return (
         <div
             style={{ backgroundColor: theme.backgroundColor, height: "100vh" }}

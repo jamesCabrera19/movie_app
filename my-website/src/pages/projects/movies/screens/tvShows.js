@@ -7,8 +7,9 @@ import Link from "next/link";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { Text } from "../components/text";
-import { theme as movieTheme } from "../styles";
 import { Context as MovieContext } from "../context/movieContext";
+import { Context as ThemeContext } from "../context/themeContext";
+
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";
 import { CardRow } from "../components/cardRow";
@@ -17,6 +18,9 @@ export default function TVShows() {
     const {
         state: { movies },
     } = useContext(MovieContext);
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
 
     const data = [
         {

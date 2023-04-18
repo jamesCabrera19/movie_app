@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 
 import { Context as MovieContext } from "../context/movieContext";
 import NavigationContext from "../context/navigation";
+//
 import { Text } from "../components/text";
 import { TheModal } from "../components/modal";
 

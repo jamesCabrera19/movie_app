@@ -2,15 +2,18 @@ import { useContext, useCallback } from "react";
 //
 import { TheModal } from "./modal";
 import { Text } from "./text";
-import { theme as movieTheme } from "../styles";
 //
 import NavigationContext from "../context/navigation";
 import { Context as MovieContext } from "../context/movieContext";
+import { Context as ThemeContext } from "../context/themeContext";
+
 import MyCard from "./myCard";
 //
 
 const RowTitle = ({ title, movieIDS }) => {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     const { screenNavigator } = useContext(NavigationContext);
 
     return (
@@ -43,7 +46,9 @@ const CardRow = ({ title, bigRow, movieIDS }) => {
     const {
         state: { movies },
     } = useContext(MovieContext);
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     const movieIds = movieIDS || [];
 
     // filters movies from the main state

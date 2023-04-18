@@ -2,18 +2,19 @@ import { useState, useContext } from "react";
 
 import Image from "next/image";
 import { ImageLoader } from "./utils";
-import { theme as movieTheme } from "../styles";
 import useHover from "../hooks/useHover";
-import useUpNext from "../hooks/useUpNext";
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
+import { Context as ThemeContext } from "../context/themeContext";
+
 //
 
 const IMG_SRC = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 //
 const OverlayButton = ({ title, onClick }) => {
     const [active, setActive] = useState(true);
-    const theme = movieTheme;
-
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     return (
         <button
             onClick={() => {
@@ -35,8 +36,9 @@ const OverlayButton = ({ title, onClick }) => {
 const CardOverlay = ({ options, movieID, switchButtons }) => {
     const { handleDispatch } = useContext(LikedMoviesContext);
     const [hoverRef, isHovered] = useHover(3000);
-    const theme = movieTheme;
-    //
+    const {
+        state: { theme },
+    } = useContext(ThemeContext); //
     const Test = (props) => console.log(movieID);
 
     const styles = {

@@ -11,7 +11,7 @@ import MyCard from "./myCard";
 // CONTEXT
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 // THEME
-import { theme as movieTheme } from "../styles";
+import { Context as ThemeContext } from "../context/themeContext";
 //
 //
 
@@ -26,7 +26,9 @@ const initMovieProps = {
     id: 129182,
 };
 const MyButton = ({ title, onClick, disable }) => {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     //
 
     return (
@@ -39,7 +41,7 @@ const MyButton = ({ title, onClick, disable }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 cursor: disable ? "" : "pointer",
-                backgroundColor: theme.panelBackgroundColor,
+                backgroundColor: theme.buttonColor,
                 borderRadius: 10,
                 border: "0px solid red",
             }}
@@ -47,7 +49,7 @@ const MyButton = ({ title, onClick, disable }) => {
         >
             <Text
                 variant="headlineExtraSmall"
-                color={disable ? "grey" : "white"}
+                color={disable ? "grey" : theme.buttonFontColor}
             >
                 {title}
             </Text>
@@ -55,7 +57,9 @@ const MyButton = ({ title, onClick, disable }) => {
     );
 };
 const ModalBodyText = ({ title, overview, vote, language, date }) => {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     return (
         <div
             style={{
@@ -63,25 +67,33 @@ const ModalBodyText = ({ title, overview, vote, language, date }) => {
                 paddingRight: 20,
                 paddingLeft: 20,
                 position: "relative",
-                backgroundColor: theme.themeColorToRGBA(
-                    0.3,
-                    theme.backgroundColor
-                ),
+                backgroundColor: theme.themeColorToRGBA(0.5, theme.buttonColor),
                 borderRadius: 10,
             }}
         >
             <div>
-                <Text variant="headlineExtraSmall" color={"white"}>
+                <Text
+                    variant="headlineExtraSmall"
+                    color={theme.backgroundColor}
+                >
                     {title}
                 </Text>
-                <Text color={"white"}>{overview}</Text>
+                <Text
+                    // variant="headlineExtraSmall"
+                    color={theme.backgroundColor}
+                >
+                    {overview}
+                </Text>
                 <div
                     style={{
                         display: "flex",
                         justifyContent: "flex-start",
                     }}
                 >
-                    <Text variant="headlineExtraSmall" color={"white"}>
+                    <Text
+                        variant="headlineExtraSmall"
+                        color={theme.backgroundColor}
+                    >
                         {date}
                     </Text>
                     <div
@@ -89,12 +101,18 @@ const ModalBodyText = ({ title, overview, vote, language, date }) => {
                             margin: "0 20px",
                         }}
                     >
-                        <Text variant="headlineExtraSmall" color={"white"}>
+                        <Text
+                            variant="headlineExtraSmall"
+                            color={theme.backgroundColor}
+                        >
                             {vote}
                         </Text>
                     </div>
 
-                    <Text variant="headlineExtraSmall" color={"white"}>
+                    <Text
+                        variant="headlineExtraSmall"
+                        color={theme.backgroundColor}
+                    >
                         {language}
                     </Text>
                 </div>

@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 //
 import { Provider as LikedMoviesProvider } from "./context/likedMoviesContext";
+import { Provider as ThemeProvider } from "./context/themeContext";
+import { Context as ThemeContext } from "./context/themeContext";
+import { Context as theme } from "./context/theme";
+
 //
-import { theme as movieTheme } from "./styles";
 import { NavigationBar } from "./components/navigationBar";
 // screens
 import MyMovies from "./screens/myMovies";
@@ -45,7 +48,9 @@ const screens = [
     },
 ];
 function App() {
-    const theme = movieTheme;
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
 
     return (
         <div style={{ backgroundColor: theme.backgroundColor }}>
@@ -57,7 +62,9 @@ function App() {
 function MoviesApp() {
     return (
         <LikedMoviesProvider>
-            <App />
+            <ThemeProvider>
+                <App />
+            </ThemeProvider>
         </LikedMoviesProvider>
     );
 }
