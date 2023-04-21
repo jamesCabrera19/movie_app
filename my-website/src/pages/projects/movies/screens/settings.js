@@ -176,14 +176,6 @@ const GeneralButtonSelector = () => {
             Component: (props) => <MarginText text="Switch" />,
         },
     ];
-    const otherSettings = [
-        {
-            label: "Social Media Integration",
-            Icon_A: (props) => <MdPlayCircleOutline {...props} />,
-            onClick: () => (e) => {},
-            Component: (props) => <MarginText text="Many Buttons" />,
-        },
-    ];
 
     return (
         <>
@@ -195,10 +187,10 @@ const GeneralButtonSelector = () => {
             >
                 <SpinningRow />
             </div>
-            <MyButtons buttons={generalSettings} />
-            <MyButtons buttons={videoSettings} />
-            <MyButtons buttons={userSettings} />
-            <MyButtons buttons={otherSettings} />
+            {[generalSettings, videoSettings, userSettings].map((el, idx) => (
+                <MyButtons buttons={el} key={idx} />
+            ))}
+
             <div
                 onClick={signOut()}
                 style={{

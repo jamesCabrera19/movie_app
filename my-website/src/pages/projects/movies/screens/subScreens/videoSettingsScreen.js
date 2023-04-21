@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Context as ThemeContext } from "../../context/themeContext";
 
 import Switch from "react-switch";
@@ -12,63 +12,100 @@ import { GoBackButton } from "../../components/goBackButton";
 import { MyButtons } from "../../components/myButtons";
 import { Text } from "../../components/text";
 
-const SimpleButton = ({ label, onClick }) => {
+const SimpleButton = ({ onClick, labels }) => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
 
     return (
-        <button
-            onClick={onClick()}
+        <div
             style={{
-                borderRadius: 5,
-                backgroundColor: "transparent",
-                color: theme.fontColor,
-                padding: 5,
-                border: `2px solid ${theme.fontColor}`,
+                display: "flex",
+                width: labels.length > 2 ? 200 : 100,
+                justifyContent: "space-around",
             }}
         >
-            {label}
-        </button>
+            {labels.map((el, idx) => (
+                <button
+                    onClick={() => {
+                        onClick(el);
+                        console.log(idx);
+                        // state.type === el? backgroundColor:'green'
+                    }}
+                    style={{
+                        borderRadius: 5,
+                        padding: 5,
+                        backgroundColor: "transparent",
+                        color: theme.fontColor,
+                        border: `2px solid ${theme.fontColor}`,
+                    }}
+                >
+                    {el}
+                </button>
+            ))}
+        </div>
     );
 };
+
+const MySwitch = ({ IconA, IconB, onChange }) => {
+    const [state, setState] = useState(false);
+
+    const handleIt = (props) => (e) => {
+        setState((prev) => !prev);
+        if (onChange) onChange(props);
+    };
+    return (
+        <Switch
+            onChange={handleIt(state)}
+            checked={state}
+            checkedHandleIcon={<IconA />}
+            uncheckedHandleIcon={<IconB />}
+            checkedIcon={false}
+            uncheckedIcon={false}
+            offHandleColor={"#232323"}
+            onHandleColor="#232323"
+            onColor={"#FFF"} // rail color
+            offColor={"#888"} // rail color
+        />
+    );
+};
+
 const VideoSettingsScreen = () => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
 
-    const handleSimpleButton = () => (e) => {
-        console.log("Video Quality needs to be implemented");
+    const handleSimpleButton = (quality) => {
+        console.log("Video Quality needs to be implemented: ", quality);
     };
-    const handleLanguageSwap = () => (e) => {
-        console.log("Language Funcitonality needs to be implemented");
+    const handleLanguageSwap = (language) => {
+        console.log(
+            "Language Funcitonality needs to be implemented: ",
+            language
+        );
     };
+
     const buttons = [
         {
             label: "Auto Play",
             Icon_A: (props) => <BsPaletteFill {...props} />,
             Component: () => (
-                <Switch
-                    onChange={() => {}}
-                    checked={true}
-                    checkedHandleIcon={
+                <MySwitch
+                    onChange={() => console.log("Switch")}
+                    //
+                    //
+                    IconA={() => (
                         <MdOutlineCheck
-                            style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
+                            style={{ margin: "0 0 3px 5px" }}
+                            color="#FFFFFF"
                         />
-                    }
-                    uncheckedHandleIcon={
+                    )}
+                    IconB={() => (
                         <FiXCircle
                             style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
+                            color="#FFFFFF"
                         />
-                    }
-                    onColor={"#FFF"} // rail color
-                    offColor={"#888"} // rail color
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    offHandleColor={"#232323"}
-                    onHandleColor="#232323"
+                    )}
                 />
             ),
         },
@@ -76,27 +113,22 @@ const VideoSettingsScreen = () => {
             label: "Subtitles/Captions",
             Icon_A: (props) => <BsPaletteFill {...props} />,
             Component: () => (
-                <Switch
-                    onChange={() => {}}
-                    checked={true}
-                    checkedHandleIcon={
+                <MySwitch
+                    onChange={() => console.log("Switch")}
+                    //
+                    //
+                    IconA={() => (
                         <MdOutlineCheck
-                            style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
+                            style={{ margin: "0 0 3px 5px" }}
+                            color="#FFFFFF"
                         />
-                    }
-                    uncheckedHandleIcon={
+                    )}
+                    IconB={() => (
                         <FiXCircle
                             style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
+                            color="#FFFFFF"
                         />
-                    }
-                    onColor={"#FFF"} // rail color
-                    offColor={"#888"} // rail color
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    offHandleColor={"#232323"}
-                    onHandleColor="#232323"
+                    )}
                 />
             ),
         },
@@ -104,20 +136,10 @@ const VideoSettingsScreen = () => {
             label: "Download Quality",
             Icon_A: (props) => <BsPaletteFill {...props} />,
             Component: () => (
-                <div
-                    style={{
-                        display: "flex",
-                        width: 200,
-                        justifyContent: "space-around",
-                    }}
-                >
-                    <SimpleButton onClick={handleSimpleButton} label="HD" />
-                    <SimpleButton
-                        onClick={handleSimpleButton}
-                        label="Full HD"
-                    />
-                    <SimpleButton onClick={handleSimpleButton} label="4K" />
-                </div>
+                <SimpleButton
+                    onClick={handleSimpleButton}
+                    labels={["HD", "Full HD", "4K"]}
+                />
             ),
         },
 
@@ -125,16 +147,10 @@ const VideoSettingsScreen = () => {
             label: "Audio Language",
             Icon_A: (props) => <BsPaletteFill {...props} />,
             Component: () => (
-                <div
-                    style={{
-                        display: "flex",
-                        width: 100,
-                        justifyContent: "space-around",
-                    }}
-                >
-                    <SimpleButton onClick={handleLanguageSwap} label="EN" />
-                    <SimpleButton onClick={handleLanguageSwap} label="SP" />
-                </div>
+                <SimpleButton
+                    onClick={handleLanguageSwap}
+                    labels={["EN", "ES"]}
+                />
             ),
         },
     ];
@@ -145,7 +161,6 @@ const VideoSettingsScreen = () => {
                 <Text color={theme.fontColor} variant={"headlineSmall"}>
                     Video Player Settings
                 </Text>
-
                 <MyButtons buttons={buttons} />
             </div>
         </div>

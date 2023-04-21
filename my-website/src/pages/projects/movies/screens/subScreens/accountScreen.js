@@ -44,7 +44,7 @@ const AccountScreen = () => {
         },
     ];
     return (
-        <div style={{ height: "100vh" }}>
+        <div style={{}}>
             <GoBackButton />
             <div style={{ marginTop: -50 }}>
                 <Details title={"Account"} subtitle={"email@email.com"} />

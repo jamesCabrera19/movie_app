@@ -60,7 +60,7 @@ const MyButtons = ({ buttons }) => {
                             <Item.Icon_A
                                 size={25}
                                 style={{ marginLeft: 10 }}
-                                color={theme.fontColorSecondary}
+                                color={theme.fontColor}
                             />
                             <div
                                 style={{

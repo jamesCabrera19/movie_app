@@ -4,22 +4,11 @@ import { Context as ThemeContext } from "../../context/themeContext";
 import Switch from "react-switch";
 import {
     IoIosNotificationsOutline,
-    IoMdArrowBack,
     IoMdStats,
-    MdKeyboardArrowRight,
     MdOutlineCheck,
-    MdOutlineTitle,
-    MdHistory,
-    MdPlayCircleOutline,
     MdWbSunny,
-    BsGearWideConnected,
-    BsDownload,
     BsPaletteFill,
     BsFillMoonStarsFill,
-    AiOutlineUser,
-    FaAudioDescription,
-    RiParentLine,
-    SiThemoviedatabase,
     FiXCircle,
 } from "../../components/icons";
 
@@ -28,14 +17,13 @@ import { MyButtons } from "../../components/myButtons";
 import { Text } from "../../components/text";
 
 const GeneralSettingsScreen = () => {
+    const [state, setState] = useState({ checked: false, notifications: true });
     const {
         state: { theme },
         switchTheme,
     } = useContext(ThemeContext);
+    //
 
-    const [state, setState] = useState({ checked: false, notifications: true });
-    //
-    //
     const handleThemeChange = () => {
         setState((prev) => ({ ...prev, checked: !prev.checked }));
         if (theme.type === "dark") {
@@ -61,13 +49,13 @@ const GeneralSettingsScreen = () => {
                     checkedHandleIcon={
                         <MdWbSunny
                             style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
+                            color="yellow"
                         />
                     }
                     uncheckedHandleIcon={
                         <BsFillMoonStarsFill
                             style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
+                            color="white"
                         />
                     }
                     onColor={"#FFF"} // rail color
@@ -124,7 +112,7 @@ const GeneralSettingsScreen = () => {
         },
     ];
     return (
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "63vh" }}>
             <GoBackButton />
             <div>
                 <Text color={theme.fontColor} variant={"headlineSmall"}>
