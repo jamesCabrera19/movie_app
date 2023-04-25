@@ -25,13 +25,7 @@ const MyButtons = ({ buttons }) => {
             {buttons.map((Item, idx) => (
                 <div
                     key={idx}
-                    onClick={
-                        Item.onClick
-                            ? Item.onClick({
-                                  type: idx === 0 ? Item.label : undefined,
-                              })
-                            : null
-                    }
+                    onClick={Item.onClick ? Item.onClick(Item.label) : null}
                     style={{
                         display: "flex",
                         width: "100%",

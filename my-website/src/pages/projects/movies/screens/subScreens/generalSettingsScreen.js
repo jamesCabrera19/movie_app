@@ -15,85 +15,62 @@ import {
 import { GoBackButton } from "../../components/goBackButton";
 import { MyButtons } from "../../components/myButtons";
 import { Text } from "../../components/text";
+import { MySwitch } from "../../components/mySwitch";
 
 const GeneralSettingsScreen = () => {
-    const [state, setState] = useState({ checked: false, notifications: true });
+    const [state, setState] = useState(false);
     const {
         state: { theme },
         switchTheme,
     } = useContext(ThemeContext);
     //
 
-    const handleThemeChange = () => {
-        setState((prev) => ({ ...prev, checked: !prev.checked }));
-        if (theme.type === "dark") {
-            switchTheme("light");
-        } else {
+    const handleThemeChange = () => (e) => {
+        setState((prev) => !prev);
+        if (theme.type === "light") {
             switchTheme("dark");
+        } else {
+            switchTheme("light");
         }
     };
     const handleNotifications = () => {
-        setState((prev) => ({ ...prev, notifications: !prev.notifications }));
         console.log("Notifications Feature needs to be implemented");
     };
     //
     //
     const buttons = [
         {
-            label: `Theme`,
+            label: "Theme",
             Icon_A: (props) => <BsPaletteFill {...props} />,
             Component: () => (
                 <Switch
-                    onChange={handleThemeChange}
-                    checked={state.checked}
+                    onChange={handleThemeChange()}
+                    checked={state}
                     checkedHandleIcon={
                         <MdWbSunny
-                            style={{ margin: "0 0 2px 5px" }}
                             color="yellow"
+                            style={{ margin: "0px 0 1px 5px" }}
                         />
                     }
                     uncheckedHandleIcon={
                         <BsFillMoonStarsFill
-                            style={{ margin: "0 0 2px 5px" }}
                             color="white"
+                            style={{ margin: "0px 0 1px 5px" }}
                         />
                     }
-                    onColor={"#FFF"} // rail color
-                    offColor={"#888"} // rail color
                     checkedIcon={false}
                     uncheckedIcon={false}
                     offHandleColor={"#232323"}
                     onHandleColor="#232323"
+                    onColor={"#FFF"} // rail color
+                    offColor={"#888"} // rail color
                 />
             ),
         },
         {
             label: "Notifications",
             Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
-            Component: (props) => (
-                <Switch
-                    onChange={handleNotifications}
-                    checked={state.notifications}
-                    checkedHandleIcon={
-                        <MdOutlineCheck
-                            style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
-                        />
-                    }
-                    uncheckedHandleIcon={
-                        <FiXCircle
-                            style={{ margin: "0 0 2px 5px" }}
-                            color={"white"}
-                        />
-                    }
-                    onColor={"#FFF"} // rail color
-                    offColor={"#888"} // rail color
-                    checkedIcon={false}
-                    uncheckedIcon={false}
-                    offHandleColor={"#232323"}
-                    onHandleColor="#232323"
-                />
-            ),
+            Component: (props) => <MySwitch onChange={handleNotifications} />,
         },
         {
             label: "Data Usage",

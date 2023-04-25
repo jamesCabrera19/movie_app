@@ -98,7 +98,29 @@ const GeneralButtonSelector = () => {
     const signOut = () => (e) => {
         console.log("Sign out Function");
     };
-
+    const generalSettings = [
+        {
+            label: "General Settings",
+            Icon_A: (props) => <BsGearWideConnected {...props} />,
+            onClick: () => screenNavigator("GeneralSettings"),
+            Component: null,
+        },
+        {
+            label: "Interface Themes",
+            Icon_A: (props) => <BsPaletteFill {...props} />,
+            Component: (props) => <MarginText text={theme.type} />,
+        },
+        {
+            label: "Notifications",
+            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
+            Component: (props) => <MarginText text="BOOLEAN value" />,
+        },
+        {
+            label: "Data Usage",
+            Icon_A: (props) => <IoMdStats {...props} />,
+            Component: (props) => <MarginText text="NUMBER" />,
+        },
+    ];
     const videoSettings = [
         {
             label: "Video Player Settings",
@@ -130,29 +152,7 @@ const GeneralButtonSelector = () => {
             Component: (props) => <MarginText text="En, Es, other" />,
         },
     ];
-    const generalSettings = [
-        {
-            label: "General Settings",
-            Icon_A: (props) => <BsGearWideConnected {...props} />,
-            onClick: () => screenNavigator("GeneralSettings"),
-            Component: null,
-        },
-        {
-            label: "Interface Themes",
-            Icon_A: (props) => <BsPaletteFill {...props} />,
-            Component: (props) => <MarginText text={theme.type} />,
-        },
-        {
-            label: "Notifications",
-            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
-            Component: (props) => <MarginText text="BOOLEAN value" />,
-        },
-        {
-            label: "Data Usage",
-            Icon_A: (props) => <IoMdStats {...props} />,
-            Component: (props) => <MarginText text="NUMBER" />,
-        },
-    ];
+
     const userSettings = [
         {
             label: "Account Management",
@@ -166,13 +166,13 @@ const GeneralButtonSelector = () => {
             Component: (props) => <MarginText text="Switch" />,
         },
         {
-            label: "History and Privacy",
-            Icon_A: (props) => <MdHistory {...props} />,
+            label: "Parental Controls",
+            Icon_A: (props) => <RiParentLine {...props} />,
             Component: (props) => <MarginText text="Switch" />,
         },
         {
-            label: "Parental Controls",
-            Icon_A: (props) => <RiParentLine {...props} />,
+            label: "History and Privacy",
+            Icon_A: (props) => <MdHistory {...props} />,
             Component: (props) => <MarginText text="Switch" />,
         },
     ];
