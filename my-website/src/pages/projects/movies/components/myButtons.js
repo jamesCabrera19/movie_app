@@ -33,7 +33,6 @@ const MyButtons = ({ buttons }) => {
                         backgroundColor: theme.panelBackgroundColor,
                         borderBottom: `1px solid ${theme.backgroundColor}`,
                         cursor: "pointer",
-                        // overflow: "clip",
                     }}
                 >
                     <div

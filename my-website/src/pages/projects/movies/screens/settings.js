@@ -95,32 +95,6 @@ const GeneralButtonSelector = () => {
         state: { theme },
     } = useContext(ThemeContext);
 
-    const signOut = () => (e) => {
-        console.log("Sign out Function");
-    };
-    const generalSettings = [
-        {
-            label: "General Settings",
-            Icon_A: (props) => <BsGearWideConnected {...props} />,
-            onClick: () => screenNavigator("GeneralSettings"),
-            Component: null,
-        },
-        {
-            label: "Interface Themes",
-            Icon_A: (props) => <BsPaletteFill {...props} />,
-            Component: (props) => <MarginText text={theme.type} />,
-        },
-        {
-            label: "Notifications",
-            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
-            Component: (props) => <MarginText text="BOOLEAN value" />,
-        },
-        {
-            label: "Data Usage",
-            Icon_A: (props) => <IoMdStats {...props} />,
-            Component: (props) => <MarginText text="NUMBER" />,
-        },
-    ];
     const videoSettings = [
         {
             label: "Video Player Settings",
@@ -152,7 +126,29 @@ const GeneralButtonSelector = () => {
             Component: (props) => <MarginText text="En, Es, other" />,
         },
     ];
-
+    const generalSettings = [
+        {
+            label: "General Settings",
+            Icon_A: (props) => <BsGearWideConnected {...props} />,
+            onClick: () => screenNavigator("GeneralSettings"),
+            Component: null,
+        },
+        {
+            label: "Interface Themes",
+            Icon_A: (props) => <BsPaletteFill {...props} />,
+            Component: (props) => <MarginText text={theme.type} />,
+        },
+        {
+            label: "Notifications",
+            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
+            Component: (props) => <MarginText text="BOOLEAN value" />,
+        },
+        {
+            label: "Data Usage",
+            Icon_A: (props) => <IoMdStats {...props} />,
+            Component: (props) => <MarginText text="NUMBER" />,
+        },
+    ];
     const userSettings = [
         {
             label: "Account Management",
@@ -192,17 +188,19 @@ const GeneralButtonSelector = () => {
             ))}
 
             <div
-                onClick={signOut()}
                 style={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
                     marginTop: 50,
-                    cursor: "pointer",
                 }}
             >
-                <Text variant="headlineExtraSmall">Sign Out</Text>
-                <Text>last updated 04/11/2023</Text>
+                <Text color={theme.themeColorToRGBA(0.5, theme.fontColor)}>
+                    last updated 04/27/2023
+                </Text>
+                <Text color={theme.themeColorToRGBA(0.5, theme.fontColor)}>
+                    James Cabrera
+                </Text>
             </div>
         </>
     );

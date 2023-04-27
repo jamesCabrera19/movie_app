@@ -106,7 +106,7 @@ const VideoSettingsScreen = () => {
         },
     ];
     return (
-        <div style={{ height: "100vh" }}>
+        <div style={{ height: "63vh" }}>
             <GoBackButton />
             <div>
                 <Text color={theme.fontColor} variant={"headlineSmall"}>

@@ -1,61 +1,103 @@
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import React, { useState, useContext } from "react";
 import { Text } from "./text";
-import { BsApple, BsMeta } from "./icons";
+import { BsApple, BsMeta, HiIdentification } from "./icons";
+import { Context as ThemeContext } from "../context/themeContext";
 
-const LogInButton = ({ onClick, type }) => {
-    let title = type;
-    if (type === undefined || type === null) {
-        title = "Label is Undefined";
-    }
-    let firstLetterCap = title[0];
-    firstLetterCap = firstLetterCap.toUpperCase();
-    const remainingLetters = title.slice(1);
-    const label = firstLetterCap + remainingLetters;
-
+const Button = ({ children, label }) => {
     return (
-        <div
+        <button
             style={{
-                backgroundColor: type === "apple" ? "black" : "#3b5998",
-                width: "45%",
-                height: 50,
-                borderRadius: 10,
-                display: "flex",
-                justifyContent: "center",
-                cursor: "pointer",
+                backgroundColor:
+                    label.toLowerCase() === "meta" ? "#3b5998" : "black",
+                ...styles.button,
             }}
         >
             <div
-                onClick={onClick()}
                 style={{
                     marginTop: 10,
                     display: "flex",
                     alignItems: "center",
                 }}
             >
-                {type == "apple" ? (
+                {children}
+                <Text color="white">Sign in with {label}</Text>
+            </div>
+        </button>
+    );
+};
+const IconButton = (key) => {
+    switch (key) {
+        case "Apple":
+            return (
+                <Button label={key}>
                     <BsApple
                         size={18}
                         color="white"
                         style={{ marginTop: -15, marginRight: 20 }}
                     />
-                ) : (
+                </Button>
+            );
+        case "Meta":
+            return (
+                <Button label={key}>
                     <BsMeta
                         size={18}
                         color="white"
                         style={{ marginTop: -15, marginRight: 20 }}
                     />
-                )}
-                <Text color="white">Sign in with {label}</Text>
-            </div>
-        </div>
-    );
+                </Button>
+            );
+        default:
+            return (
+                <Button label={key}>
+                    <HiIdentification
+                        size={25}
+                        color="white"
+                        style={{ marginTop: -15, marginRight: 20 }}
+                    />
+                </Button>
+            );
+    }
 };
 
 function MyForm({ label }) {
-    const onSubmit = () => (e) => {
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
+    //
+
+    //
+    const onSubmit = () => async (e) => {
         e.preventDefault();
-        console.log("submitted");
+        // Get data from the form.
+        const data = {
+            email: e.target.email.value,
+            password: e.target.password.value,
+            type: label.toLowerCase(),
+        };
+        // Send the data to the server in JSON format.
+        const JSONdata = JSON.stringify(data);
+        // API endpoint where we send form data.
+        const endpoint = "/api/form";
+        // Form the request for sending data to the server.
+        const options = {
+            // The method is POST because we are sending data.
+            method: "POST",
+            // Tell the server we're sending JSON.
+            headers: {
+                "Content-Type": "application/json",
+            },
+            // Body of the request is the JSON data we created above.
+            body: JSONdata,
+        };
+
+        // Send the form data to our forms API on Vercel and get a response.
+        const response = await fetch(endpoint, options);
+
+        // Get the response data from server as JSON.
+        // If server returns the name submitted, that means the form works.
+        const result = await response.json();
+        alert(`Is this your full name: ${result.data}`);
     };
 
     // james@james.com
@@ -63,46 +105,60 @@ function MyForm({ label }) {
     return (
         <form
             style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                backgroundColor: "white",
-                borderRadius: 10,
-                height: 350,
-                paddingTop: 20,
+                ...styles.form,
+                backgroundColor: theme.backgroundColor,
             }}
             onSubmit={onSubmit()}
         >
-            <Text variant="headlineSmall">Sign in</Text>
+            <Text variant="headlineSmall" color={theme.fontColor}>
+                Sign in
+            </Text>
             <div style={styles.container}>
-                <label for="email">Email:</label>
+                <label htmlFor="email">
+                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                        Email:
+                    </Text>
+                </label>
+
                 <input
                     style={styles.input}
+                    type="text"
                     id="email"
                     name="email"
-                    type="text"
-                    autoComplete="email"
-                    required
                     placeholder={"email@email.com"}
+                    required
                 />
             </div>
             <div style={styles.container}>
-                <label for="email">Password:</label>
+                <label htmlFor="email">
+                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                        Password:
+                    </Text>
+                </label>
                 <input
                     style={styles.input}
+                    type="text"
                     id="password"
                     name="password"
-                    type="text"
-                    autoComplete="password"
-                    placeholder={"******"}
+                    placeholder="password"
                     required
                 />
             </div>
-            <LogInButton onClick={onSubmit} type={label} />
+
+            {IconButton(label)}
         </form>
     );
 }
 const styles = {
+    form: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        backgroundColor: "white",
+        borderRadius: 10,
+        height: 350,
+        paddingTop: 20,
+    },
     input: {
         fontSize: 18,
         border: "1px solid grey",
@@ -113,9 +169,18 @@ const styles = {
     container: {
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "white",
+        // backgroundColor: "white",
         marginBottom: 10,
         width: 340,
+    },
+    button: {
+        width: "45%",
+        height: 50,
+        borderRadius: 10,
+        display: "flex",
+        justifyContent: "center",
+        cursor: "pointer",
+        border: "none",
     },
 };
 export { MyForm };
