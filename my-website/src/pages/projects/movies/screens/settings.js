@@ -249,7 +249,15 @@ function MySettings() {
                     border: `0px solid ${theme.panelBackgroundColor}`,
                 }}
             >
-                <NavigationBar omit="all" components={SCREENS} />
+                <NavigationBar
+                    components={SCREENS}
+                    hide={[
+                        "General",
+                        "Account",
+                        "VideoSettings",
+                        "GeneralSettings",
+                    ]}
+                />
             </div>
         </div>
     );

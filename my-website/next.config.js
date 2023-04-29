@@ -5,6 +5,7 @@ const nextConfig = {
         domains: ["picsum.photos", "fastly.picsum.photos", "image.tmdb.org"],
         // formats: ["image/avif", "image/webp"],
     },
+    // loaders: ["style-loader", "css-loader"],
 };
 
 module.exports = nextConfig;

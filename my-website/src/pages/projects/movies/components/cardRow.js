@@ -41,63 +41,71 @@ const RowTitle = ({ title, movieIDS }) => {
         </div>
     );
 };
+const CardRowNoModal = ({ movieIDS }) => {
+    const { state } = useContext(MovieContext);
+    const { screenNavigator } = useContext(NavigationContext);
 
-const CardRow = ({ title, bigRow, movieIDS }) => {
-    const {
-        state: { movies },
-    } = useContext(MovieContext);
     const {
         state: { theme },
     } = useContext(ThemeContext);
+    const movieIds = movieIDS || [];
+    // filters movies from the main state
+    const result = state.movies.filter(({ id }) => movieIds.includes(id)); // array of objs[{}]
+
+    return (
+        <div style={styles.smallContainer}>
+            <div style={{ marginLeft: 10 }}>
+                <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                    Up Next
+                </Text>
+            </div>
+            <div style={{ display: "flex" }}>
+                {result.map((el) => (
+                    <div
+                        key={el.id}
+                        onClick={screenNavigator("Video Screen", {
+                            id: el.id,
+                        })}
+                    >
+                        <MyCard
+                            poster={el.backdrop_path}
+                            sizePercent={0.26}
+                            buttonPosition={{ left: 130 }}
+                            movieID={el.id}
+                        />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+const CardRow = ({ title, movieIDS }) => {
+    const {
+        state: { movies },
+    } = useContext(MovieContext);
+
     const movieIds = movieIDS || [];
 
     // filters movies from the main state
     const result = movies.filter(({ id }) => movieIds.includes(id)); // array of objs[{}]
     // console.log(result);
     return (
-        <div style={bigRow ? styles.bigContainer : styles.smallContainer}>
-            {bigRow ? (
-                <>
-                    <RowTitle title={title} movieIDS={movieIds} />
-                    <div style={styles.bigRowContainer}>
-                        {result.map((el) => (
-                            <TheModal
-                                key={el.id}
-                                movieID={el.id}
-                                poster={el.backdrop_path}
-                                title={el.title}
-                                overview={el.overview}
-                                release_date={el.release_date}
-                                vote_average={el.vote_average}
-                                original_language={el.original_language}
-                            />
-                        ))}
-                    </div>
-                </>
-            ) : (
-                <>
-                    <div style={{ marginLeft: 10 }}>
-                        <Text
-                            variant="headlineExtraSmall"
-                            color={theme.fontColor}
-                        >
-                            Up Next
-                        </Text>
-                    </div>
-                    <div style={{ display: "flex" }}>
-                        {result.map((el) => (
-                            <MyCard
-                                onClick={() => () => console.log(el.title)}
-                                poster={el.backdrop_path}
-                                sizePercent={0.26}
-                                buttonPosition={{ left: 130 }}
-                                movieID={el.id}
-                                key={el.id}
-                            />
-                        ))}
-                    </div>
-                </>
-            )}
+        <div style={styles.bigContainer}>
+            <RowTitle title={title} movieIDS={movieIds} />
+            <div style={styles.bigRowContainer}>
+                {result.map((el) => (
+                    <TheModal
+                        key={el.id}
+                        movieID={el.id}
+                        poster={el.backdrop_path}
+                        title={el.title}
+                        overview={el.overview}
+                        release_date={el.release_date}
+                        vote_average={el.vote_average}
+                        original_language={el.original_language}
+                    />
+                ))}
+            </div>
         </div>
     );
 };
@@ -132,4 +140,4 @@ const styles = {
     },
 };
 
-export { CardRow };
+export { CardRow, CardRowNoModal };

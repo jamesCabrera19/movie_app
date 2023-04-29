@@ -6,10 +6,11 @@ import Image from "next/image";
 import { ImageLoader, genres } from "../components/utils";
 import { Context as MovieContext } from "../context/movieContext";
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
+import NavigationContext from "../context/navigation";
 
 import { MovieOrganizer } from "../components/Helpers";
 //
-import { CardRow } from "../components/cardRow";
+import { CardRow, CardRowNoModal } from "../components/cardRow";
 
 //
 const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
@@ -18,13 +19,11 @@ function ScreenCover({}) {
     const {
         state: { movies },
     } = useContext(MovieContext);
+    const { screenNavigator } = useContext(NavigationContext);
 
-    const src = movies.filter(
+    const randomMovie = movies.filter(
         (e, i) => i <= Math.floor(Math.random() * movies.length)
     )[0];
-    const handleClick = () => (e) => {
-        console.log("Open Movie");
-    };
 
     const styles = {
         flex: {
@@ -49,12 +48,14 @@ function ScreenCover({}) {
     return (
         <div
             style={{ ...styles.imageContainer, ...styles.flex }}
-            onClick={handleClick()}
+            onClick={screenNavigator("Video Screen", {
+                id: randomMovie ? randomMovie.id : 640146,
+            })}
         >
             <Image
                 alt="Movie Poster"
                 loader={ImageLoader}
-                src={src ? src.backdrop_path : img_src}
+                src={randomMovie ? randomMovie.backdrop_path : img_src}
                 quality={100}
                 width={733.6}
                 height={412.8}
@@ -75,7 +76,7 @@ const UpNext = ({}) => {
                 }}
             >
                 <ScreenCover />
-                <CardRow movieIDS={state.upNext} />
+                <CardRowNoModal movieIDS={state.upNext} />
             </div>
         </>
     );
@@ -112,7 +113,6 @@ function WatchNow({ props }) {
     return (
         <div>
             <UpNext />
-
             {returnMovieIds(movies, 5).map((el) => (
                 <CardRow
                     key={el.id}

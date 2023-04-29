@@ -24,7 +24,7 @@ const NavigationButton = ({ styles, title, onClick }) => {
     );
 };
 
-function NavigationBar({ components, omit }) {
+function NavigationBar({ components, omit, hide }) {
     const [state, setState] = useState(components);
     const {
         state: { theme },
@@ -60,9 +60,15 @@ function NavigationBar({ components, omit }) {
                     }}
                 >
                     {state.map((el) => {
-                        if (el.title === omit || omit === "all") {
+                        const hiddenItems = Array.from(hide);
+                        if (hiddenItems.includes(el.title)) {
+                            // console.log(el.title);
                             return null;
                         }
+
+                        // if (el.title === omit || omit === "all") {
+                        //     return null;
+                        // }
                         return (
                             <NavigationButton
                                 key={el.id}
