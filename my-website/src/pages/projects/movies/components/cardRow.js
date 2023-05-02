@@ -61,19 +61,18 @@ const CardRowNoModal = ({ movieIDS }) => {
             </div>
             <div style={{ display: "flex" }}>
                 {result.map((el) => (
-                    <div
+                    <MyCard
+                        onClick={() =>
+                            screenNavigator("Video Screen", {
+                                id: el.id,
+                            })
+                        }
+                        poster={el.backdrop_path}
+                        buttonPosition={{ left: 130 }}
+                        sizePercent={0.26}
+                        movieID={el.id}
                         key={el.id}
-                        onClick={screenNavigator("Video Screen", {
-                            id: el.id,
-                        })}
-                    >
-                        <MyCard
-                            poster={el.backdrop_path}
-                            sizePercent={0.26}
-                            buttonPosition={{ left: 130 }}
-                            movieID={el.id}
-                        />
-                    </div>
+                    />
                 ))}
             </div>
         </div>
