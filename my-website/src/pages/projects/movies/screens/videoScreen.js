@@ -1,5 +1,7 @@
 import React, { useContext, useCallback, useEffect, useState } from "react";
 import NavigationContext from "../context/navigation";
+import { Context as ThemeContext } from "../context/themeContext";
+
 import { Context as MovieContext } from "../context/movieContext";
 import ReactPlayer from "react-player";
 import useFetchVideoLink from "../hooks/useFetchVideoLink";
@@ -46,6 +48,9 @@ const renderVideoContainers = (videos) => {
     ));
 };
 const VideoCategories = ({ id }) => {
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     const { data, error, isLoading } = useFetchVideoLink(id, "en");
     const [vids, setVids] = useState(undefined);
 
@@ -78,6 +83,8 @@ const VideoCategories = ({ id }) => {
             justifyContent: "space-evenly",
             display: "flex",
             flexWrap: "wrap",
+            marginTop: 40,
+            marginBottom: 60,
         },
     };
 
@@ -91,8 +98,26 @@ const VideoCategories = ({ id }) => {
         <div style={styles.container}>
             <div style={styles.categories}>
                 {videoTypes.map((el, idx) => (
-                    <div onClick={() => filterVideoFunction(el)} key={idx}>
-                        <Text>{el}</Text>
+                    <div
+                        style={{
+                            width: 200,
+                            backgroundColor: theme.panelBackgroundColor,
+                            display: "flex",
+                            justifyContent: "center",
+                            borderRadius: 10,
+                            paddingTop: 15,
+                        }}
+                        role="button"
+                        tabIndex="0"
+                        onClick={() => filterVideoFunction(el)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                filterVideoFunction(el);
+                            }
+                        }}
+                        key={idx}
+                    >
+                        <Text color={theme.fontColor}>{el}</Text>
                     </div>
                 ))}
             </div>
@@ -112,7 +137,7 @@ const VideoScreen = () => {
     } = useContext(NavigationContext);
     const [movie] = state.movies.filter((el) => el.id === id);
     //
-    console.log(movie);
+
     return (
         <div
             style={{
@@ -139,7 +164,7 @@ const VideoScreen = () => {
                 style={{
                     // width: 500,
                     // margin: "-200px auto 80px auto",
-                    border: "1px solid red",
+                    // border: "1px solid red",
                     display: "flex",
                     flexDirection: "column",
                 }}
