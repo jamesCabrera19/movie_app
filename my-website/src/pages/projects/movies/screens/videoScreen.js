@@ -3,13 +3,13 @@ import NavigationContext from "../context/navigation";
 import { Context as ThemeContext } from "../context/themeContext";
 
 import { Context as MovieContext } from "../context/movieContext";
-import ReactPlayer from "react-player";
+import ReactPlayer from "react-player/lazy";
 import useFetchVideoLink from "../hooks/useFetchVideoLink";
 import Image from "next/image";
 import { ImageLoader } from "../components/utils";
 import { Text } from "../components/text";
 const { v4: uuidv4 } = require("uuid");
-
+import useMoviedb from "../hooks/useMoviedb";
 //
 //
 // console.log(video, isLoading, error);
@@ -25,6 +25,61 @@ const { v4: uuidv4 } = require("uuid");
 // size: 1080
 //type: "Behind the Scenes"
 
+//* ADDITIONAL MOVIE INFO
+// URL: /movie/{movie_id}/credits
+// URL: /movie/{movie_id}/reviews
+// URL: /movie/{movie_id}/recommendations
+const Test = ({ id }) => {
+    const { data, error, isLoading } = useMoviedb(id);
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+    if (isLoading) {
+        return <div>loading...</div>;
+    }
+
+    if (data) {
+        return (
+            <div>
+                <div
+                    style={{
+                        display: "flex",
+                        overflowX: "scroll",
+                        height: 300,
+                    }}
+                >
+                    {data.cast?.map((el) => (
+                        <div key={el.id}>
+                            <div
+                                style={{
+                                    height: 150,
+                                    width: 150,
+                                    // border: "1px solid red",
+                                    borderRadius: 150 / 2,
+                                }}
+                            >
+                                {el.profile_path ? (
+                                    <Image
+                                        alt={el.name}
+                                        loader={ImageLoader}
+                                        src={el.profile_path}
+                                        width={100}
+                                        height={150}
+                                        style={{ borderRadius: 150 / 2 }}
+                                    />
+                                ) : (
+                                    <Text>{el.name}</Text>
+                                )}
+                            </div>
+                            <Text>{el.name}</Text>
+                            <Text>{el.character}</Text>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+};
 const VideoContainer = ({ id }) => {
     return (
         <div
@@ -35,6 +90,8 @@ const VideoContainer = ({ id }) => {
             }}
         >
             <ReactPlayer
+                controls
+                light
                 width={320}
                 height={180}
                 url={`https://www.youtube.com/watch?v=${id}`}
@@ -42,15 +99,41 @@ const VideoContainer = ({ id }) => {
         </div>
     );
 };
+const VideoButtons = ({ buttons, onClick }) => {
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
+
+    return buttons.map((el, idx) => (
+        <div
+            style={{
+                width: 200,
+                backgroundColor: theme.panelBackgroundColor,
+                display: "flex",
+                justifyContent: "center",
+                borderRadius: 10,
+                paddingTop: 15,
+            }}
+            role="button"
+            tabIndex="0"
+            onClick={() => onClick(el)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                    filterVideoFunction(el);
+                }
+            }}
+            key={idx}
+        >
+            <Text color={theme.fontColor}>{el}</Text>
+        </div>
+    ));
+};
 const renderVideoContainers = (videos) => {
     return videos.map((video) => (
         <VideoContainer key={video.key} id={video.key} />
     ));
 };
 const VideoCategories = ({ id }) => {
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
     const { data, error, isLoading } = useFetchVideoLink(id, "en");
     const [vids, setVids] = useState(undefined);
 
@@ -73,8 +156,9 @@ const VideoCategories = ({ id }) => {
         container: {
             display: "flex",
             flexDirection: "column",
+            marginTop: 40,
         },
-        categories: {
+        buttons: {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-evenly",
@@ -96,30 +180,11 @@ const VideoCategories = ({ id }) => {
     }
     return (
         <div style={styles.container}>
-            <div style={styles.categories}>
-                {videoTypes.map((el, idx) => (
-                    <div
-                        style={{
-                            width: 200,
-                            backgroundColor: theme.panelBackgroundColor,
-                            display: "flex",
-                            justifyContent: "center",
-                            borderRadius: 10,
-                            paddingTop: 15,
-                        }}
-                        role="button"
-                        tabIndex="0"
-                        onClick={() => filterVideoFunction(el)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                                filterVideoFunction(el);
-                            }
-                        }}
-                        key={idx}
-                    >
-                        <Text color={theme.fontColor}>{el}</Text>
-                    </div>
-                ))}
+            <div style={styles.buttons}>
+                <VideoButtons
+                    onClick={filterVideoFunction}
+                    buttons={videoTypes}
+                />
             </div>
 
             <div style={styles.videoContainer}>
@@ -131,6 +196,9 @@ const VideoCategories = ({ id }) => {
     );
 };
 const VideoScreen = () => {
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
     const { state } = useContext(MovieContext);
     const {
         params: { id },
@@ -138,15 +206,37 @@ const VideoScreen = () => {
     const [movie] = state.movies.filter((el) => el.id === id);
     //
 
+    const styles = {
+        container: {
+            display: "flex",
+            flexDirection: "column",
+        },
+        description: {
+            display: "flex",
+            position: "relative",
+            margin: "auto",
+            overflow: "hidden",
+        },
+        image: {
+            borderRadius: 10,
+            boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
+        },
+        text: {
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            padding: 20,
+            boxSizing: "border-box",
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+        },
+    };
+
     return (
-        <div
-            style={{
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-            }}
-        >
-            <div style={{ margin: "auto" }}>
+        <div style={styles.container}>
+            <div style={styles.description}>
                 <Image
                     alt="Movie Poster"
                     loader={ImageLoader}
@@ -154,25 +244,15 @@ const VideoScreen = () => {
                     width={1080}
                     height={600}
                     quality={100}
-                    style={{
-                        borderRadius: 10,
-                        boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
-                    }}
+                    style={styles.image}
                 />
-            </div>
-            <div
-                style={{
-                    // width: 500,
-                    // margin: "-200px auto 80px auto",
-                    // border: "1px solid red",
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-            >
-                <Text>{movie.overview}</Text>
+                <div style={styles.text}>
+                    <Text color={theme.backgroundColor}>{movie.overview}</Text>
+                </div>
             </div>
 
             <VideoCategories id={id} />
+            <Test id={id} />
         </div>
     );
 };

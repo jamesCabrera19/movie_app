@@ -13,7 +13,7 @@ export default (movie_id, language) => {
             setIsLoading(true);
             try {
                 const response = await movieApi.get(
-                    `/movie/${movie_id}/videos?language=${language}-US`
+                    `/movie/${id}/videos?language=${language}-US`
                 );
 
                 setData(response.data.results);
