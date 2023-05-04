@@ -29,56 +29,126 @@ import useMoviedb from "../hooks/useMoviedb";
 // URL: /movie/{movie_id}/credits
 // URL: /movie/{movie_id}/reviews
 // URL: /movie/{movie_id}/recommendations
-const Test = ({ id }) => {
-    const { data, error, isLoading } = useMoviedb(id);
+const CastAndCrew = ({ movie_id }) => {
+    const { data, error, isLoading } = useMoviedb(movie_id); // returns movie information about the cast, crew and reviews
+
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
+
     if (error) {
         return <div>Error: {error.message}</div>;
     }
-    if (isLoading) {
-        return <div>loading...</div>;
-    }
 
-    if (data) {
+    const styles = {
+        container: {
+            display: "flex",
+            overflowX: "scroll",
+            overflowY: "hidden",
+        },
+        imageContainer: {
+            height: 150,
+            width: 150,
+            borderRadius: 150 / 2,
+        },
+        textContainer: {
+            backgroundColor: theme.fontColor,
+            height: 150,
+            width: 100,
+            borderRadius: 150 / 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: 40,
+        },
+    };
+    const getInitials = (string) => {
+        const nameArray = string.split(" ");
+        const firstInitial = nameArray[0].charAt(0);
+        const lastInitial = nameArray[nameArray.length - 1].charAt(0);
+        return firstInitial + lastInitial;
+    };
+    const renderImage = (el) => (
+        <Image
+            alt={el.name}
+            loader={ImageLoader}
+            src={el.profile_path}
+            width={100}
+            height={150}
+            style={{ borderRadius: 150 / 2 }}
+        />
+    );
+    const renderText = (name) => (
+        <div style={styles.textContainer}>
+            <p>{getInitials(name)}</p>
+        </div>
+    );
+
+    if (data && !isLoading) {
         return (
-            <div>
-                <div
-                    style={{
-                        display: "flex",
-                        overflowX: "scroll",
-                        height: 300,
-                    }}
-                >
-                    {data.cast?.map((el) => (
-                        <div key={el.id}>
-                            <div
-                                style={{
-                                    height: 150,
-                                    width: 150,
-                                    // border: "1px solid red",
-                                    borderRadius: 150 / 2,
-                                }}
-                            >
-                                {el.profile_path ? (
-                                    <Image
-                                        alt={el.name}
-                                        loader={ImageLoader}
-                                        src={el.profile_path}
-                                        width={100}
-                                        height={150}
-                                        style={{ borderRadius: 150 / 2 }}
-                                    />
-                                ) : (
-                                    <Text>{el.name}</Text>
-                                )}
+            <>
+                <div style={styles.container}>
+                    {data.cast &&
+                        data.cast.map((el) => (
+                            <div key={el.id}>
+                                <div style={styles.imageContainer}>
+                                    {el.profile_path
+                                        ? renderImage(el)
+                                        : renderText(el.name)}
+                                </div>
+
+                                <div>
+                                    <p style={{ color: theme.fontColor }}>
+                                        {el.name}
+                                    </p>
+                                    <p
+                                        style={{
+                                            fontSize: 12,
+                                            color: theme.fontColor,
+                                        }}
+                                    >
+                                        {el.character}
+                                    </p>
+                                </div>
                             </div>
-                            <Text>{el.name}</Text>
-                            <Text>{el.character}</Text>
-                        </div>
-                    ))}
+                        ))}
                 </div>
-            </div>
+                <div
+                    style={{ border: "1px solid red", height: 200, width: 200 }}
+                >
+                    <Text>{data.results[0].author}</Text>
+                    <p style={{ fontSize: 14, color: theme.fontColor }}>
+                        {data.results[0].content}
+                    </p>
+                </div>
+            </>
         );
     }
+};
+const VideoButtons = ({ buttons, onClick }) => {
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
+
+    return buttons.map((el, idx) => (
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                width: 200,
+                borderRadius: 10,
+                paddingTop: 15,
+                backgroundColor: theme.panelBackgroundColor,
+            }}
+            role="button"
+            tabIndex="0"
+            onClick={() => onClick(el)}
+            key={idx}
+        >
+            <Text color={theme.fontColor}>{el}</Text>
+        </div>
+    ));
 };
 const VideoContainer = ({ id }) => {
     return (
@@ -99,35 +169,6 @@ const VideoContainer = ({ id }) => {
         </div>
     );
 };
-const VideoButtons = ({ buttons, onClick }) => {
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
-
-    return buttons.map((el, idx) => (
-        <div
-            style={{
-                width: 200,
-                backgroundColor: theme.panelBackgroundColor,
-                display: "flex",
-                justifyContent: "center",
-                borderRadius: 10,
-                paddingTop: 15,
-            }}
-            role="button"
-            tabIndex="0"
-            onClick={() => onClick(el)}
-            onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                    filterVideoFunction(el);
-                }
-            }}
-            key={idx}
-        >
-            <Text color={theme.fontColor}>{el}</Text>
-        </div>
-    ));
-};
 const renderVideoContainers = (videos) => {
     return videos.map((video) => (
         <VideoContainer key={video.key} id={video.key} />
@@ -135,6 +176,7 @@ const renderVideoContainers = (videos) => {
 };
 const VideoCategories = ({ id }) => {
     const { data, error, isLoading } = useFetchVideoLink(id, "en");
+    // useFetchVideoLink returns an array of videos for the movie provided.
     const [vids, setVids] = useState(undefined);
 
     const videoTypes = Object.keys(
@@ -144,13 +186,9 @@ const VideoCategories = ({ id }) => {
         }, {})
     ); /// this return an array of Strings ['trailers','Clip',...]
     const defaultVideos = data.filter((el) => el.type === "Trailer");
-    const filterVideoFunction = (type) => {
-        setVids(() => {
-            if (type) {
-                return data.filter((el) => el.type === type);
-            }
-        });
-    };
+
+    const filterVideoFunction = (type) =>
+        setVids(type ? data.filter((el) => el.type === type) : undefined);
 
     const styles = {
         container: {
@@ -162,6 +200,7 @@ const VideoCategories = ({ id }) => {
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-evenly",
+            flexWrap: "wrap",
         },
         videoContainer: {
             justifyContent: "space-evenly",
@@ -175,37 +214,38 @@ const VideoCategories = ({ id }) => {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
-    if (isLoading) {
-        return <div>loading...</div>;
-    }
-    return (
-        <div style={styles.container}>
-            <div style={styles.buttons}>
-                <VideoButtons
-                    onClick={filterVideoFunction}
-                    buttons={videoTypes}
-                />
-            </div>
 
-            <div style={styles.videoContainer}>
-                {vids
-                    ? renderVideoContainers(vids)
-                    : renderVideoContainers(defaultVideos)}
+    if (data && !isLoading) {
+        return (
+            <div style={styles.container}>
+                <div style={styles.buttons}>
+                    <VideoButtons
+                        onClick={filterVideoFunction}
+                        buttons={videoTypes}
+                    />
+                </div>
+
+                <div style={styles.videoContainer}>
+                    {vids
+                        ? renderVideoContainers(vids)
+                        : renderVideoContainers(defaultVideos)}
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 };
 const VideoScreen = () => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
+
     const { state } = useContext(MovieContext);
     const {
         params: { id },
     } = useContext(NavigationContext);
     const [movie] = state.movies.filter((el) => el.id === id);
     //
-
+    // *http://localhost:3000/projects/movies
     const styles = {
         container: {
             display: "flex",
@@ -233,7 +273,6 @@ const VideoScreen = () => {
             borderBottomRightRadius: 10,
         },
     };
-
     return (
         <div style={styles.container}>
             <div style={styles.description}>
@@ -252,7 +291,15 @@ const VideoScreen = () => {
             </div>
 
             <VideoCategories id={id} />
-            <Test id={id} />
+            <div
+                style={{
+                    borderTop: `1px solid #808080`,
+                    marginBottom: 50,
+                    width: "80%",
+                    alignSelf: "center",
+                }}
+            />
+            <CastAndCrew movie_id={id} />
         </div>
     );
 };
