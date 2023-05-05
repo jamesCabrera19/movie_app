@@ -6,7 +6,7 @@ import movieApi from "../movieAPI";
 // URL: /movie/{movie_id}/recommendations
 
 export default (movie_id) => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState({ results: [], crew: [], cast: [] });
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 

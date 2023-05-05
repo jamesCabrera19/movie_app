@@ -4,12 +4,14 @@ import Image from "next/image";
 // BOOTSTRAP
 import Modal from "react-bootstrap/Modal";
 // OTHER
-import { ImageLoader } from "./utils";
+import { ImageLoader, imageLoaderHighQuality } from "./utils";
 // COMPONENTS
 import { Text } from "./text";
 import MyCard from "./myCard";
 // CONTEXT
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
+import NavigationContext from "../context/navigation";
+
 // THEME
 import { Context as ThemeContext } from "../context/themeContext";
 //
@@ -60,60 +62,57 @@ const ModalBodyText = ({ title, overview, vote, language, date }) => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
+    const roundTo = (n, digits) => {
+        if (digits === undefined) {
+            digits = 0;
+        }
+        const multiplicator = Math.pow(10, digits);
+        n = parseFloat((n * multiplicator).toFixed(11));
+        const test = Math.round(n) / multiplicator;
+
+        return +test.toFixed(digits);
+    };
+    const styles = {
+        container: {
+            display: "flex",
+            position: "relative",
+            borderRadius: 10,
+        },
+        boxContainer: {
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            padding: 10,
+            boxSizing: "border-box",
+            borderBottomLeftRadius: 10,
+            borderBottomRightRadius: 10,
+        },
+        date: {
+            display: "flex",
+            justifyContent: "space-evenly",
+        },
+        textColor:
+            theme.type == "dark" ? theme.backgroundColor : theme.fontColor,
+    };
     return (
-        <div
-            style={{
-                display: "flex",
-                paddingRight: 20,
-                paddingLeft: 20,
-                position: "relative",
-                backgroundColor: theme.themeColorToRGBA(0.5, theme.buttonColor),
-                borderRadius: 10,
-            }}
-        >
-            <div>
-                <Text
-                    variant="headlineExtraSmall"
-                    color={theme.backgroundColor}
-                >
+        <div style={styles.container}>
+            <div style={styles.boxContainer}>
+                <Text variant="headlineExtraSmall" color={styles.textColor}>
                     {title}
                 </Text>
-                <Text
-                    // variant="headlineExtraSmall"
-                    color={theme.backgroundColor}
-                >
-                    {overview}
-                </Text>
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "flex-start",
-                    }}
-                >
-                    <Text
-                        variant="headlineExtraSmall"
-                        color={theme.backgroundColor}
-                    >
-                        {date}
+                <Text color={styles.textColor}>{overview}</Text>
+                <div style={styles.date}>
+                    <Text variant="headlineExtraSmall" color={styles.textColor}>
+                        Released — {date}
                     </Text>
-                    <div
-                        style={{
-                            margin: "0 20px",
-                        }}
-                    >
-                        <Text
-                            variant="headlineExtraSmall"
-                            color={theme.backgroundColor}
-                        >
-                            {vote}
-                        </Text>
-                    </div>
+                    <Text variant="headlineExtraSmall" color={styles.textColor}>
+                        Rating — {roundTo((vote / 10) * 100, 1)}%
+                    </Text>
 
-                    <Text
-                        variant="headlineExtraSmall"
-                        color={theme.backgroundColor}
-                    >
-                        {language}
+                    <Text variant="headlineExtraSmall" color={styles.textColor}>
+                        Original language — {language.toUpperCase()}
                     </Text>
                 </div>
             </div>
@@ -125,7 +124,6 @@ const ModalImage = ({ src, onClick }) => {
         <div
             style={{
                 borderRadius: 10,
-                marginBottom: 20,
                 display: "flex",
                 justifyContent: "center",
             }}
@@ -133,10 +131,10 @@ const ModalImage = ({ src, onClick }) => {
         >
             <Image
                 alt="Movie Poster"
-                loader={ImageLoader}
+                loader={imageLoaderHighQuality}
                 src={src}
-                width={733}
-                height={412}
+                width={800}
+                height={500}
                 style={{ borderRadius: 10 }}
             />
         </div>
@@ -147,18 +145,25 @@ const ModalBody = (props) => {
         handleDispatch,
         state: { upNext, myMovies },
     } = useContext(LikedMoviesContext); //upNext // myMovies
+
+    const { screenNavigator } = useContext(NavigationContext);
+
     //
     const date = new Date(props.release_date).toDateString();
     //
-    const handleBackgroundClick = () => (e) =>
-        console.log("Open Video: ", props);
+    const handlePlayNavigation = () =>
+        screenNavigator("Video Screen", {
+            id: props.movieID,
+        });
     //
-    const Test = (props) => console.log(props.movieID);
 
     const buttonData = [
         {
             title: "Play",
-            onClick: (args) => (e) => Test(props),
+            onClick: () =>
+                screenNavigator("Video Screen", {
+                    id: props.movieID,
+                }),
         },
         {
             title: "Add to Up Next",
@@ -174,11 +179,8 @@ const ModalBody = (props) => {
     ];
     return (
         <>
-            <Modal.Body style={{ padding: 0, margin: 0, width: 733 }}>
-                <ModalImage
-                    onClick={handleBackgroundClick}
-                    src={props.poster}
-                />
+            <Modal.Body style={{ padding: 0, margin: 0, width: 800 }}>
+                <ModalImage onClick={handlePlayNavigation} src={props.poster} />
 
                 <ModalBodyText
                     title={props.title}

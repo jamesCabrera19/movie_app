@@ -1,6 +1,10 @@
 const ImageLoader = ({ src, width, quality }) =>
     `https://image.tmdb.org/t/p/w500${src}`;
 
+const imageLoaderHighQuality = ({ src }) => {
+    return `https://image.tmdb.org/t/p/original${src}`;
+};
+
 const genres = [
     {
         id: 28,
@@ -80,4 +84,4 @@ const genres = [
     },
 ];
 
-export { ImageLoader, genres };
+export { ImageLoader, genres, imageLoaderHighQuality };

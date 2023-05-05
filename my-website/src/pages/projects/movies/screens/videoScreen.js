@@ -6,7 +6,7 @@ import { Context as MovieContext } from "../context/movieContext";
 import ReactPlayer from "react-player/lazy";
 import useFetchVideoLink from "../hooks/useFetchVideoLink";
 import Image from "next/image";
-import { ImageLoader } from "../components/utils";
+import { imageLoaderHighQuality, ImageLoader } from "../components/utils";
 import { Text } from "../components/text";
 const { v4: uuidv4 } = require("uuid");
 import useMoviedb from "../hooks/useMoviedb";
@@ -40,29 +40,6 @@ const CastAndCrew = ({ movie_id }) => {
         return <div>Error: {error.message}</div>;
     }
 
-    const styles = {
-        container: {
-            display: "flex",
-            overflowX: "scroll",
-            overflowY: "hidden",
-        },
-        imageContainer: {
-            height: 150,
-            width: 150,
-            borderRadius: 150 / 2,
-        },
-        textContainer: {
-            backgroundColor: theme.fontColor,
-            height: 150,
-            width: 100,
-            borderRadius: 150 / 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontSize: 40,
-        },
-    };
     const getInitials = (string) => {
         const nameArray = string.split(" ");
         const firstInitial = nameArray[0].charAt(0);
@@ -80,7 +57,12 @@ const CastAndCrew = ({ movie_id }) => {
         />
     );
     const renderText = (name) => (
-        <div style={styles.textContainer}>
+        <div
+            style={{
+                ...styles.CastAndCrew.textContainer,
+                backgroundColor: theme.fontColor,
+            }}
+        >
             <p>{getInitials(name)}</p>
         </div>
     );
@@ -88,11 +70,11 @@ const CastAndCrew = ({ movie_id }) => {
     if (data && !isLoading) {
         return (
             <>
-                <div style={styles.container}>
+                <div style={styles.CastAndCrew.container}>
                     {data.cast &&
                         data.cast.map((el) => (
                             <div key={el.id}>
-                                <div style={styles.imageContainer}>
+                                <div style={styles.CastAndCrew.imageContainer}>
                                     {el.profile_path
                                         ? renderImage(el)
                                         : renderText(el.name)}
@@ -114,13 +96,27 @@ const CastAndCrew = ({ movie_id }) => {
                             </div>
                         ))}
                 </div>
-                <div
-                    style={{ border: "1px solid red", height: 200, width: 200 }}
-                >
-                    <Text>{data.results[0].author}</Text>
-                    <p style={{ fontSize: 14, color: theme.fontColor }}>
-                        {data.results[0].content}
-                    </p>
+                <div style={styles.CastAndCrew.lineBreaker} />
+
+                <div style={styles.CastAndCrew.reviewsContainer}>
+                    {data.results.map((review) => (
+                        <div
+                            style={{
+                                ...styles.CastAndCrew.reviews,
+                                backgroundColor: theme.panelBackgroundColor,
+                            }}
+                        >
+                            <Text color={theme.fontColor}>{review.author}</Text>
+                            <p
+                                style={{
+                                    fontSize: 14,
+                                    color: theme.fontColor,
+                                }}
+                            >
+                                {review.content}
+                            </p>
+                        </div>
+                    ))}
                 </div>
             </>
         );
@@ -134,11 +130,7 @@ const VideoButtons = ({ buttons, onClick }) => {
     return buttons.map((el, idx) => (
         <div
             style={{
-                display: "flex",
-                justifyContent: "center",
-                width: 200,
-                borderRadius: 10,
-                paddingTop: 15,
+                ...styles.VideoButtons,
                 backgroundColor: theme.panelBackgroundColor,
             }}
             role="button"
@@ -152,13 +144,7 @@ const VideoButtons = ({ buttons, onClick }) => {
 };
 const VideoContainer = ({ id }) => {
     return (
-        <div
-            style={{
-                borderRadius: 10,
-                overflow: "hidden",
-                margin: 10,
-            }}
-        >
+        <div style={styles.VideoContainer}>
             <ReactPlayer
                 controls
                 light
@@ -190,42 +176,21 @@ const VideoCategories = ({ id }) => {
     const filterVideoFunction = (type) =>
         setVids(type ? data.filter((el) => el.type === type) : undefined);
 
-    const styles = {
-        container: {
-            display: "flex",
-            flexDirection: "column",
-            marginTop: 40,
-        },
-        buttons: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            flexWrap: "wrap",
-        },
-        videoContainer: {
-            justifyContent: "space-evenly",
-            display: "flex",
-            flexWrap: "wrap",
-            marginTop: 40,
-            marginBottom: 60,
-        },
-    };
-
     if (error) {
         return <div>Error: {error.message}</div>;
     }
 
     if (data && !isLoading) {
         return (
-            <div style={styles.container}>
-                <div style={styles.buttons}>
+            <div style={styles.VideoCategories.container}>
+                <div style={styles.VideoCategories.buttons}>
                     <VideoButtons
                         onClick={filterVideoFunction}
                         buttons={videoTypes}
                     />
                 </div>
 
-                <div style={styles.videoContainer}>
+                <div style={styles.VideoCategories.videoContainer}>
                     {vids
                         ? renderVideoContainers(vids)
                         : renderVideoContainers(defaultVideos)}
@@ -234,19 +199,9 @@ const VideoCategories = ({ id }) => {
         );
     }
 };
-const VideoScreen = () => {
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
 
-    const { state } = useContext(MovieContext);
-    const {
-        params: { id },
-    } = useContext(NavigationContext);
-    const [movie] = state.movies.filter((el) => el.id === id);
-    //
-    // *http://localhost:3000/projects/movies
-    const styles = {
+const styles = {
+    VideoScreen: {
         container: {
             display: "flex",
             flexDirection: "column",
@@ -272,20 +227,113 @@ const VideoScreen = () => {
             borderBottomLeftRadius: 10,
             borderBottomRightRadius: 10,
         },
-    };
+    },
+    VideoCategories: {
+        container: {
+            display: "flex",
+            flexDirection: "column",
+            marginTop: 40,
+        },
+        buttons: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            flexWrap: "wrap",
+        },
+        videoContainer: {
+            justifyContent: "space-evenly",
+            display: "flex",
+            flexWrap: "wrap",
+            marginTop: 40,
+            marginBottom: 60,
+        },
+    },
+    VideoContainer: {
+        borderRadius: 10,
+        overflow: "hidden",
+        margin: 10,
+    },
+    VideoButtons: {
+        display: "flex",
+        justifyContent: "center",
+        width: 200,
+        borderRadius: 10,
+        paddingTop: 15,
+    },
+    CastAndCrew: {
+        container: {
+            display: "flex",
+            overflowX: "scroll",
+            overflowY: "hidden",
+            width: "85%",
+            margin: "auto",
+        },
+        imageContainer: {
+            height: 150,
+            width: 150,
+            borderRadius: 150 / 2,
+        },
+        textContainer: {
+            height: 150,
+            width: 100,
+            borderRadius: 150 / 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: 40,
+        },
+        lineBreaker: {
+            borderTop: `1px solid #808080`,
+            marginTop: 50,
+            marginBottom: 50,
+            width: "80%",
+            alignSelf: "center",
+        },
+        reviewsContainer: {
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            width: "85%",
+            margin: "auto",
+        },
+        reviews: {
+            width: 240,
+            height: 300,
+            overflowY: "scroll",
+            margin: 20,
+            borderRadius: 10,
+            padding: 20,
+        },
+    },
+};
+const VideoScreen = () => {
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
+
+    const { state } = useContext(MovieContext);
+    const {
+        params: { id },
+    } = useContext(NavigationContext);
+    const [movie] = state.movies.filter((el) => el.id === id);
+    //
+    // *http://localhost:3000/projects/movies
+
     return (
-        <div style={styles.container}>
-            <div style={styles.description}>
+        <div style={styles.VideoScreen.container}>
+            <div style={styles.VideoScreen.description}>
                 <Image
                     alt="Movie Poster"
-                    loader={ImageLoader}
+                    loader={imageLoaderHighQuality}
                     src={movie.backdrop_path}
                     width={1080}
                     height={600}
                     quality={100}
-                    style={styles.image}
+                    style={styles.VideoScreen.image}
                 />
-                <div style={styles.text}>
+                <div style={styles.VideoScreen.text}>
                     <Text color={theme.backgroundColor}>{movie.overview}</Text>
                 </div>
             </div>
