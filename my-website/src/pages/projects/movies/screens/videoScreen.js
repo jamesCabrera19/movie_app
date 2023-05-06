@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useEffect, useState } from "react";
+import React, { useContext, useRef, useEffect, useState } from "react";
 import NavigationContext from "../context/navigation";
 import { Context as ThemeContext } from "../context/themeContext";
 
@@ -24,7 +24,38 @@ import useMoviedb from "../hooks/useMoviedb";
 // site: "YouTube"
 // size: 1080
 //type: "Behind the Scenes"
+function useVideoPlayTime() {
+    const [playTime, setPlayTime] = useState(0);
+    const [isPlaying, setIsPlaying] = useState(false);
 
+    useEffect(() => {
+        let interval = null;
+
+        if (isPlaying) {
+            interval = setInterval(() => {
+                setPlayTime((prevPlayTime) => prevPlayTime + 1);
+            }, 1000);
+        }
+
+        return () => clearInterval(interval);
+    }, [isPlaying]);
+
+    const handlePlay = () => {
+        setIsPlaying(true);
+    };
+
+    const handlePause = (currentTime) => {
+        setIsPlaying(false);
+        setPlayTime(currentTime);
+    };
+
+    function handleStop() {
+        setIsPlaying(false);
+        setPlayTime(0);
+    }
+
+    return [playTime, handlePlay, handlePause, handleStop];
+}
 //* ADDITIONAL MOVIE INFO
 // URL: /movie/{movie_id}/credits
 // URL: /movie/{movie_id}/reviews
@@ -143,15 +174,27 @@ const VideoButtons = ({ buttons, onClick }) => {
     ));
 };
 const VideoContainer = ({ id }) => {
+    const [playTime, handlePlay, handlePause, handleStop] = useVideoPlayTime();
+
+    const sendPlayTimetoApi = (time) => {};
     return (
         <div style={styles.VideoContainer}>
             <ReactPlayer
+                onPlay={() => {
+                    handlePlay();
+                }}
+                onPause={() => handlePause(playTime)}
+                onEnded={() => {
+                    sendPlayTimetoApi(playTime);
+                    handleStop();
+                }}
                 controls
                 light
                 width={320}
                 height={180}
                 url={`https://www.youtube.com/watch?v=${id}`}
             />
+            <p style={{ color: "red", fontSize: 20 }}>{playTime}</p>
         </div>
     );
 };

@@ -70,13 +70,13 @@ function App() {
 }
 
 // todo =>
-// 1. stop working on everything else and work on making the movie video Playable.
-// a. UP NEXT movies should redirect to the PlayMovieScreen (not yet created),
-// b. PosterIntro should redirect to the PlayMovieScreen
-// c. MyMovies should redirect to the PlayMovieScreen
+// * 1. stop working on everything else and work on making the movie video Playable.
+// * a. UP NEXT movies should redirect to the PlayMovieScreen (not yet created),
+// * b. PosterIntro should redirect to the PlayMovieScreen
+// * c. MyMovies should redirect to the PlayMovieScreen
 // 2. Divide MyMovies Screen into TWO sections. TV Shows and Movies
 // 3. Once movies are playable start collecting user "play time".
-// a. User starts a movie Fire Function that will start adding Time.
+// a. User starts a movie => Fire the Function that will start adding Time.
 // NO MORE DESIGNING COMPONENTS UNTIL THIS IS DONE.
 // DESIGNING COMPONENTS TAKES TIME AND BURNS YOU OUT.
 // take breaks to implement sign in code
