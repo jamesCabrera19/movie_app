@@ -1,15 +1,19 @@
-import React, { useContext, useRef, useEffect, useState } from "react";
+import React, { useContext, useState, useRef } from "react";
+//
 import NavigationContext from "../context/navigation";
 import { Context as ThemeContext } from "../context/themeContext";
 
 import { Context as MovieContext } from "../context/movieContext";
+//
 import ReactPlayer from "react-player/lazy";
-import useFetchVideoLink from "../hooks/useFetchVideoLink";
 import Image from "next/image";
+//
 import { imageLoaderHighQuality, ImageLoader } from "../components/utils";
 import { Text } from "../components/text";
-const { v4: uuidv4 } = require("uuid");
+//
 import useMoviedb from "../hooks/useMoviedb";
+import useVideoPlayTime from "../hooks/useVideoPlayTime";
+import useFetchVideoLink from "../hooks/useFetchVideoLink";
 //
 //
 // console.log(video, isLoading, error);
@@ -24,42 +28,13 @@ import useMoviedb from "../hooks/useMoviedb";
 // site: "YouTube"
 // size: 1080
 //type: "Behind the Scenes"
-function useVideoPlayTime() {
-    const [playTime, setPlayTime] = useState(0);
-    const [isPlaying, setIsPlaying] = useState(false);
 
-    useEffect(() => {
-        let interval = null;
-
-        if (isPlaying) {
-            interval = setInterval(() => {
-                setPlayTime((prevPlayTime) => prevPlayTime + 1);
-            }, 1000);
-        }
-
-        return () => clearInterval(interval);
-    }, [isPlaying]);
-
-    const handlePlay = () => {
-        setIsPlaying(true);
-    };
-
-    const handlePause = (currentTime) => {
-        setIsPlaying(false);
-        setPlayTime(currentTime);
-    };
-
-    function handleStop() {
-        setIsPlaying(false);
-        setPlayTime(0);
-    }
-
-    return [playTime, handlePlay, handlePause, handleStop];
-}
 //* ADDITIONAL MOVIE INFO
 // URL: /movie/{movie_id}/credits
 // URL: /movie/{movie_id}/reviews
 // URL: /movie/{movie_id}/recommendations
+// Define the list of movies and their genres
+
 const CastAndCrew = ({ movie_id }) => {
     const { data, error, isLoading } = useMoviedb(movie_id); // returns movie information about the cast, crew and reviews
 
@@ -176,14 +151,21 @@ const VideoButtons = ({ buttons, onClick }) => {
 const VideoContainer = ({ id }) => {
     const [playTime, handlePlay, handlePause, handleStop] = useVideoPlayTime();
 
-    const sendPlayTimetoApi = (time) => {};
+    const sendPlayTimetoApi = (time) => console.log("total play time: ", time);
+    const player = useRef(null);
+
+    // if (player) {
+    //     console.log(player);
+    // }
     return (
         <div style={styles.VideoContainer}>
             <ReactPlayer
-                onPlay={() => {
-                    handlePlay();
+                ref={player}
+                onPlay={() => handlePlay()}
+                onPause={() => {
+                    sendPlayTimetoApi(playTime);
+                    handlePause(playTime);
                 }}
-                onPause={() => handlePause(playTime)}
                 onEnded={() => {
                     sendPlayTimetoApi(playTime);
                     handleStop();
@@ -194,7 +176,6 @@ const VideoContainer = ({ id }) => {
                 height={180}
                 url={`https://www.youtube.com/watch?v=${id}`}
             />
-            <p style={{ color: "red", fontSize: 20 }}>{playTime}</p>
         </div>
     );
 };
@@ -232,6 +213,14 @@ const VideoCategories = ({ id }) => {
                         buttons={videoTypes}
                     />
                 </div>
+                {/* <ReactPlayer
+                    playing
+                    url={[
+                        `https://www.youtube.com/watch?v=${vids[0].key}`,
+                        `https://www.youtube.com/watch?v=${vids[1].key}`,
+                        `https://www.youtube.com/watch?v=${vids[2].key}`,
+                    ]}
+                /> */}
 
                 <div style={styles.VideoCategories.videoContainer}>
                     {vids
