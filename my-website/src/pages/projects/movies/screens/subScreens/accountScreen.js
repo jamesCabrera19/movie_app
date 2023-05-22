@@ -78,7 +78,7 @@ const LogInModal = () => {
         </>
     );
 };
-const MyListModal = () => {
+const HistoryNPrivacyModal = () => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -87,12 +87,6 @@ const MyListModal = () => {
         {
             label: "History and Privacy",
             Icon_A: (props) => <BiHistory {...props} />,
-            onClick: () => (e) => handleShow(),
-            Component: null,
-        },
-        {
-            label: "My List",
-            Icon_A: (props) => <MdOutlineFormatListNumbered {...props} />,
             onClick: () => (e) => handleShow(),
             Component: null,
         },
@@ -127,17 +121,6 @@ const AccountScreen = () => {
         console.log("Sign out Function");
     };
 
-    const switchButtons = [
-        {
-            label: "Parental Control => Switch filter mature content?",
-            Icon_A: (props) => <RiParentLine {...props} />,
-            onClick: () => (e) => {},
-            Component: () => (
-                <MySwitch onChange={() => console.log("Parental Controls")} />
-            ),
-        },
-    ];
-
     return (
         <div style={{ height: "65vh" }}>
             <GoBackButton />
@@ -145,10 +128,7 @@ const AccountScreen = () => {
                 Account Management
             </Text>
             <LogInModal />
-            {/* <MyListModal /> */}
-            <div>
-                <MyButtons buttons={switchButtons} />
-            </div>
+            {/* <HistoryNPrivacyModal /> */}
 
             <div
                 onClick={signOut()}

@@ -114,7 +114,7 @@ function WatchNow({ props }) {
     return (
         <div>
             <UpNext />
-            {returnMovieIds(movies, 5).map((el) => (
+            {returnMovieIds(movies).map((el) => (
                 <CardRow
                     key={el.id}
                     title={el.header_text}

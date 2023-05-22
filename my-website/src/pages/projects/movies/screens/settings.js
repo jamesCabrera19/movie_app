@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 //
 import Image from "next/image";
 import { ImageLoader } from "../components/utils";
@@ -10,6 +10,12 @@ import { Context as ThemeContext } from "../context/themeContext";
 import { NavigationBar } from "../components/navigationBar";
 import { MyButtons } from "../components/myButtons";
 import { Text } from "../components/text";
+import { MySwitch } from "../components/mySwitch";
+import Switch from "react-switch";
+
+// hooks
+import useLocalStorage from "../hooks/useLocalStorage";
+
 // styles
 
 import _styles from "./test.module.css";
@@ -19,10 +25,12 @@ import {
     IoMdStats,
     MdOutlineTitle,
     MdHistory,
+    MdWbSunny,
     MdPlayCircleOutline,
     BsGearWideConnected,
     BsDownload,
     BsPaletteFill,
+    BsFillMoonStarsFill,
     AiOutlineUser,
     FaAudioDescription,
     RiParentLine,
@@ -87,68 +95,16 @@ const MarginText = ({ text, color }) => {
         </div>
     );
 };
+// SUB-SCREEN
 
 // SCREENS // SCREENS // SCREENS // SCREENS  // SCREENS // SCREENS // SCREENS // SCREENS
 const GeneralButtonSelector = () => {
     const { screenNavigator } = useContext(NavigationContext);
+
     const {
         state: { theme },
     } = useContext(ThemeContext);
 
-    const videoSettings = [
-        {
-            label: "Video Player Settings",
-            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
-            onClick: () => screenNavigator("VideoSettings"),
-            Component: null,
-        },
-        {
-            label: "Auto Play",
-            Icon_A: (props) => <MdPlayCircleOutline {...props} />,
-            Component: (props) => <MarginText text="Switch" />,
-        },
-
-        {
-            label: "Download Quality",
-            Icon_A: (props) => <BsDownload {...props} />,
-            Component: (props) => (
-                <MarginText text="Low, Medium, High, Ultra High" />
-            ),
-        },
-        {
-            label: "Subtitles/Captions",
-            Icon_A: (props) => <MdOutlineTitle {...props} />,
-            Component: (props) => <MarginText text="Switch" />,
-        },
-        {
-            label: "Audio Language",
-            Icon_A: (props) => <FaAudioDescription {...props} />,
-            Component: (props) => <MarginText text="En, Es, other" />,
-        },
-    ];
-    const generalSettings = [
-        {
-            label: "General Settings",
-            Icon_A: (props) => <BsGearWideConnected {...props} />,
-            onClick: () => screenNavigator("GeneralSettings"),
-            Component: null,
-        },
-        {
-            label: "Interface Themes",
-            Icon_A: (props) => <BsPaletteFill {...props} />,
-            Component: (props) => <MarginText text={theme.type} />,
-        },
-        {
-            label: "Notifications",
-            Icon_A: (props) => <IoIosNotificationsOutline {...props} />,
-            Component: (props) => <MarginText text="BOOLEAN value" />,
-        },
-        {
-            label: "Data Usage",
-            Icon_A: (props) => <IoMdStats {...props} />,
-            Component: (props) => <MarginText text="NUMBER" />,
-        },
-    ];
     const userSettings = [
         {
             label: "Account Management",
@@ -156,20 +112,11 @@ const GeneralButtonSelector = () => {
             onClick: () => screenNavigator("Account"),
             Component: null,
         },
-        {
-            label: "My List",
-            Icon_A: (props) => <SiThemoviedatabase {...props} />,
-            Component: (props) => <MarginText text="Switch" />,
-        },
-        {
-            label: "Parental Controls",
-            Icon_A: (props) => <RiParentLine {...props} />,
-            Component: (props) => <MarginText text="Switch" />,
-        },
+
         {
             label: "History and Privacy",
             Icon_A: (props) => <MdHistory {...props} />,
-            Component: (props) => <MarginText text="Switch" />,
+            Component: (props) => null,
         },
     ];
 
@@ -183,7 +130,9 @@ const GeneralButtonSelector = () => {
             >
                 <SpinningRow />
             </div>
-            {[generalSettings, videoSettings, userSettings].map((el, idx) => (
+            <GeneralSettingsScreen />
+            <VideoSettingsScreen />
+            {[userSettings].map((el, idx) => (
                 <MyButtons buttons={el} key={idx} />
             ))}
 
@@ -220,18 +169,6 @@ const SCREENS = [
         active: false,
         id: 1,
     },
-    {
-        component: <VideoSettingsScreen />,
-        title: "VideoSettings",
-        active: false,
-        id: 2,
-    },
-    {
-        component: <GeneralSettingsScreen />,
-        title: "GeneralSettings",
-        active: false,
-        id: 3,
-    },
 ];
 // APP // APP // APP // APP // APP // APP // APP // APP // APP
 function MySettings() {
@@ -239,10 +176,9 @@ function MySettings() {
         state: { theme },
     } = useContext(ThemeContext);
     return (
-        <div style={{}}>
+        <div>
             <div
                 style={{
-                    // height: 500,
                     width: 700,
                     margin: "auto",
                     borderRadius: 10,
@@ -251,12 +187,7 @@ function MySettings() {
             >
                 <NavigationBar
                     components={SCREENS}
-                    hide={[
-                        "General",
-                        "Account",
-                        "VideoSettings",
-                        "GeneralSettings",
-                    ]}
+                    hide={["General", "Account"]}
                 />
             </div>
         </div>

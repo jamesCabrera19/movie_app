@@ -15,7 +15,7 @@ const RowTitle = ({ title, movieIDS }) => {
         state: { theme },
     } = useContext(ThemeContext);
     const { screenNavigator } = useContext(NavigationContext);
-
+    console.log(title, movieIDS.length);
     return (
         <div
             style={{
@@ -36,7 +36,9 @@ const RowTitle = ({ title, movieIDS }) => {
                 })}
                 style={{ cursor: "pointer" }}
             >
-                <Text color={theme.fontColorSecondary}>See All</Text>
+                {movieIDS.length > 5 ? (
+                    <Text color={theme.fontColorSecondary}>See All</Text>
+                ) : null}
             </div>
         </div>
     );

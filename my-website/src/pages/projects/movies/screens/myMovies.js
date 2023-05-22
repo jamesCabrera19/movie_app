@@ -11,7 +11,9 @@ import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 const Content = () => {
     const {
         state: { myMovies },
-    } = useContext(LikedMoviesContext);
+    } = useContext(LikedMoviesContext); // saved movie ids
+
+    // movie object state array
     const { state } = useContext(MovieContext);
 
     const res = useCallback(() => {

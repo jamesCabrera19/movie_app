@@ -14,20 +14,9 @@ import { Text } from "../components/text";
 import useMoviedb from "../hooks/useMoviedb";
 import useVideoPlayTime from "../hooks/useVideoPlayTime";
 import useFetchVideoLink from "../hooks/useFetchVideoLink";
+import useLocalStorage from "../hooks/useLocalStorage";
+import { genres } from "../components/utils";
 //
-//
-// console.log(video, isLoading, error);
-// console.log(video);
-// id: "63cfb8d0b6cff1008eed43ca"
-// iso_3166_1: "US"
-// iso_639_1: "en"
-// key: "VEuAbbxflXk"
-// name: "Panic Attack Scene"
-// official: true
-// published_at: "2023-01-23T22:59:40.000Z"
-// site: "YouTube"
-// size: 1080
-//type: "Behind the Scenes"
 
 //* ADDITIONAL MOVIE INFO
 // URL: /movie/{movie_id}/credits
@@ -150,26 +139,23 @@ const VideoButtons = ({ buttons, onClick }) => {
 };
 const VideoContainer = ({ id }) => {
     const [playTime, handlePlay, handlePause, handleStop] = useVideoPlayTime();
+    const [value, updatePlayTime, clear] = useLocalStorage("play_time", 0);
 
-    const sendPlayTimetoApi = (time) => console.log("total play time: ", time);
-    const player = useRef(null);
+    const videoPause = () => (e) => {
+        updatePlayTime(playTime);
+        handlePause(playTime);
+    };
+    const videoEnd = () => (e) => {
+        updatePlayTime(playTime);
+        handleStop();
+    };
 
-    // if (player) {
-    //     console.log(player);
-    // }
     return (
         <div style={styles.VideoContainer}>
             <ReactPlayer
-                ref={player}
                 onPlay={() => handlePlay()}
-                onPause={() => {
-                    sendPlayTimetoApi(playTime);
-                    handlePause(playTime);
-                }}
-                onEnded={() => {
-                    sendPlayTimetoApi(playTime);
-                    handleStop();
-                }}
+                onPause={videoPause()}
+                onEnded={videoEnd()}
                 controls
                 light
                 width={320}
@@ -238,12 +224,7 @@ const styles = {
             display: "flex",
             flexDirection: "column",
         },
-        description: {
-            display: "flex",
-            position: "relative",
-            margin: "auto",
-            overflow: "hidden",
-        },
+        description: {},
         image: {
             borderRadius: 10,
             boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
@@ -340,6 +321,7 @@ const styles = {
         },
     },
 };
+
 const VideoScreen = () => {
     const {
         state: { theme },
@@ -350,38 +332,115 @@ const VideoScreen = () => {
         params: { id },
     } = useContext(NavigationContext);
     const [movie] = state.movies.filter((el) => el.id === id);
+    const [size, setSize] = useState({
+        w: window.innerWidth,
+        h: window.innerHeight,
+    });
     //
     // *http://localhost:3000/projects/movies
 
-    return (
-        <div style={styles.VideoScreen.container}>
-            <div style={styles.VideoScreen.description}>
-                <Image
-                    alt="Movie Poster"
-                    loader={imageLoaderHighQuality}
-                    src={movie.backdrop_path}
-                    width={1080}
-                    height={600}
-                    quality={100}
-                    style={styles.VideoScreen.image}
-                />
-                <div style={styles.VideoScreen.text}>
-                    <Text color={theme.backgroundColor}>{movie.overview}</Text>
-                </div>
-            </div>
+    const filterGenres = (movieGenres, allGenres) => {
+        return allGenres.filter((el) => movieGenres.includes(el.id));
+    };
+    const movieGenres = filterGenres(movie.genre_ids, genres);
 
-            <VideoCategories id={id} />
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    const backgroundStyles = {
+        height: size.h,
+        width: size.w,
+        backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.poster_path})`,
+        backgroundPosition: "center",
+        backgroundSize: "100%",
+        backgroundRepeat: "no-repeat",
+    };
+
+    return (
+        <div style={backgroundStyles}>
+            <div style={styles.VideoScreen.text}>
+                <Text color={theme.backgroundColor}>{movie.overview}</Text>
+            </div>
             <div
                 style={{
-                    borderTop: `1px solid #808080`,
-                    marginBottom: 50,
-                    width: "80%",
-                    alignSelf: "center",
+                    backgroundColor: "rgba(255, 255, 255, 0.5)",
+                    padding: 20,
+                    borderRadius: 5,
+                    marginBottom: 20,
                 }}
-            />
-            <CastAndCrew movie_id={id} />
+            >
+                <Text variant={"headlineLarge"} color={theme.backgroundColor}>
+                    {movie.title}
+                </Text>
+                <Text color={theme.backgroundColor}>
+                    Release Date: {movie.release_date}
+                </Text>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                    }}
+                >
+                    <Text color={theme.backgroundColor}>
+                        Genre:
+                        {movieGenres.map((el, idx) => (
+                            <React.Fragment key={el.id}>
+                                {el.name}
+                                {idx !== movieGenres.length - 1 && ", "}
+                            </React.Fragment>
+                        ))}
+                    </Text>
+                </div>
+
+                <Text color={theme.backgroundColor}>{movie.overview}</Text>
+            </div>
         </div>
     );
 };
+// const VideoScreen = () => {
+//     const {
+//         state: { theme },
+//     } = useContext(ThemeContext);
+
+//     const { state } = useContext(MovieContext);
+//     const {
+//         params: { id },
+//     } = useContext(NavigationContext);
+//     const [movie] = state.movies.filter((el) => el.id === id);
+//     //
+//     // *http://localhost:3000/projects/movies
+//     console.log(movie.poster_path);
+
+//     return (
+//         <div style={styles.VideoScreen.container}>
+//             <div style={styles.VideoScreen.description}>
+//                 <Image
+//                     alt="Movie Poster"
+//                     loader={imageLoaderHighQuality}
+//                     src={movie.poster_path}
+//                     width={600}
+//                     height={1080}
+//                     quality={100}
+//                     style={styles.VideoScreen.image}
+//                 />
+//                 <div style={styles.VideoScreen.text}>
+//                     <Text color={theme.backgroundColor}>{movie.overview}</Text>
+//                 </div>
+//             </div>
+
+//             <VideoCategories id={id} />
+//             <div
+//                 style={{
+//                     borderTop: `1px solid #808080`,
+//                     marginBottom: 50,
+//                     width: "80%",
+//                     alignSelf: "center",
+//                 }}
+//             />
+//             <CastAndCrew movie_id={id} />
+//         </div>
+//     );
+// };
 
 export default VideoScreen;

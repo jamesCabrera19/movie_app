@@ -1,49 +1,45 @@
 import createDataContext from "../../../../../context/index";
-
+//
+//helper functions
 const findMovie = (state, id) => state.includes(id);
 const filterMovie = (state, id) => state.filter((el) => el != id);
 //
-let res;
-let movies;
-//
-const my_movies = "my_movies";
-const up_next = "up_next";
-const del_my_movies = "del_my_movies";
-const del_up_next = "del_up_next";
-
-const initState = [315162, 1003579, 76600, 804150];
+const initialState = {
+    myMovies: [315162, 1003579, 76600, 804150],
+    upNext: [315162, 1003579, 76600, 804150],
+};
 
 const likedMoviesReducer = (state, action) => {
     switch (action.type) {
-        case my_movies:
-            res = findMovie(state.myMovies, action.payload);
-            if (!res) {
+        case "my_movies":
+            if (!findMovie(state.myMovies, action.payload)) {
                 return {
                     ...state,
                     myMovies: [...state.myMovies, action.payload],
                 };
-            } else {
-                return state;
             }
+            return state;
 
-        case del_my_movies:
-            movies = filterMovie(state.myMovies, action.payload);
-            return { ...state, myMovies: [...movies] };
+        case "del_my_movies":
+            return {
+                ...state,
+                myMovies: filterMovie(state.myMovies, action.payload),
+            };
 
-        case up_next:
-            res = findMovie(state.upNext, action.payload);
-            if (!res) {
+        case "up_next":
+            if (!findMovie(state.upNext, action.payload)) {
                 return {
                     ...state,
                     upNext: [...state.upNext, action.payload],
                 };
-            } else {
-                return state;
             }
+            return state;
 
-        case del_up_next:
-            movies = filterMovie(state.upNext, action.payload);
-            return { ...state, upNext: [...movies] };
+        case "del_up_next":
+            return {
+                ...state,
+                upNext: filterMovie(state.upNext, action.payload),
+            };
 
         default:
             return state;
@@ -59,5 +55,5 @@ function handleDispatch(dispatch) {
 export const { Context, Provider } = createDataContext(
     likedMoviesReducer,
     { handleDispatch }, // action Functions
-    { upNext: initState, myMovies: initState } // init STATE
+    initialState // init STATE
 );

@@ -1,31 +1,44 @@
 import { useContext, useState } from "react";
+//
 import { Context as ThemeContext } from "../../context/themeContext";
-
-import Switch from "react-switch";
+//
 import {
-    MdOutlineCheck,
     FaAudioDescription,
-    FiXCircle,
-    MdPlayCircleOutline,
     BsDownload,
     MdOutlineTitle,
 } from "../../components/icons";
-
-import { GoBackButton } from "../../components/goBackButton";
+//
 import { MyButtons } from "../../components/myButtons";
-import { Text } from "../../components/text";
-
 import { MySwitch } from "../../components/mySwitch";
-
+//
+//
 const SimpleButton = ({ onClick, labels }) => {
+    const [buttons, setButtons] = useState([
+        {
+            id: 0,
+            active: true,
+        },
+        {
+            id: 1,
+            active: false,
+        },
+        {
+            id: 2,
+            active: false,
+        },
+    ]);
     const {
         state: { theme },
     } = useContext(ThemeContext);
 
-    const handleClick = (item, idx) => (e) => {
-        onClick(item);
-        console.log(idx);
-        // state.type === el? backgroundColor:'green'
+    const handleClick = (buttonId) => (e) => {
+        onClick(buttonId);
+        const updatedButtons = buttons.map((button) => {
+            return button.id === buttonId
+                ? { ...button, active: true }
+                : { ...button, active: false };
+        });
+        setButtons(updatedButtons);
     };
     return (
         <div
@@ -35,19 +48,19 @@ const SimpleButton = ({ onClick, labels }) => {
                 justifyContent: "space-around",
             }}
         >
-            {labels.map((el, idx) => (
+            {buttons.map((button, idx) => (
                 <button
-                    key={idx}
-                    onClick={handleClick(el, idx)}
+                    key={button.id}
+                    onClick={handleClick(button.id)}
                     style={{
                         borderRadius: 5,
                         padding: 5,
                         backgroundColor: "transparent",
-                        color: theme.fontColor,
+                        color: button.active ? "white" : theme.fontColor,
                         border: `2px solid ${theme.fontColor}`,
                     }}
                 >
-                    {el}
+                    {labels[idx]}
                 </button>
             ))}
         </div>
@@ -55,13 +68,7 @@ const SimpleButton = ({ onClick, labels }) => {
 };
 
 const VideoSettingsScreen = () => {
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
-
-    const handleAutoPlay = (props) => console.log("Auto Play Switch: ", props);
     const handleSubtitles = (props) => console.log("Subtitles Switch: ", props);
-
     const handleSimpleButton = (quality) => {
         console.log("Video Quality needs to be implemented: ", quality);
     };
@@ -74,17 +81,12 @@ const VideoSettingsScreen = () => {
 
     const buttons = [
         {
-            label: "Auto Play",
-            Icon_A: (props) => <MdPlayCircleOutline {...props} />,
-            Component: () => <MySwitch onChange={handleAutoPlay} />,
-        },
-        {
             label: "Subtitles/Captions",
             Icon_A: (props) => <MdOutlineTitle {...props} />,
             Component: () => <MySwitch onChange={handleSubtitles} />,
         },
         {
-            label: "Download Quality",
+            label: "Video Quality",
             Icon_A: (props) => <BsDownload {...props} />,
             Component: () => (
                 <SimpleButton
@@ -100,22 +102,12 @@ const VideoSettingsScreen = () => {
             Component: () => (
                 <SimpleButton
                     onClick={handleLanguageSwap}
-                    labels={["EN", "ES"]}
+                    labels={["EN", "ES", "FR"]}
                 />
             ),
         },
     ];
-    return (
-        <div style={{ height: "63vh" }}>
-            <GoBackButton />
-            <div>
-                <Text color={theme.fontColor} variant={"headlineSmall"}>
-                    Video Player Settings
-                </Text>
-                <MyButtons buttons={buttons} />
-            </div>
-        </div>
-    );
+    return <MyButtons buttons={buttons} />;
 };
 
 export default VideoSettingsScreen;

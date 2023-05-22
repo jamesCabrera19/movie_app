@@ -13,15 +13,9 @@ import { Context as ThemeContext } from "../context/themeContext";
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";
 import { CardRow } from "../components/cardRow";
+import { all } from "axios";
 
 export default function TVShows() {
-    const {
-        state: { movies },
-    } = useContext(MovieContext);
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
-
     const data = [
         {
             id: 0,
@@ -54,11 +48,21 @@ export default function TVShows() {
             ids: [],
         },
     ];
+
+    function steps(n) {
+        for (let idx = 0; idx < n; idx++) {
+            const padding = "-".repeat(n - idx - 1);
+            const stars = "#".repeat(2 * idx + 1);
+            console.log("A ", `${padding}${stars}${padding}`);
+        }
+    }
+    steps(3);
     return (
         <div>
             <div style={{ marginLeft: 20 }}>
                 <Text variant="headlineLarge">TV Shows</Text>
             </div>
+
             <div style={{ borderTop: "1px solid red", margin: "20px 40px" }} />
             {data.map((el) => (
                 <CardRow
