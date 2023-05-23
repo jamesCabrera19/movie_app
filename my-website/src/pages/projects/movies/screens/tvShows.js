@@ -13,7 +13,7 @@ import { Context as ThemeContext } from "../context/themeContext";
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";
 import { CardRow } from "../components/cardRow";
-import { all } from "axios";
+import { matrix } from "../components/codeChallenges";
 
 export default function TVShows() {
     const data = [
@@ -49,14 +49,7 @@ export default function TVShows() {
         },
     ];
 
-    function steps(n) {
-        for (let idx = 0; idx < n; idx++) {
-            const padding = "-".repeat(n - idx - 1);
-            const stars = "#".repeat(2 * idx + 1);
-            console.log("A ", `${padding}${stars}${padding}`);
-        }
-    }
-    steps(3);
+    matrix(3);
     return (
         <div>
             <div style={{ marginLeft: 20 }}>

@@ -39,7 +39,6 @@ const CardOverlay = ({ options, movieID, switchButtons }) => {
     const {
         state: { theme },
     } = useContext(ThemeContext); //
-    const Test = (props) => console.log(movieID);
 
     const styles = {
         container: {

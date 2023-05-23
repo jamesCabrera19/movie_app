@@ -15,7 +15,6 @@ const RowTitle = ({ title, movieIDS }) => {
         state: { theme },
     } = useContext(ThemeContext);
     const { screenNavigator } = useContext(NavigationContext);
-    console.log(title, movieIDS.length);
     return (
         <div
             style={{
