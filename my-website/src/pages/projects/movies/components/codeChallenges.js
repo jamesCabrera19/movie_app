@@ -47,11 +47,8 @@ function matrix(n) {
     let startColumn = 0; // [[0]]
     let endColumn = n - 1;
 
-    //row = 0 ---  [0][1]//[0][2]//[0][3]=1,2,3
-    //row = 1
-
     while (startRow <= endRow && startColumn <= endColumn) {
-        //  top row
+        //  top row //row = 0 ---  [0][1]//[0][2]//[0][3]=1,2,3
         for (let i = startRow; i <= endRow; i++) {
             matrix[startRow][i] = counter;
             counter++;
@@ -112,5 +109,38 @@ function matrix(n) {
     // console.log(matrix);
     return matrix;
 }
+// Print out the n-th entry in the fibonacci series.
+// The fibonacci series is an ordering of numbers where
+// each number is the sum of the preceeding two.
+// For example, the sequence
+//  [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
+// forms the first ten entries of the fibonacci series.
+// Example:
+//   fib(4) === 3
+const finFirstSolution = () => {
+    // next = sequence[2 - 1] + sequence[2 - 2] = sequence[1]+sequence[0] ==
+    // 1+0 = 1= i is pushed on to the array as the next number
+    // sequence[0,1,1]
+    // next = sequence[3 - 1] + sequence[3 - 2] = sequence[2]+sequence[1] ==
+    // 2+1 find index  value of 2 and 1= 1+1=2
+    // sequence[0,1,1,2]
 
-export { vowels, matrix };
+    let seq = [0, 1]; // starting value
+    for (let i = 2; i <= n; i++) {
+        let a = seq[seq.length - 1]; // [2-1] = seq[1] = 1
+        let b = seq[seq.length - 2]; // [2-2] = seq[0] = 0
+        let nextValue = a + b; // seq[2-1]= seq[1]=>value 1 = seq[2-2] = seq[0]=> value 0
+        seq.push(nextValue);
+    }
+    console.log(seq[n]);
+    return seq[n];
+};
+function fib(n) {
+    if (n < 2) {
+        return n;
+    }
+
+    return fib(n - 1) + fib(n - 2);
+}
+
+export { vowels, matrix, fib };

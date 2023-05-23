@@ -13,7 +13,7 @@ import { Context as ThemeContext } from "../context/themeContext";
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";
 import { CardRow } from "../components/cardRow";
-import { matrix } from "../components/codeChallenges";
+import { matrix, fib } from "../components/codeChallenges";
 
 export default function TVShows() {
     const data = [
@@ -49,7 +49,7 @@ export default function TVShows() {
         },
     ];
 
-    matrix(3);
+    console.log(fib(10));
     return (
         <div>
             <div style={{ marginLeft: 20 }}>
