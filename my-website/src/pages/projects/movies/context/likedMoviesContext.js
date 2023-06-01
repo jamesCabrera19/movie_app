@@ -1,18 +1,12 @@
 import createDataContext from "../../../../../context/index";
-//
 //helper functions
-const findMovie = (state, id) => state.includes(id);
-const filterMovie = (state, id) => state.filter((el) => el != id);
-//
-const initialState = {
-    myMovies: [315162, 1003579, 76600, 804150],
-    upNext: [315162, 1003579, 76600, 804150],
-};
+const isMovieIncluded = (state, id) => state.includes(id);
+const filterOutMovie = (state, id) => state.filter((el) => el !== id);
 
 const likedMoviesReducer = (state, action) => {
     switch (action.type) {
         case "my_movies":
-            if (!findMovie(state.myMovies, action.payload)) {
+            if (!isMovieIncluded(state.myMovies, action.payload)) {
                 return {
                     ...state,
                     myMovies: [...state.myMovies, action.payload],
@@ -23,11 +17,11 @@ const likedMoviesReducer = (state, action) => {
         case "del_my_movies":
             return {
                 ...state,
-                myMovies: filterMovie(state.myMovies, action.payload),
+                myMovies: filterOutMovie(state.myMovies, action.payload),
             };
 
         case "up_next":
-            if (!findMovie(state.upNext, action.payload)) {
+            if (!isMovieIncluded(state.upNext, action.payload)) {
                 return {
                     ...state,
                     upNext: [...state.upNext, action.payload],
@@ -38,7 +32,7 @@ const likedMoviesReducer = (state, action) => {
         case "del_up_next":
             return {
                 ...state,
-                upNext: filterMovie(state.upNext, action.payload),
+                upNext: filterOutMovie(state.upNext, action.payload),
             };
 
         default:
@@ -55,5 +49,8 @@ function handleDispatch(dispatch) {
 export const { Context, Provider } = createDataContext(
     likedMoviesReducer,
     { handleDispatch }, // action Functions
-    initialState // init STATE
+    {
+        myMovies: [315162, 1003579, 76600, 804150],
+        upNext: [315162, 1003579, 76600, 804150],
+    } // init STATE
 );

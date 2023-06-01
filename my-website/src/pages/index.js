@@ -23,12 +23,10 @@ export default function Home() {
             </Head>
             <main className={styles.main}>
                 <div className={styles.description}>
-                    <Link href={"/projects/app"}>
+                    <Link href={"/projects/movies"}>
                         <p>
-                            Get started by editing&nbsp;
-                            <code className={styles.code}>
-                                src/pages/index.js
-                            </code>
+                            Movie app&nbsp;
+                            <code className={styles.code}>projects/movies</code>
                         </p>
                     </Link>
 

@@ -13,16 +13,12 @@ export default (movie_id) => {
     useEffect(() => {
         const fetchData = async () => {
             let id = movie_id ? movie_id : 76600;
-
-            const endpoint1 = `/movie/${id}/credits`;
-            const endpoint2 = `/movie/${id}/reviews`;
+            const endpoints = [`/movie/${id}/credits`, `/movie/${id}/reviews`];
 
             setIsLoading(true);
             try {
                 const responses = await Promise.all(
-                    [endpoint1, endpoint2].map((endpoint) =>
-                        movieApi.get(endpoint)
-                    )
+                    endpoints.map((endpoint) => movieApi.get(endpoint))
                 );
                 const responseData = await Promise.all(
                     responses.map((response) => response.data)

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useEffect } from "react";
 //
 import NavigationContext from "../context/navigation";
 import { Context as ThemeContext } from "../context/themeContext";
@@ -23,6 +23,88 @@ import { genres } from "../components/utils";
 // URL: /movie/{movie_id}/reviews
 // URL: /movie/{movie_id}/recommendations
 // Define the list of movies and their genres
+
+const styles = {
+    VideoCategories: {
+        container: {
+            display: "flex",
+            flexDirection: "column",
+            marginTop: 40,
+        },
+        buttons: {
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            flexWrap: "wrap",
+        },
+        videoContainer: {
+            justifyContent: "space-evenly",
+            display: "flex",
+            flexWrap: "wrap",
+            marginTop: 40,
+            marginBottom: 60,
+        },
+    },
+    VideoContainer: {
+        borderRadius: 10,
+        overflow: "hidden",
+        margin: 10,
+    },
+    VideoButtons: {
+        display: "flex",
+        justifyContent: "center",
+        width: 200,
+        borderRadius: 10,
+        paddingTop: 15,
+    },
+    CastAndCrew: {
+        container: {
+            display: "flex",
+            overflowX: "scroll",
+            overflowY: "hidden",
+            width: "85%",
+            margin: "auto",
+        },
+        imageContainer: {
+            height: 150,
+            width: 150,
+            borderRadius: 150 / 2,
+        },
+        textContainer: {
+            height: 150,
+            width: 100,
+            borderRadius: 150 / 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: 40,
+        },
+        lineBreaker: {
+            borderTop: `1px solid #808080`,
+            marginTop: 50,
+            marginBottom: 50,
+            width: "80%",
+            alignSelf: "center",
+        },
+        reviewsContainer: {
+            display: "flex",
+            flexDirection: "row",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            width: "85%",
+            margin: "auto",
+        },
+        reviews: {
+            width: 240,
+            height: 300,
+            overflowY: "scroll",
+            margin: 20,
+            borderRadius: 10,
+            padding: 20,
+        },
+    },
+};
 
 const CastAndCrew = ({ movie_id }) => {
     const { data, error, isLoading } = useMoviedb(movie_id); // returns movie information about the cast, crew and reviews
@@ -199,14 +281,6 @@ const VideoCategories = ({ id }) => {
                         buttons={videoTypes}
                     />
                 </div>
-                {/* <ReactPlayer
-                    playing
-                    url={[
-                        `https://www.youtube.com/watch?v=${vids[0].key}`,
-                        `https://www.youtube.com/watch?v=${vids[1].key}`,
-                        `https://www.youtube.com/watch?v=${vids[2].key}`,
-                    ]}
-                /> */}
 
                 <div style={styles.VideoCategories.videoContainer}>
                     {vids
@@ -217,230 +291,113 @@ const VideoCategories = ({ id }) => {
         );
     }
 };
-
-const styles = {
-    VideoScreen: {
-        container: {
-            display: "flex",
-            flexDirection: "column",
-        },
-        description: {},
-        image: {
-            borderRadius: 10,
-            boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
-        },
-        text: {
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            backgroundColor: "rgba(255, 255, 255, 0.5)",
-            padding: 20,
-            boxSizing: "border-box",
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
-        },
-    },
-    VideoCategories: {
-        container: {
-            display: "flex",
-            flexDirection: "column",
-            marginTop: 40,
-        },
-        buttons: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            flexWrap: "wrap",
-        },
-        videoContainer: {
-            justifyContent: "space-evenly",
-            display: "flex",
-            flexWrap: "wrap",
-            marginTop: 40,
-            marginBottom: 60,
-        },
-    },
-    VideoContainer: {
-        borderRadius: 10,
-        overflow: "hidden",
-        margin: 10,
-    },
-    VideoButtons: {
-        display: "flex",
-        justifyContent: "center",
-        width: 200,
-        borderRadius: 10,
-        paddingTop: 15,
-    },
-    CastAndCrew: {
-        container: {
-            display: "flex",
-            overflowX: "scroll",
-            overflowY: "hidden",
-            width: "85%",
-            margin: "auto",
-        },
-        imageContainer: {
-            height: 150,
-            width: 150,
-            borderRadius: 150 / 2,
-        },
-        textContainer: {
-            height: 150,
-            width: 100,
-            borderRadius: 150 / 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontSize: 40,
-        },
-        lineBreaker: {
-            borderTop: `1px solid #808080`,
-            marginTop: 50,
-            marginBottom: 50,
-            width: "80%",
-            alignSelf: "center",
-        },
-        reviewsContainer: {
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            width: "85%",
-            margin: "auto",
-        },
-        reviews: {
-            width: 240,
-            height: 300,
-            overflowY: "scroll",
-            margin: 20,
-            borderRadius: 10,
-            padding: 20,
-        },
-    },
-};
-
-const VideoScreen = () => {
+const Overview = ({ title, release_date, genres, overview }) => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
+    return (
+        <div
+            style={{
+                position: "absolute",
+                bottom: -19,
+                marginBottom: 0,
+                width: 1080,
+                padding: 20,
 
+                // border: "1px solid red",
+                borderBottomRightRadius: 10,
+                borderBottomLeftRadius: 10,
+                borderRadius: 5,
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                overflow: "hidden",
+            }}
+        >
+            <Text variant={"headlineLarge"} color={theme.backgroundColor}>
+                {title}
+            </Text>
+            <Text color={theme.backgroundColor}>
+                Release Date: {release_date}
+            </Text>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                }}
+            >
+                <Text color={theme.backgroundColor}>
+                    Genres:{" "}
+                    {genres.map((el, idx) => (
+                        <React.Fragment key={el.id}>
+                            {el.name}
+                            {idx !== genres.length - 1 && ", "}
+                        </React.Fragment>
+                    ))}
+                </Text>
+            </div>
+            <Text color={theme.backgroundColor}>{overview}</Text>
+        </div>
+    );
+};
+
+const VideoScreen = () => {
     const { state } = useContext(MovieContext);
     const {
         params: { id },
     } = useContext(NavigationContext);
     const [movie] = state.movies.filter((el) => el.id === id);
-    const [size, setSize] = useState({
-        w: window.innerWidth,
-        h: window.innerHeight,
-    });
-    //
-    // *http://localhost:3000/projects/movies
-
     const filterGenres = (movieGenres, allGenres) => {
         return allGenres.filter((el) => movieGenres.includes(el.id));
     };
     const movieGenres = filterGenres(movie.genre_ids, genres);
 
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    const backgroundStyles = {
-        height: size.h,
-        width: size.w,
-        backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.poster_path})`,
-        backgroundPosition: "center",
-        backgroundSize: "100%",
-        backgroundRepeat: "no-repeat",
-    };
-
     return (
-        <div style={backgroundStyles}>
-            <div style={styles.VideoScreen.text}>
-                <Text color={theme.backgroundColor}>{movie.overview}</Text>
-            </div>
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+            }}
+        >
             <div
                 style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.5)",
-                    padding: 20,
-                    borderRadius: 5,
-                    marginBottom: 20,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    width: 1080,
+                    alignSelf: "center",
                 }}
             >
-                <Text variant={"headlineLarge"} color={theme.backgroundColor}>
-                    {movie.title}
-                </Text>
-                <Text color={theme.backgroundColor}>
-                    Release Date: {movie.release_date}
-                </Text>
-                <div
+                <Image
+                    alt="Movie Poster"
+                    loader={imageLoaderHighQuality}
+                    src={movie.backdrop_path}
+                    width={1080}
+                    height={680}
                     style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
+                        borderRadius: 10,
+                        boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
                     }}
-                >
-                    <Text color={theme.backgroundColor}>
-                        Genre:
-                        {movieGenres.map((el, idx) => (
-                            <React.Fragment key={el.id}>
-                                {el.name}
-                                {idx !== movieGenres.length - 1 && ", "}
-                            </React.Fragment>
-                        ))}
-                    </Text>
-                </div>
-
-                <Text color={theme.backgroundColor}>{movie.overview}</Text>
+                />
+                <Overview
+                    title={movie.title}
+                    release_date={movie.release_date}
+                    genres={movieGenres}
+                    overview={movie.overview}
+                />
             </div>
+
+            <VideoCategories id={id} />
+            <div
+                style={{
+                    borderTop: `1px solid #808080`,
+                    marginBottom: 50,
+                    width: "80%",
+                    alignSelf: "center",
+                }}
+            />
+            <CastAndCrew movie_id={id} />
         </div>
     );
 };
-// const VideoScreen = () => {
-//     const {
-//         state: { theme },
-//     } = useContext(ThemeContext);
-
-//     const { state } = useContext(MovieContext);
-//     const {
-//         params: { id },
-//     } = useContext(NavigationContext);
-//     const [movie] = state.movies.filter((el) => el.id === id);
-//     //
-//     // *http://localhost:3000/projects/movies
-//     console.log(movie.poster_path);
-
-//     return (
-//         <div style={styles.VideoScreen.container}>
-//             <div style={styles.VideoScreen.description}>
-//                 <Image
-//                     alt="Movie Poster"
-//                     loader={imageLoaderHighQuality}
-//                     src={movie.poster_path}
-//                     width={600}
-//                     height={1080}
-//                     quality={100}
-//                     style={styles.VideoScreen.image}
-//                 />
-//                 <div style={styles.VideoScreen.text}>
-//                     <Text color={theme.backgroundColor}>{movie.overview}</Text>
-//                 </div>
-//             </div>
-
-//             <VideoCategories id={id} />
-//             <div
-//                 style={{
-//                     borderTop: `1px solid #808080`,
-//                     marginBottom: 50,
-//                     width: "80%",
-//                     alignSelf: "center",
-//                 }}
-//             />
-//             <CastAndCrew movie_id={id} />
-//         </div>
-//     );
-// };
 
 export default VideoScreen;

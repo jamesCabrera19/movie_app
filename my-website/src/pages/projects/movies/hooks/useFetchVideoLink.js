@@ -6,7 +6,6 @@ export default (movie_id, language) => {
     const [data, setData] = useState([]);
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    // https://api.themoviedb.org/3/movie/315162/videos?api_key=1fa86633efa961a3d2faa3b36d6975c4&language=es-US?
     useEffect(() => {
         const fetchData = async () => {
             let id = movie_id ? movie_id : 76600;

@@ -135,12 +135,159 @@ const finFirstSolution = () => {
     console.log(seq[n]);
     return seq[n];
 };
+// function fib(n) {
+//     if (n < 2) {
+//         return n;
+//     }
+
+//     return fib(n - 1) + fib(n - 2);
+// }
 function fib(n) {
-    if (n < 2) {
-        return n;
+    const nemo = ["nemo"];
+    const x = (arr) => {
+        for (let i = 0; i < arr.length; i++) {
+            const element = arr[i];
+
+            if (element === "nemo") {
+                console.log("found nemo");
+            }
+        }
+    };
+    x(nemo);
+}
+const palindrome = (str) => {
+    return str.split("").every((el, i) => el === str[str.length - i - 1]);
+};
+const ConsoleIt = (x) => console.log("RES = ", x);
+
+const integerReverse = (n) => {
+    // ConsoleIt();
+    const x = n.toString().split("").reverse().join("");
+    // ConsoleIt(x);
+    return parseInt(x) * Math.sign(n);
+};
+
+const maxChar = (str) => {
+    // --- Directions
+    // Given a string, return the character that is most
+    // commonly used in the string.
+    // --- Examples
+    // maxChar("abcccccccd") === "c"
+    // maxChar("apple 1231111") === "1"
+    // hello stranger = {h:1,e:2,l:2,}
+    const group = {
+        // a:1
+        // b:1
+        // d:0
+        //n: 2johnny
+    };
+    const initVal = 1;
+    let maxValue = 0;
+    let char = "";
+    for (const key of str) {
+        ConsoleIt(key);
+        if (!group[key]) {
+            group[key] = initVal;
+        } else {
+            group[key]++;
+        }
+
+        if (group[key] > maxValue) {
+            maxValue = group[key];
+            char = key;
+        }
     }
 
-    return fib(n - 1) + fib(n - 2);
-}
+    return char;
+};
 
-export { vowels, matrix, fib };
+const fizzBuzz = (n) => {
+    // --- Directions
+    // Write a program that console logs the numbers
+    // from 1 to n. But for multiples of three print
+    // “fizz” instead of the number and for the multiples
+    // of five print “buzz”. For numbers which are multiples
+    // of both three and five print “fizzbuzz”.
+    // --- Example
+    //   fizzBuzz(5);
+    //   1
+    //   2
+    //   fizz
+    //   4
+    //   buzz
+    for (let i = 1; i <= n; i++) {
+        if (i % 3 === 0 && i % 5 === 0) {
+            console.log("fizzbuzz");
+        } else if (i % 3 === 0) {
+            console.log("fizz");
+        } else if (i % 5 === 0) {
+            console.log("buzz");
+        } else {
+            console.log(i);
+        }
+    }
+};
+
+// --- Directions
+// Given an array and chunk size, divide the array into many subarrays
+// where each subarray is of length size
+// --- Examples
+// chunk([1, 2, 3, 4], 2) --> [[ 1, 2], [3, 4]]
+// chunk([1, 2, 3, 4, 5], 2) --> [[ 1, 2], [3, 4], [5]]
+// chunk([1, 2, 3, 4, 5, 6, 7, 8], 3) --> [[ 1, 2, 3], [4, 5, 6], [7, 8]]
+// chunk([1, 2, 3, 4, 5], 4) --> [[ 1, 2, 3, 4], [5]]
+// chunk([1, 2, 3, 4, 5], 10) --> [[ 1, 2, 3, 4, 5]]
+// const res = [];
+//     for (let i = 0; i < array.length; i++) {
+//         const element = array[i];
+//         const chunkIdx = Math.floor(i / size);
+//         if (!res[chunkIdx]) {
+//             res[chunkIdx] = [];
+//         }
+//         res[chunkIdx].push(element);
+//     }
+
+const chunkForLoop = (array, size) => {
+    const res = [];
+    for (let i = 0; i < array.length; i++) {
+        const el = array[i];
+        const chunkIdx = Math.floor(i / size);
+        if (!res[chunkIdx]) {
+            res[chunkIdx] = [];
+        }
+        res[chunkIdx].push(el);
+    }
+
+    return res;
+};
+const chunk = (array, size) => {
+    return array.reduce((group, el, idx) => {
+        const chunkIdx = Math.floor(idx / size);
+        if (!group[chunkIdx]) {
+            group[chunkIdx] = [];
+        }
+        group[chunkIdx].push(el);
+
+        return group;
+    }, []);
+};
+const anagram = (stringOne, stringTwo) => {
+    const clean = (word) =>
+        word.replace(/[^\w]/g, "").split("").sort().join("");
+    const a = clean(stringOne);
+    const b = clean(stringTwo);
+
+    return a === b;
+};
+export {
+    chunk,
+    vowels,
+    matrix,
+    fib,
+    palindrome,
+    integerReverse,
+    maxChar,
+    fizzBuzz,
+    chunkForLoop,
+    anagram,
+};

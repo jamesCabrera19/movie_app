@@ -109,7 +109,6 @@ function WatchNow({ props }) {
         },
         [state.movies]
     );
-    // console.log(movies);
 
     return (
         <div>
