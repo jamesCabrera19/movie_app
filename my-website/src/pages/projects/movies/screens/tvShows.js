@@ -23,6 +23,8 @@ import {
     fizzBuzz,
     chunkForLoop,
     anagram,
+    capitalize,
+    steps,
 } from "../components/codeChallenges";
 
 export default function TVShows() {
@@ -59,7 +61,7 @@ export default function TVShows() {
         },
     ];
 
-    console.log(anagram("rail safety", "fairy! tales"));
+    console.log(steps(20));
     return (
         <div>
             <div style={{ marginLeft: 20 }}>

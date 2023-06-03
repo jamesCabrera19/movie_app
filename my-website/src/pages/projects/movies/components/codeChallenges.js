@@ -279,6 +279,45 @@ const anagram = (stringOne, stringTwo) => {
 
     return a === b;
 };
+
+const capitalize = (str) => {
+    // --- Directions
+    // Write a function that accepts a string.  The function should
+    // capitalize the first letter of each word in the string then
+    // return the capitalized string.
+    // --- Examples
+    //   capitalize('a short sentence') --> 'A Short Sentence'
+    //   capitalize('a lazy fox') --> 'A Lazy Fox'
+    //   capitalize('look, it is working!') --> 'Look, It Is Working!'
+    const upper = str
+        .split(" ")
+        .map((el) => {
+            el.charAt(0).toUpperCase();
+            return el.replace(el.charAt(0), el.charAt(0).toUpperCase());
+        })
+        .join(" ");
+    return upper;
+};
+const stepsRecursion = (n) => {
+    for (let i = 1; i <= n; i++) {
+        let step = "#".repeat(i);
+        let space = " ".repeat(n - i);
+        console.log(step + space);
+    }
+};
+const steps = (n) => {
+    for (let col = 0; col < n; col++) {
+        let step = "";
+        for (let row = 0; row <= col; row++) {
+            if (row <= col) {
+                step += "#";
+            } else {
+                step += " ";
+            }
+        }
+        console.log(step);
+    }
+};
 export {
     chunk,
     vowels,
@@ -290,4 +329,6 @@ export {
     fizzBuzz,
     chunkForLoop,
     anagram,
+    capitalize,
+    steps,
 };
