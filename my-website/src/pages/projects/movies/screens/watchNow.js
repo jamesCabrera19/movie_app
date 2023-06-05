@@ -1,5 +1,4 @@
-import React, { useContext, useCallback, useState, useEffect } from "react";
-const { v4: uuidv4 } = require("uuid");
+import React, { useContext } from "react";
 //
 import Image from "next/image";
 //
@@ -82,45 +81,23 @@ const UpNext = ({}) => {
     );
 };
 
-function WatchNow({ props }) {
+function WatchNow({}) {
     const { state } = useContext(MovieContext);
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
     const movies = movieLibrary.moviesByGenre();
 
-    // [{movie_genre:'Movie Genre: Action',id:'random string',
-    // ids:['Array of movies with the same Genre']}]
-    const returnMovieIds = useCallback(
-        // returns array of objects
-        (obj = {}, numberOfMovies) => {
-            const rowLength = numberOfMovies || 3;
-            const objs = [];
-            for (const [key, value] of Object.entries(obj)) {
-                if (value.length > 0 && !Array.isArray(key)) {
-                    if (value.length > rowLength) {
-                        objs.push({
-                            id: uuidv4(),
-                            header_text: key,
-                            ids: Array.from(value),
-                        });
-                    }
-                }
-            }
-            return objs;
-        },
-        [state.movies]
-    );
+    const cardRows = Object.entries(movies)
+        .sort(([keyA, idsA], [keyB, idsB]) => idsB.length - idsA.length)
+        .map(([key, ids]) => {
+            return ids.length === 0 ? null : (
+                <CardRow key={key} title={key} movieIDS={ids} />
+            );
+        });
 
     return (
         <div>
             <UpNext />
-            {returnMovieIds(movies).map((el) => (
-                <CardRow
-                    key={el.id}
-                    title={el.header_text}
-                    bigRow={true}
-                    movieIDS={el.ids}
-                />
-            ))}
+            {cardRows}
         </div>
     );
 }

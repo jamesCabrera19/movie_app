@@ -6,13 +6,11 @@ export default () => {
 
     useEffect(() => {
         let interval = null;
-
         if (isPlaying) {
             interval = setInterval(() => {
                 setPlayTime((prevPlayTime) => prevPlayTime + 1);
             }, 1000);
         }
-
         return () => clearInterval(interval);
     }, [isPlaying]);
 

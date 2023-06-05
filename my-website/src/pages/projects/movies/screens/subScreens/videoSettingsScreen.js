@@ -80,21 +80,16 @@ const VideoSettingsScreen = () => {
     };
 
     const buttons = [
-        {
-            label: "Subtitles/Captions",
-            Icon_A: (props) => <MdOutlineTitle {...props} />,
-            Component: () => <MySwitch onChange={handleSubtitles} />,
-        },
-        {
-            label: "Video Quality",
-            Icon_A: (props) => <BsDownload {...props} />,
-            Component: () => (
-                <SimpleButton
-                    onClick={handleSimpleButton}
-                    labels={["HD", "Full HD", "4K"]}
-                />
-            ),
-        },
+        // {
+        //     label: "Video Quality",
+        //     Icon_A: (props) => <BsDownload {...props} />,
+        //     Component: () => (
+        //         <SimpleButton
+        //             onClick={handleSimpleButton}
+        //             labels={["HD", "Full HD", "4K"]}
+        //         />
+        //     ),
+        // },
 
         {
             label: "Audio Language",

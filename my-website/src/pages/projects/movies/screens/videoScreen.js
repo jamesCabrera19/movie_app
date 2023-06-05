@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useRef } from "react";
 //
 import NavigationContext from "../context/navigation";
 import { Context as ThemeContext } from "../context/themeContext";
@@ -221,7 +221,7 @@ const VideoButtons = ({ buttons, onClick }) => {
 };
 const VideoContainer = ({ id }) => {
     const [playTime, handlePlay, handlePause, handleStop] = useVideoPlayTime();
-    const [value, updatePlayTime, clear] = useLocalStorage("play_time", 0);
+    const [value, updatePlayTime, clear] = useLocalStorage("play_time");
 
     const videoPause = () => (e) => {
         updatePlayTime(playTime);
@@ -252,11 +252,11 @@ const renderVideoContainers = (videos) => {
         <VideoContainer key={video.key} id={video.key} />
     ));
 };
-const VideoCategories = ({ id }) => {
-    const { data, error, isLoading } = useFetchVideoLink(id, "en");
-    // useFetchVideoLink returns an array of videos for the movie provided.
-    const [vids, setVids] = useState(undefined);
 
+const VideoCategories = ({ id, videoLanguage }) => {
+    const { data, error, isLoading } = useFetchVideoLink(id, videoLanguage);
+    // useFetchVideoLink returns an array of videos for the movieID provided.
+    const [vids, setVids] = useState(undefined);
     const videoTypes = Object.keys(
         data.reduce((acc, cur) => {
             acc[cur.type] = true;
@@ -264,9 +264,10 @@ const VideoCategories = ({ id }) => {
         }, {})
     ); /// this return an array of Strings ['trailers','Clip',...]
     const defaultVideos = data.filter((el) => el.type === "Trailer");
-
-    const filterVideoFunction = (type) =>
+    //
+    const filterVideoFunction = (type) => {
         setVids(type ? data.filter((el) => el.type === type) : undefined);
+    };
 
     if (error) {
         return <div>Error: {error.message}</div>;
@@ -342,13 +343,18 @@ const Overview = ({ title, release_date, genres, overview }) => {
 
 const VideoScreen = () => {
     const { state } = useContext(MovieContext);
+    //
     const {
         params: { id },
     } = useContext(NavigationContext);
+
+    //
     const [movie] = state.movies.filter((el) => el.id === id);
+    //
     const filterGenres = (movieGenres, allGenres) => {
         return allGenres.filter((el) => movieGenres.includes(el.id));
     };
+    //
     const movieGenres = filterGenres(movie.genre_ids, genres);
 
     return (
@@ -386,7 +392,7 @@ const VideoScreen = () => {
                 />
             </div>
 
-            <VideoCategories id={id} />
+            <VideoCategories id={id} videoLanguage="en" />
             <div
                 style={{
                     borderTop: `1px solid #808080`,

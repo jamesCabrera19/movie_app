@@ -13,19 +13,7 @@ import { Context as ThemeContext } from "../context/themeContext";
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";
 import { CardRow } from "../components/cardRow";
-import {
-    matrix,
-    fib,
-    palindrome,
-    integerReverse,
-    maxChar,
-    chunk,
-    fizzBuzz,
-    chunkForLoop,
-    anagram,
-    capitalize,
-    steps,
-} from "../components/codeChallenges";
+import { vowelsS } from "../components/codeChallenges";
 
 export default function TVShows() {
     const data = [
@@ -61,7 +49,7 @@ export default function TVShows() {
         },
     ];
 
-    console.log(steps(20));
+    console.log(vowelsS("Why do you ask?"));
     return (
         <div>
             <div style={{ marginLeft: 20 }}>

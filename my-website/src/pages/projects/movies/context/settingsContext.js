@@ -1,18 +1,5 @@
 import createDataContext from "../../../../../context/index";
 
-const settings = {
-    videoPlaybackQuality: "",
-    videoAudioLanguage: undefined,
-    parentalControls: false, // if true filter out mature content
-    history: [],
-    theme: "light", //'dark'
-};
-// userSettingsContext
-// userSettings:{
-// store locally
-//
-
-//}
 const settingsReducer = (state, action) => {
     switch (action.type) {
         case value:
@@ -26,5 +13,11 @@ const settingsReducer = (state, action) => {
 export const { Context, Provider } = createDataContext(
     settingsReducer,
     {}, // action Functions
-    {}
+    {
+        videoPlaybackQuality: "HD",
+        videoAudioLanguage: "en", // needs to be lower case
+        parentalControls: false, // if true filter out mature content
+        history: [],
+        theme: "light", //'dark'
+    }
 );

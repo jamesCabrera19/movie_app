@@ -298,14 +298,14 @@ const capitalize = (str) => {
         .join(" ");
     return upper;
 };
-const stepsRecursion = (n) => {
+const steps = (n) => {
     for (let i = 1; i <= n; i++) {
         let step = "#".repeat(i);
         let space = " ".repeat(n - i);
-        console.log(step + space);
+        console.log("-", space + step + step + space, "-");
     }
 };
-const steps = (n) => {
+const stepsTwo = (n) => {
     for (let col = 0; col < n; col++) {
         let step = "";
         for (let row = 0; row <= col; row++) {
@@ -318,6 +318,47 @@ const steps = (n) => {
         console.log(step);
     }
 };
+const stepsRecursive = (n) => {
+    if (n === 0) {
+        return;
+    }
+    console.log(n);
+    return steps(n - 1);
+};
+const pyramids = (n) => {
+    for (let i = 0; i < n; i++) {
+        const step = "#".repeat(2 * i + 1);
+        const space = ".".repeat(n - i - 1);
+        console.log(space + step + space);
+    }
+};
+
+const vowelsS = (str) => {
+    // --- Directions
+    // Write a function that returns the number of vowels
+    // used in a string.  Vowels are the characters 'a', 'e'
+    // 'i', 'o', and 'u'.
+    // --- Examples
+    //   vowels('Hi There!') --> 3
+    //   vowels('Why do you ask?') --> 4
+    //   vowels('Why?') --> 0
+    const x = ["a", "e", "i", "o", "u"];
+    // for this challenge
+    // the first step is to convert the string into an array
+    // and we do this to iterate through every single letter
+    // then we filter out letters that are not included in our vowels array.
+    // the result of the filter method will be an array with the values that met our
+    // condition and then we can just get the length of the array
+    // * return str.split("").filter((el) => x.includes(el)).length;
+    let res = 0;
+    for (let char of str.toLowerCase()) {
+        if (x.includes(char)) {
+            res++;
+        }
+    }
+    return res;
+};
+
 export {
     chunk,
     vowels,
@@ -331,4 +372,6 @@ export {
     anagram,
     capitalize,
     steps,
+    pyramids,
+    vowelsS,
 };
