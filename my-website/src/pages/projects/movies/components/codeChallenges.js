@@ -358,6 +358,47 @@ const vowelsS = (str) => {
     }
     return res;
 };
+const fibonacci = (n) => {
+    const sequence = [0, 1];
+
+    for (let i = 2; i <= n; i++) {
+        const last = sequence[sequence.length - 1]; // sequence[1]
+        const last_prev = sequence[sequence.length - 2]; // sequence[0]
+        sequence.push(last + last_prev);
+    }
+    return sequence[n];
+};
+
+class Queue {
+    constructor() {
+        this.queue = [];
+    }
+
+    add(el) {
+        this.queue.unshift(el);
+    }
+    remove(el) {
+        return this.queue.pop(el);
+    }
+    peek() {
+        return this.queue[this.queue.length - 1];
+    }
+}
+
+function weave(sourceOne, sourceTwo) {
+    const q = new Queue();
+
+    while (sourceOne.peek() || sourceTwo.peek()) {
+        if (sourceOne.peek()) {
+            q.add(sourceOne.remove());
+        }
+        if (sourceTwo.peek()) {
+            q.add(sourceTwo.remove());
+        }
+    }
+
+    return q;
+}
 
 export {
     chunk,
@@ -374,4 +415,5 @@ export {
     steps,
     pyramids,
     vowelsS,
+    fibonacci,
 };

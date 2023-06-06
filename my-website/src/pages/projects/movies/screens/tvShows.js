@@ -13,7 +13,7 @@ import { Context as ThemeContext } from "../context/themeContext";
 import { ImageLoader } from "../components/utils";
 import TestComponent from "../components/testComponent";
 import { CardRow } from "../components/cardRow";
-import { vowelsS } from "../components/codeChallenges";
+import { fibonacci } from "../components/codeChallenges";
 
 export default function TVShows() {
     const data = [
@@ -49,7 +49,7 @@ export default function TVShows() {
         },
     ];
 
-    console.log(vowelsS("Why do you ask?"));
+    console.log(fibonacci(50));
     return (
         <div>
             <div style={{ marginLeft: 20 }}>
