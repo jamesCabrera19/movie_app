@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ImageLoader } from "./utils";
 import useHover from "../hooks/useHover";
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 
 //
 

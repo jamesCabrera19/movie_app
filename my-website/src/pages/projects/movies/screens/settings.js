@@ -5,7 +5,7 @@ import { ImageLoader } from "../components/utils";
 // context
 import NavigationContext from "../context/navigation";
 import { Context as MovieContext } from "../context/movieContext";
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as SettingsContext } from "../context/settingsContext";
 // components
 import { NavigationBar } from "../components/navigationBar";
 import { MyButtons } from "../components/myButtons";
@@ -44,10 +44,11 @@ import AccountScreen from "./subScreens/accountScreen";
 //
 // components to import
 const SpinningRow = () => {
-    const NUMBER_OF_IMAGES = 18;
     const {
         state: { movies },
     } = useContext(MovieContext);
+
+    const NUMBER_OF_IMAGES = 18;
 
     const images = movies
         .filter((el, idx) => idx <= NUMBER_OF_IMAGES)
@@ -103,7 +104,7 @@ const GeneralButtonSelector = () => {
 
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(SettingsContext);
 
     const userSettings = [
         {
@@ -174,7 +175,7 @@ const SCREENS = [
 function MySettings() {
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(SettingsContext);
     return (
         <div>
             <div

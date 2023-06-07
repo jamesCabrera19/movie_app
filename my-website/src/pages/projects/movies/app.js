@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 //
 import { Provider as LikedMoviesProvider } from "./context/likedMoviesContext";
-import { Provider as ThemeProvider } from "./context/themeContext";
-import { Context as ThemeContext } from "./context/themeContext";
-import { Context as theme } from "./context/theme";
+// import { Provider as ThemeProvider } from "./context/themeContext";
+import { Provider as SettingsProvider } from "./context/settingsContext";
+import { Context as SettingsContext } from "./context/settingsContext";
 
 //
 import { NavigationBar } from "./components/navigationBar";
@@ -57,7 +57,7 @@ const screens = [
 function App() {
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(SettingsContext);
 
     return (
         <div style={{ backgroundColor: theme.backgroundColor }}>
@@ -83,9 +83,9 @@ function App() {
 function MoviesApp() {
     return (
         <LikedMoviesProvider>
-            <ThemeProvider>
+            <SettingsProvider>
                 <App />
-            </ThemeProvider>
+            </SettingsProvider>
         </LikedMoviesProvider>
     );
 }

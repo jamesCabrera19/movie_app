@@ -2,7 +2,7 @@ import { useContext, useEffect, useState, useRef, useCallback } from "react";
 
 import { TheModal } from "../components/modal";
 import { Context as MovieContext } from "../context/movieContext";
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 

@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Text } from "./text";
 import { BsApple, BsMeta, HiIdentification } from "./icons";
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 
 const Button = ({ children, label }) => {
     return (

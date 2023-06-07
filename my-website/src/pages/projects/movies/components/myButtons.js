@@ -1,6 +1,6 @@
 import { useRef, useCallback, useEffect, useState, useContext } from "react";
 
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 import { Text } from "./text";
 import { MdKeyboardArrowRight } from "./icons";
 

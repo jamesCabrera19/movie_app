@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import { Text } from "./text";
 import NavigationContext from "../context/navigation";
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 
 const NavigationButton = ({ styles, title, onClick }) => {
     return (

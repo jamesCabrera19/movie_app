@@ -1,19 +1,17 @@
-import { useRef, useCallback, useEffect, useState, useContext } from "react";
-import { Context as ThemeContext } from "../../context/themeContext";
+import { useState, useContext } from "react";
+import { Context as SettingsContext } from "../../context/settingsContext";
 
 import Switch from "react-switch";
 import {
-    IoIosNotificationsOutline,
     IoMdStats,
-    MdOutlineCheck,
     MdWbSunny,
     BsPaletteFill,
     BsFillMoonStarsFill,
-    FiXCircle,
     RiParentLine,
+    MdOutlineCheck,
+    FiXCircle,
 } from "../../components/icons";
 
-import { GoBackButton } from "../../components/goBackButton";
 import { MyButtons } from "../../components/myButtons";
 import { Text } from "../../components/text";
 import { MySwitch } from "../../components/mySwitch";
@@ -22,7 +20,7 @@ import useLocalStorage from "../../hooks/useLocalStorage";
 const MarginText = ({ text, color }) => {
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(SettingsContext);
     const col = color ? color : theme.themeColorToRGBA(0.3, theme.fontColor);
     return (
         <div
@@ -54,62 +52,72 @@ function isValidTime(seconds) {
     }
     return time + str;
 }
+
+const SwitchComponent = ({ onChange, checked, type }) => {
+    const handleChange = () => onChange();
+
+    const checkedIcon =
+        type === "theme" ? (
+            <MdWbSunny color="yellow" style={{ margin: "0px 0 1px 5px" }} />
+        ) : (
+            <MdOutlineCheck style={{ margin: "0 0 3px 5px" }} color="#FFFFFF" />
+        );
+
+    const uncheckedIcon =
+        type === "theme" ? (
+            <BsFillMoonStarsFill
+                color="white"
+                style={{ margin: "0px 0 1px 5px" }}
+            />
+        ) : (
+            <FiXCircle style={{ margin: "0 0 2px 5px" }} color="#FFFFFF" />
+        );
+
+    return (
+        <Switch
+            onChange={handleChange}
+            checked={checked}
+            checkedHandleIcon={checkedIcon}
+            uncheckedHandleIcon={uncheckedIcon}
+            checkedIcon={false}
+            uncheckedIcon={false}
+            offHandleColor={"#232323"}
+            onHandleColor="#232323"
+            onColor={"#FFF"} // rail color
+            offColor={"#888"} // rail color
+        />
+    );
+};
 const GeneralSettingsScreen = () => {
     const {
-        state: { theme },
+        state: { parentalControls, theme },
         switchTheme,
-    } = useContext(ThemeContext);
-
-    const [state, setState] = useState(false); // switch state
+        switchParentalControls,
+    } = useContext(SettingsContext);
     // hook
-    const [playTime, update, clear] = useLocalStorage("play_time", 0);
-
-    //
-    const handleThemeChange = () => (e) => {
-        setState((prev) => !prev);
-        theme.type === "light" ? switchTheme("dark") : switchTheme("light");
-    };
-    const handleParentalControls = (props) => (e) =>
-        console.log("Parental Controls");
-
-    //
-    const SwitchComponent = ({ onClick }) => {
-        return (
-            <Switch
-                onChange={handleThemeChange()}
-                checked={state}
-                checkedHandleIcon={
-                    <MdWbSunny
-                        color="yellow"
-                        style={{ margin: "0px 0 1px 5px" }}
-                    />
-                }
-                uncheckedHandleIcon={
-                    <BsFillMoonStarsFill
-                        color="white"
-                        style={{ margin: "0px 0 1px 5px" }}
-                    />
-                }
-                checkedIcon={false}
-                uncheckedIcon={false}
-                offHandleColor={"#232323"}
-                onHandleColor="#232323"
-                onColor={"#FFF"} // rail color
-                offColor={"#888"} // rail color
-            />
-        );
-    };
+    const [playTime] = useLocalStorage("play_time", 0);
     //
     const buttons = [
         {
             label: "Theme",
             Icon_A: (props) => <BsPaletteFill {...props} />,
-            Component: () => <SwitchComponent onClick={handleThemeChange} />,
+            Component: () => (
+                <SwitchComponent
+                    onChange={switchTheme}
+                    checked={theme.type === "dark" ? false : true}
+                    type="theme"
+                />
+            ),
         },
         {
             label: "Parental Controls",
             Icon_A: (props) => <RiParentLine {...props} />,
-            Component: () => <MySwitch onChange={handleParentalControls()} />,
+            Component: () => (
+                <SwitchComponent
+                    onChange={switchParentalControls}
+                    checked={parentalControls}
+                />
+            ),
         },
         {
             label: "Total Play Time",

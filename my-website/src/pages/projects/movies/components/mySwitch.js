@@ -13,10 +13,7 @@ import {
 const MySwitch = ({ IconA, IconB, onChange }) => {
     const [state, setState] = useState(false);
 
-    const handleIt = () => (e) => {
-        if (onChange) onChange();
-        setState((prev) => !prev);
-    };
+    const handleIt = () => {};
     const checked = (
         <MdOutlineCheck style={{ margin: "0 0 3px 5px" }} color="#FFFFFF" />
     );
@@ -26,7 +23,10 @@ const MySwitch = ({ IconA, IconB, onChange }) => {
 
     return (
         <Switch
-            onChange={handleIt()}
+            onChange={() => {
+                setState((prev) => !prev);
+                onChange();
+            }}
             checked={state}
             checkedHandleIcon={IconA ? IconA : checked}
             uncheckedHandleIcon={IconB ? IconB : unChecked}

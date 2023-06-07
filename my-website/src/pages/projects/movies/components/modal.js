@@ -13,7 +13,7 @@ import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import NavigationContext from "../context/navigation";
 
 // THEME
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 //
 //
 

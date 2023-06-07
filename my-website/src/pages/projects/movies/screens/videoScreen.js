@@ -1,7 +1,7 @@
 import React, { useContext, useState, useRef } from "react";
 //
 import NavigationContext from "../context/navigation";
-import { Context as ThemeContext } from "../context/themeContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 
 import { Context as MovieContext } from "../context/movieContext";
 //
