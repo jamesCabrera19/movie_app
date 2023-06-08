@@ -347,6 +347,9 @@ const VideoScreen = () => {
     const {
         params: { id },
     } = useContext(NavigationContext);
+    const {
+        state: { videoAudioLanguage },
+    } = useContext(ThemeContext);
 
     //
     const [movie] = state.movies.filter((el) => el.id === id);
@@ -392,7 +395,7 @@ const VideoScreen = () => {
                 />
             </div>
 
-            <VideoCategories id={id} videoLanguage="en" />
+            <VideoCategories id={id} videoLanguage={videoAudioLanguage} />
             <div
                 style={{
                     borderTop: `1px solid #808080`,

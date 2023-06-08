@@ -51,8 +51,10 @@ const CardRowNoModal = ({ movieIDS }) => {
         state: { theme },
     } = useContext(ThemeContext);
     const movieIds = movieIDS || [];
+
     // filters movies from the main state
-    const result = state.movies.filter(({ id }) => movieIds.includes(id)); // array of objs[{}]
+    const movieIdSet = new Set(movieIds);
+    const filteredMovies = state.movies.filter(({ id }) => movieIdSet.has(id));
 
     return (
         <div style={styles.smallContainer}>
@@ -62,7 +64,7 @@ const CardRowNoModal = ({ movieIDS }) => {
                 </Text>
             </div>
             <div style={{ display: "flex" }}>
-                {result.map((el) => (
+                {filteredMovies.map((el) => (
                     <MyCard
                         onClick={() =>
                             screenNavigator("Video Screen", {
@@ -88,13 +90,14 @@ const CardRow = ({ title, movieIDS }) => {
     const movieIds = movieIDS || [];
 
     // filters movies from the main state
-    const result = movies.filter(({ id }) => movieIds.includes(id)); // array of objs[{}]
-    // console.log(result);
+    const movieIdSet = new Set(movieIds); // set of unique movies
+    const filteredMovies = movies.filter(({ id }) => movieIdSet.has(id)); // array of objs[{}]
+
     return (
         <div style={styles.bigContainer}>
             <RowTitle title={title} movieIDS={movieIds} />
             <div style={styles.bigRowContainer}>
-                {result.map((el) => (
+                {filteredMovies.map((el) => (
                     <TheModal
                         key={el.id}
                         movieID={el.id}

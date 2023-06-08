@@ -24,7 +24,7 @@ const NavigationButton = ({ styles, title, onClick }) => {
     );
 };
 
-function NavigationBar({ components, omit, hide }) {
+function NavigationBar({ components, hide }) {
     const [state, setState] = useState(components);
     const {
         state: { theme },
@@ -34,17 +34,18 @@ function NavigationBar({ components, omit, hide }) {
         (screen = "", params = {}) =>
         (e) => {
             setState((prev) => {
-                const match = prev.find((el) => el.title === screen);
-                const el = prev.filter((el) => el.title !== screen);
-                el.map((el) => (el.active = false));
-                match.active = true;
-                //
-                const x = { ...match, params: params ? params : null };
-                const res = [x, ...el].sort((a, b) => a.id - b.id);
-
-                return res;
+                // update the active screen based on the title
+                const updatedScreens = prev.map((el) => ({
+                    ...el,
+                    active: el.title === screen,
+                    // Assign params to the matching screen
+                    params: el.title === screen ? params : null,
+                }));
+                return updatedScreens;
             });
         };
+    const filteredState = state.filter((el) => !hide.includes(el.title));
+    const activeComponent = state.filter((el) => el.active)[0].component;
 
     return (
         <>
@@ -59,30 +60,19 @@ function NavigationBar({ components, omit, hide }) {
                         overflow: "hidden",
                     }}
                 >
-                    {state.map((el) => {
-                        const hiddenItems = Array.from(hide);
-                        if (hiddenItems.includes(el.title)) {
-                            // console.log(el.title);
-                            return null;
-                        }
-
-                        // if (el.title === omit || omit === "all") {
-                        //     return null;
-                        // }
-                        return (
-                            <NavigationButton
-                                key={el.id}
-                                styles={{
-                                    backgroundColor: el.active
-                                        ? theme.panelBackgroundColor
-                                        : theme.backgroundColor,
-                                    fontColor: theme.fontColor,
-                                }}
-                                title={el.title}
-                                onClick={screenNavigator}
-                            />
-                        );
-                    })}
+                    {filteredState.map((el) => (
+                        <NavigationButton
+                            key={el.id}
+                            styles={{
+                                backgroundColor: el.active
+                                    ? theme.panelBackgroundColor
+                                    : theme.backgroundColor,
+                                fontColor: theme.fontColor,
+                            }}
+                            title={el.title}
+                            onClick={screenNavigator}
+                        />
+                    ))}
                 </div>
             </div>
             <NavigationContext.Provider
@@ -91,7 +81,7 @@ function NavigationBar({ components, omit, hide }) {
                     params: state.filter((el) => el.active)[0].params,
                 }}
             >
-                {state.filter((el) => el.active)[0].component}
+                {activeComponent}
             </NavigationContext.Provider>
         </>
     );

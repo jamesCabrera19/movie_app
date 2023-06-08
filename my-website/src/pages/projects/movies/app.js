@@ -12,7 +12,6 @@ import MyMovies from "./screens/myMovies";
 import TVShows from "./screens/tvShows";
 import MySettings from "./screens/settings";
 import WatchNow from "./screens/watchNow";
-import MyResults from "./screens/results";
 import VideoScreen from "./screens/videoScreen";
 
 const screens = [
@@ -41,12 +40,7 @@ const screens = [
         id: 4,
         component: <MySettings />,
     },
-    {
-        title: "Results",
-        active: false,
-        id: 5,
-        component: <MyResults />,
-    },
+
     {
         title: "Video Screen",
         active: false,

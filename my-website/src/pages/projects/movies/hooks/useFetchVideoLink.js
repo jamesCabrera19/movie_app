@@ -16,7 +16,7 @@ export default (movie_id, language) => {
                 const response = await movieApi.get(
                     `/movie/${id}/videos?language=${lan}-US`
                 );
-                console.log(response.data.results);
+                // console.log(response.data.results);
                 setData(response.data.results);
             } catch (error) {
                 setError(error);

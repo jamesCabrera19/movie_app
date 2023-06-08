@@ -10,33 +10,11 @@ import { Context as SettingsContext } from "../context/settingsContext";
 import { NavigationBar } from "../components/navigationBar";
 import { MyButtons } from "../components/myButtons";
 import { Text } from "../components/text";
-import { MySwitch } from "../components/mySwitch";
-import Switch from "react-switch";
-
-// hooks
-import useLocalStorage from "../hooks/useLocalStorage";
-
 // styles
-
 import _styles from "./test.module.css";
 // icons
-import {
-    IoIosNotificationsOutline,
-    IoMdStats,
-    MdOutlineTitle,
-    MdHistory,
-    MdWbSunny,
-    MdPlayCircleOutline,
-    BsGearWideConnected,
-    BsDownload,
-    BsPaletteFill,
-    BsFillMoonStarsFill,
-    AiOutlineUser,
-    FaAudioDescription,
-    RiParentLine,
-    SiThemoviedatabase,
-} from "../components/icons";
-//
+import { MdHistory, AiOutlineUser } from "../components/icons";
+// screens
 import GeneralSettingsScreen from "./subScreens/generalSettingsScreen";
 import VideoSettingsScreen from "./subScreens/videoSettingsScreen";
 import AccountScreen from "./subScreens/accountScreen";
@@ -50,53 +28,32 @@ const SpinningRow = () => {
 
     const NUMBER_OF_IMAGES = 18;
 
-    const images = movies
-        .filter((el, idx) => idx <= NUMBER_OF_IMAGES)
-        .map((el) => (
-            <div className={_styles.slide} key={el.id}>
-                <Image
-                    alt="Movie Poster"
-                    loader={ImageLoader}
-                    src={el.poster_path}
-                    height={100}
-                    width={70}
-                    style={{
-                        borderRadius: 10,
-                        boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
-                        margin: "0 5px",
-                    }}
-                />
-            </div>
-        ));
+    const images = movies.slice(0, NUMBER_OF_IMAGES).map((el) => (
+        <div className={_styles.slide} key={el.id}>
+            <Image
+                alt="Movie Poster"
+                loader={ImageLoader}
+                src={el.poster_path}
+                height={100}
+                width={70}
+                style={{
+                    borderRadius: 10,
+                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
+                    margin: "0 5px",
+                }}
+            />
+        </div>
+    ));
 
     return (
-        <>
-            <div className={_styles.slider}>
-                <div className={_styles.slideTrack}>
-                    {images}
-                    {images}
-                </div>
+        <div className={_styles.slider}>
+            <div className={_styles.slideTrack}>
+                {images}
+                {images}
             </div>
-        </>
-    );
-};
-// COMPONENTS // COMPONENTS // COMPONENTS // COMPONENTS // COMPONENTS // COMPONENTS // COMPONENTS
-const MarginText = ({ text, color }) => {
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
-    const col = color ? color : theme.themeColorToRGBA(0.3, theme.fontColor);
-    return (
-        <div
-            style={{
-                margin: "15px 10px 0 10px",
-            }}
-        >
-            <Text color={col}>{text}</Text>
         </div>
     );
 };
-// SUB-SCREEN
 
 // SCREENS // SCREENS // SCREENS // SCREENS  // SCREENS // SCREENS // SCREENS // SCREENS
 const GeneralButtonSelector = () => {
@@ -133,10 +90,8 @@ const GeneralButtonSelector = () => {
             </div>
             <GeneralSettingsScreen />
             <VideoSettingsScreen />
-            {[userSettings].map((el, idx) => (
-                <MyButtons buttons={el} key={idx} />
-            ))}
-
+            {/* SettingsButtons */}
+            <MyButtons buttons={userSettings} />
             <div
                 style={{
                     display: "flex",
@@ -146,7 +101,7 @@ const GeneralButtonSelector = () => {
                 }}
             >
                 <Text color={theme.themeColorToRGBA(0.5, theme.fontColor)}>
-                    last updated 04/27/2023
+                    last updated 06/7/2023
                 </Text>
                 <Text color={theme.themeColorToRGBA(0.5, theme.fontColor)}>
                     James Cabrera
@@ -155,6 +110,18 @@ const GeneralButtonSelector = () => {
         </>
     );
 };
+
+class Screens {
+    constructor(component, title = "", active = false, id) {
+        this.component = component;
+        this.title = title;
+        this.active = active;
+        this.id = id;
+    }
+    toggle() {
+        this.active = !this.active;
+    }
+}
 
 // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS
 const SCREENS = [
@@ -188,6 +155,7 @@ function MySettings() {
             >
                 <NavigationBar
                     components={SCREENS}
+                    // disables navigation buttons
                     hide={["General", "Account"]}
                 />
             </div>

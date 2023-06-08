@@ -1,108 +1,110 @@
 import { useContext, useState } from "react";
 //
-import { Context as ThemeContext } from "../../context/settingsContext";
+import { Context as settingsContext } from "../../context/settingsContext";
 //
-import {
-    FaAudioDescription,
-    BsDownload,
-    MdOutlineTitle,
-} from "../../components/icons";
+import { FaAudioDescription } from "../../components/icons";
 //
-import { MyButtons } from "../../components/myButtons";
-import { MySwitch } from "../../components/mySwitch";
+import { Text } from "../../components/text";
 //
 //
-const SimpleButton = ({ onClick, labels }) => {
-    const [buttons, setButtons] = useState([
-        {
-            id: 0,
-            active: true,
-        },
-        {
-            id: 1,
-            active: false,
-        },
-        {
-            id: 2,
-            active: false,
-        },
-    ]);
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
+const Buttons = ({ buttons, selectedButton, handleClick, fontColor }) => {
+    const getColors = (label) =>
+        label.toLowerCase() === selectedButton ? "white" : fontColor;
 
-    const handleClick = (buttonId) => (e) => {
-        onClick(buttonId);
-        const updatedButtons = buttons.map((button) => {
-            return button.id === buttonId
-                ? { ...button, active: true }
-                : { ...button, active: false };
-        });
-        setButtons(updatedButtons);
-    };
     return (
-        <div
-            style={{
-                display: "flex",
-                width: labels.length > 2 ? 200 : 100,
-                justifyContent: "space-around",
-            }}
-        >
-            {buttons.map((button, idx) => (
+        <>
+            {buttons.map((label) => (
                 <button
-                    key={button.id}
-                    onClick={handleClick(button.id)}
+                    key={label}
+                    onClick={handleClick(label)}
                     style={{
                         borderRadius: 5,
                         padding: 5,
                         backgroundColor: "transparent",
-                        color: button.active ? "white" : theme.fontColor,
-                        border: `2px solid ${theme.fontColor}`,
+                        border: `2px solid ${getColors(label)}`,
+                        color: getColors(label),
                     }}
                 >
-                    {labels[idx]}
+                    {label}
                 </button>
             ))}
+        </>
+    );
+};
+const VideoSettingsScreen = () => {
+    const {
+        state: { theme, videoAudioLanguage },
+        switchLanguage,
+    } = useContext(settingsContext);
+
+    const handleClick = (label) => (e) => {
+        // Convert label to lowercase and pass it to switchLanguage
+        switchLanguage(label.toLowerCase());
+    };
+    const containerStyles = {
+        container: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            justifyContent: "space-between",
+            borderRadius: 10,
+            overflow: "hidden",
+            width: "100%",
+            marginBottom: 20,
+        },
+        bar: {
+            display: "flex",
+            width: "100%",
+            height: 50,
+            backgroundColor: theme.panelBackgroundColor,
+            borderBottom: `1px solid ${theme.backgroundColor}`,
+            cursor: "pointer",
+        },
+        content: {
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+        },
+        description: {
+            display: "flex",
+            alignItems: "center",
+        },
+        buttonContainer: {
+            display: "flex",
+            width: 200,
+            justifyContent: "space-around",
+        },
+    };
+
+    return (
+        <div style={containerStyles.container}>
+            <div style={containerStyles.bar}>
+                <div style={containerStyles.content}>
+                    <div style={containerStyles.description}>
+                        <FaAudioDescription
+                            size={25}
+                            style={{ marginLeft: 10 }}
+                            color={theme.fontColor}
+                        />
+                        <div style={{ margin: "15px 10px 0 10px" }}>
+                            <Text color={theme.fontColor}>Audio Language</Text>
+                        </div>
+                    </div>
+                    <div style={containerStyles.buttonContainer}>
+                        <Buttons
+                            buttons={["EN", "ES", "FR"]}
+                            selectedButton={videoAudioLanguage}
+                            handleClick={handleClick}
+                            fontColor={theme.fontColor}
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
-
-const VideoSettingsScreen = () => {
-    const handleSubtitles = (props) => console.log("Subtitles Switch: ", props);
-    const handleSimpleButton = (quality) => {
-        console.log("Video Quality needs to be implemented: ", quality);
-    };
-    const handleLanguageSwap = (language) => {
-        console.log(
-            "Language Funcitonality needs to be implemented: ",
-            language
-        );
-    };
-
-    const buttons = [
-        // {
-        //     label: "Video Quality",
-        //     Icon_A: (props) => <BsDownload {...props} />,
-        //     Component: () => (
-        //         <SimpleButton
-        //             onClick={handleSimpleButton}
-        //             labels={["HD", "Full HD", "4K"]}
-        //         />
-        //     ),
-        // },
-
-        {
-            label: "Audio Language",
-            Icon_A: (props) => <FaAudioDescription {...props} />,
-            Component: () => (
-                <SimpleButton
-                    onClick={handleLanguageSwap}
-                    labels={["EN", "ES", "FR"]}
-                />
-            ),
-        },
-    ];
-    return <MyButtons buttons={buttons} />;
-};
+const styles = {};
 
 export default VideoSettingsScreen;

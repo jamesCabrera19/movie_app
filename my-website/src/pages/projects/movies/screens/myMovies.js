@@ -16,8 +16,10 @@ const Content = () => {
     // movie object state array
     const { state } = useContext(MovieContext);
 
-    const res = useCallback(() => {
-        return state.movies.filter((el) => myMovies.includes(el.id));
+    const movies = useCallback(() => {
+        // creating a set of unique movie ids
+        const movieIdSet = new Set(myMovies);
+        return state.movies.filter((el) => movieIdSet.has(el.id));
     }, [myMovies]);
 
     return (
@@ -28,7 +30,7 @@ const Content = () => {
                 justifyContent: "space-evenly",
             }}
         >
-            {res().map((el) => (
+            {movies().map((el) => (
                 <TheModal
                     key={el.id}
                     poster={el.backdrop_path}
