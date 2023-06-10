@@ -49,7 +49,8 @@ const VideoSettingsScreen = () => {
             justifyContent: "space-between",
             borderRadius: 10,
             overflow: "hidden",
-            width: "100%",
+            // width: "100%",
+            // height: "100%",
             marginBottom: 20,
         },
         bar: {
@@ -105,6 +106,5 @@ const VideoSettingsScreen = () => {
         </div>
     );
 };
-const styles = {};
 
 export default VideoSettingsScreen;

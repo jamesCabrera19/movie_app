@@ -140,25 +140,18 @@ const SCREENS = [
 ];
 // APP // APP // APP // APP // APP // APP // APP // APP // APP
 function MySettings() {
-    const {
-        state: { theme },
-    } = useContext(SettingsContext);
     return (
-        <div>
-            <div
-                style={{
-                    width: 700,
-                    margin: "auto",
-                    borderRadius: 10,
-                    border: `0px solid ${theme.panelBackgroundColor}`,
-                }}
-            >
-                <NavigationBar
-                    components={SCREENS}
-                    // disables navigation buttons
-                    hide={["General", "Account"]}
-                />
-            </div>
+        <div
+            style={{
+                width: 700,
+                margin: "auto",
+            }}
+        >
+            <NavigationBar
+                components={SCREENS}
+                // disables navigation buttons
+                hide={["General", "Account"]}
+            />
         </div>
     );
 }

@@ -53,7 +53,7 @@ function NavigationBar({ components, hide }) {
                 <div
                     style={{
                         display: "flex",
-                        border: `1px solid ${theme.panelBackgroundColor}`,
+                        border: `2px solid ${theme.panelBackgroundColor}`,
                         borderRadius: 10,
                         marginTop: 65,
                         marginBottom: 65,
