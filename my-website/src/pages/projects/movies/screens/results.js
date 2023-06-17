@@ -5,56 +5,26 @@ import NavigationContext from "../context/navigation";
 //
 import { Text } from "../components/text";
 import { TheModal } from "../components/modal";
-import { genres } from "../components/utils";
-import { MovieOrganizer } from "../components/Helpers";
 import { findGenre, movieRecommendation } from "../recommendationSystem";
-
-// helper functions
+import MoviesContainer from "../components/moviesContainer";
+import { withMovieContext } from "../components/withMovieContext";
 
 //
-const filteredMovies = (moviesIds, moviesArray) => {
-    const uniqueMovies = new Set(moviesIds);
-    return moviesArray.filter((el) => uniqueMovies.has(el.id));
-}; // filters Genre Movies from  state
-//
-
-const ContentBasedFiltering = ({ movieIds, selectedGenre }) => {
-    const { state } = useContext(MovieContext);
-    const userGenresIds = findGenre(["Action", "Comedy"]).map((el) => el.id); // extracting the genre ids
-    //
-
-    const recommendations = movieRecommendation(
-        userGenresIds,
-        state.movies
-    ).filter((movie) => movie.score > 0);
-
-    console.log("recommendations: ", recommendations);
-
-    return <div>{recommendations.length}</div>;
-};
-
-function MyResults() {
-    const {
-        state: { movies },
-    } = useContext(MovieContext);
-    const {
-        params: { ids, genre },
-    } = useContext(NavigationContext);
-
-    const extractedMovies = filteredMovies(ids, movies);
+const Content = ({ movies, selectedGenre }) => {
+    const genres = movies.map((el) => el.genre_ids);
+    console.log(genres);
     return (
-        <div style={{ height: "100vh" }}>
-            <div style={{ marginLeft: 100 }}>
-                <Text variant="headlineMedium">{genre}</Text>
+        <MoviesContainer>
+            <div style={{ marginTop: -50 }}>
+                <Text variant="headlineMedium">{selectedGenre}</Text>
             </div>
             <div
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
-                    margin: "50px 100px 0 100px",
                 }}
             >
-                {extractedMovies.map((el) => (
+                {movies.map((el) => (
                     <TheModal
                         key={el.id}
                         poster={el.backdrop_path}
@@ -67,9 +37,14 @@ function MyResults() {
                     />
                 ))}
             </div>
-            <ContentBasedFiltering movieIds={ids} selectedGenre={genre} />
-        </div>
+        </MoviesContainer>
     );
+};
+
+const ContentWithProps = withMovieContext(Content, true);
+
+function MyResults() {
+    return <ContentWithProps />;
 }
 
 export default MyResults;

@@ -2,14 +2,14 @@ import { useContext, useEffect, useState, useRef, useCallback } from "react";
 
 import { TheModal } from "../components/modal";
 import { Context as MovieContext } from "../context/movieContext";
-import { Context as ThemeContext } from "../context/settingsContext";
-
-import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import {
     findGenre,
     movieGenreMerger,
     movieRecommendation,
 } from "../recommendationSystem";
+import { Text } from "../components/text";
+import MoviesContainer from "../components/moviesContainer";
+import { withMovieContext } from "../components/withMovieContext";
 
 //
 const Recommendations = ({ genres }) => {
@@ -22,34 +22,23 @@ const Recommendations = ({ genres }) => {
 
     console.log("movieRecommendations", movieRecommendations);
 
-    return <div>{movieRecommendations.length}</div>;
+    return (
+        <div style={{ color: "white" }}>
+            {movieRecommendations.length} recommendations
+        </div>
+    );
 };
-
-const Content = () => {
-    const {
-        state: { myMovies },
-    } = useContext(LikedMoviesContext); // saved movie ids
-
-    // movie object state array
-    const { state } = useContext(MovieContext);
-
-    const movies = useCallback(() => {
-        // creating a set of unique movie ids
-        const movieIdSet = new Set(myMovies);
-        return state.movies.filter((el) => movieIdSet.has(el.id));
-    }, [myMovies]);
-
-    const genres = movies().map((el) => el.genre_ids);
+const Content = ({ movies, additionalProp }) => {
+    const genres = movies.map((el) => el.genre_ids);
 
     return (
         <div
             style={{
                 display: "flex",
                 flexWrap: "wrap",
-                justifyContent: "space-evenly",
             }}
         >
-            {movies().map((el) => (
+            {movies.map((el) => (
                 <TheModal
                     key={el.id}
                     poster={el.backdrop_path}
@@ -63,25 +52,21 @@ const Content = () => {
                     movieID={el.id}
                 />
             ))}
-
-            <Recommendations genres={genres} />
+            {/* <Recommendations genres={genres} /> */}
         </div>
     );
 };
 
+const ContentWithProps = withMovieContext(Content, false);
+
 function MyMovies({}) {
-    const {
-        state: { theme },
-    } = useContext(ThemeContext);
-
-    console.log("this screen is:MyMovies ");
-
     return (
-        <div
-            style={{ backgroundColor: theme.backgroundColor, height: "100vh" }}
-        >
-            <Content />
-        </div>
+        <MoviesContainer>
+            <div style={{ marginTop: -50 }}>
+                <Text variant="headlineMedium">My Movies</Text>
+            </div>
+            <ContentWithProps additionalProp={null} />
+        </MoviesContainer>
     );
 }
 
