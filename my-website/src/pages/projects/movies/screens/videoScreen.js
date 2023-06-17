@@ -1,7 +1,7 @@
-import React, { useContext, useState, useRef } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 //
 import NavigationContext from "../context/navigation";
-import { Context as ThemeContext } from "../context/settingsContext";
+import { Context as SettingsContext } from "../context/settingsContext";
 
 import { Context as MovieContext } from "../context/movieContext";
 //
@@ -106,12 +106,17 @@ const styles = {
     },
 };
 
+// helper functions
+const filterGenres = (movieGenres, allGenres) => {
+    return allGenres.filter((el) => movieGenres.includes(el.id));
+};
+
 const CastAndCrew = ({ movie_id }) => {
     const { data, error, isLoading } = useMoviedb(movie_id); // returns movie information about the cast, crew and reviews
 
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(SettingsContext);
 
     if (error) {
         return <div>Error: {error.message}</div>;
@@ -202,7 +207,7 @@ const CastAndCrew = ({ movie_id }) => {
 const VideoButtons = ({ buttons, onClick }) => {
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(SettingsContext);
 
     return buttons.map((el, idx) => (
         <div
@@ -257,16 +262,19 @@ const VideoCategories = ({ id, videoLanguage }) => {
     const { data, error, isLoading } = useFetchVideoLink(id, videoLanguage);
     // useFetchVideoLink returns an array of videos for the movieID provided.
     const [vids, setVids] = useState(undefined);
+
     const videoTypes = Object.keys(
         data.reduce((acc, cur) => {
             acc[cur.type] = true;
             return acc;
         }, {})
     ); /// this return an array of Strings ['trailers','Clip',...]
+
     const defaultVideos = data.filter((el) => el.type === "Trailer");
     //
     const filterVideoFunction = (type) => {
-        setVids(type ? data.filter((el) => el.type === type) : undefined);
+        const videos = data.filter((el) => el.type === type);
+        setVids((prev) => (type ? videos : prev));
     };
 
     if (error) {
@@ -295,24 +303,25 @@ const VideoCategories = ({ id, videoLanguage }) => {
 const Overview = ({ title, release_date, genres, overview }) => {
     const {
         state: { theme },
-    } = useContext(ThemeContext);
-    return (
-        <div
-            style={{
-                position: "absolute",
-                bottom: -19,
-                marginBottom: 0,
-                width: 1080,
-                padding: 20,
+    } = useContext(SettingsContext);
 
-                // border: "1px solid red",
-                borderBottomRightRadius: 10,
-                borderBottomLeftRadius: 10,
-                borderRadius: 5,
-                backgroundColor: "rgba(255, 255, 255, 0.5)",
-                overflow: "hidden",
-            }}
-        >
+    const styles = {
+        container: {
+            position: "absolute",
+            bottom: 0,
+            marginBottom: 0,
+            width: 1080,
+            padding: 20,
+            // border: "1px solid red",
+            borderBottomRightRadius: 10,
+            borderBottomLeftRadius: 10,
+            borderRadius: 5,
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
+            overflow: "hidden",
+        },
+    };
+    return (
+        <div style={styles.container}>
             <Text variant={"headlineLarge"} color={theme.backgroundColor}>
                 {title}
             </Text>
@@ -349,16 +358,13 @@ const VideoScreen = () => {
     } = useContext(NavigationContext);
     const {
         state: { videoAudioLanguage },
-    } = useContext(ThemeContext);
-
+    } = useContext(SettingsContext);
     //
+
     const [movie] = state.movies.filter((el) => el.id === id);
     //
-    const filterGenres = (movieGenres, allGenres) => {
-        return allGenres.filter((el) => movieGenres.includes(el.id));
-    };
-    //
     const movieGenres = filterGenres(movie.genre_ids, genres);
+    //
 
     return (
         <div
@@ -374,6 +380,7 @@ const VideoScreen = () => {
                     alignItems: "center",
                     width: 1080,
                     alignSelf: "center",
+                    position: "relative",
                 }}
             >
                 <Image
@@ -396,6 +403,7 @@ const VideoScreen = () => {
             </div>
 
             <VideoCategories id={id} videoLanguage={videoAudioLanguage} />
+
             <div
                 style={{
                     borderTop: `1px solid #808080`,

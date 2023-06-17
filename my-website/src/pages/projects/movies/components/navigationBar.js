@@ -37,6 +37,7 @@ function NavigationBar({ components, hide }) {
                 // update the active screen based on the title
                 const updatedScreens = prev.map((el) => ({
                     ...el,
+                    // make the matching screen active
                     active: el.title === screen,
                     // Assign params to the matching screen
                     params: el.title === screen ? params : null,
@@ -45,7 +46,7 @@ function NavigationBar({ components, hide }) {
             });
         };
     const filteredState = state.filter((el) => !hide.includes(el.title));
-    const activeComponent = state.filter((el) => el.active)[0].component;
+    const activeComponent = state.filter((el) => el.active)[0];
 
     return (
         <>
@@ -78,10 +79,10 @@ function NavigationBar({ components, hide }) {
             <NavigationContext.Provider
                 value={{
                     screenNavigator,
-                    params: state.filter((el) => el.active)[0].params,
+                    params: activeComponent.params,
                 }}
             >
-                {activeComponent}
+                {activeComponent.component}
             </NavigationContext.Provider>
         </>
     );

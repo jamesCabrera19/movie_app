@@ -2,6 +2,10 @@ import { useContext, useState } from "react";
 //
 import Image from "next/image";
 import { ImageLoader } from "../components/utils";
+//
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 // context
 import NavigationContext from "../context/navigation";
 import { Context as MovieContext } from "../context/movieContext";
@@ -10,6 +14,7 @@ import { Context as SettingsContext } from "../context/settingsContext";
 import { NavigationBar } from "../components/navigationBar";
 import { MyButtons } from "../components/myButtons";
 import { Text } from "../components/text";
+
 // styles
 import _styles from "./test.module.css";
 // icons
@@ -111,18 +116,6 @@ const GeneralButtonSelector = () => {
     );
 };
 
-class Screens {
-    constructor(component, title = "", active = false, id) {
-        this.component = component;
-        this.title = title;
-        this.active = active;
-        this.id = id;
-    }
-    toggle() {
-        this.active = !this.active;
-    }
-}
-
 // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS // MAIN SCREENS
 const SCREENS = [
     {
@@ -141,12 +134,7 @@ const SCREENS = [
 // APP // APP // APP // APP // APP // APP // APP // APP // APP
 function MySettings() {
     return (
-        <div
-            style={{
-                width: 700,
-                margin: "auto",
-            }}
-        >
+        <div style={{ width: 700, margin: "auto" }}>
             <NavigationBar
                 components={SCREENS}
                 // disables navigation buttons

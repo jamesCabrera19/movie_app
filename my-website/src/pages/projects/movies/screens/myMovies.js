@@ -5,8 +5,25 @@ import { Context as MovieContext } from "../context/movieContext";
 import { Context as ThemeContext } from "../context/settingsContext";
 
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
+import {
+    findGenre,
+    movieGenreMerger,
+    movieRecommendation,
+} from "../recommendationSystem";
 
 //
+const Recommendations = ({ genres }) => {
+    const { state } = useContext(MovieContext);
+    const uniqueGenres = movieGenreMerger(genres);
+    //
+    const movieRecommendations = movieRecommendation(uniqueGenres, state.movies)
+        .filter((movie) => movie.score > 1)
+        .map((movie) => movie.id);
+
+    console.log("movieRecommendations", movieRecommendations);
+
+    return <div>{movieRecommendations.length}</div>;
+};
 
 const Content = () => {
     const {
@@ -21,6 +38,8 @@ const Content = () => {
         const movieIdSet = new Set(myMovies);
         return state.movies.filter((el) => movieIdSet.has(el.id));
     }, [myMovies]);
+
+    const genres = movies().map((el) => el.genre_ids);
 
     return (
         <div
@@ -44,6 +63,8 @@ const Content = () => {
                     movieID={el.id}
                 />
             ))}
+
+            <Recommendations genres={genres} />
         </div>
     );
 };
@@ -52,6 +73,8 @@ function MyMovies({}) {
     const {
         state: { theme },
     } = useContext(ThemeContext);
+
+    console.log("this screen is:MyMovies ");
 
     return (
         <div

@@ -13,6 +13,7 @@ import TVShows from "./screens/tvShows";
 import MySettings from "./screens/settings";
 import WatchNow from "./screens/watchNow";
 import VideoScreen from "./screens/videoScreen";
+import MyResults from "./screens/results";
 
 const screens = [
     {
@@ -33,6 +34,12 @@ const screens = [
         id: 2,
         component: <TVShows />,
     },
+    {
+        title: "Results",
+        active: false,
+        id: 5,
+        component: <MyResults />,
+    },
 
     {
         title: "Settings",
@@ -40,7 +47,6 @@ const screens = [
         id: 4,
         component: <MySettings />,
     },
-
     {
         title: "Video Screen",
         active: false,
