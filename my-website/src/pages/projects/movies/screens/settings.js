@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 // context
 import NavigationContext from "../context/navigation";
 import { Context as SettingsContext } from "../context/settingsContext";
@@ -6,7 +6,7 @@ import { Context as SettingsContext } from "../context/settingsContext";
 import { NavigationBar } from "../components/navigationBar";
 import { MyButtons } from "../components/myButtons";
 import { Text } from "../components/text";
-
+import Modal from "react-bootstrap/Modal";
 // icons
 import { MdHistory, AiOutlineUser } from "../components/icons";
 // screens
@@ -15,6 +15,7 @@ import { SpinningRow } from "../components/carousel";
 import {
     SettingsButtons,
     AudioLanguageButtons,
+    HistoryAndPrivacy,
 } from "../components/settingsButtons";
 //
 
@@ -40,6 +41,8 @@ const GeneralButtons = () => {
             {/* BUTTONS, BUTTONS, BUTTONS */}
             <SettingsButtons />
             <AudioLanguageButtons />
+
+            <HistoryAndPrivacy />
             <MyButtons buttons={userSettings} />
             {/*  */}
             <div

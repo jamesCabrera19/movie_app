@@ -226,7 +226,7 @@ function TheModal(props) {
         setMovie(props);
         handleShow();
         // console.log("card was clicked: ", props.title);
-        updateValue(props.title);
+        updateValue(`${props.title},`);
     };
 
     // * determine where or if the buttons prop has been passed down to Modal.

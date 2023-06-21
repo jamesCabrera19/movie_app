@@ -22,7 +22,7 @@ import { MySwitch } from "./mySwitch";
 import Modal from "react-bootstrap/Modal";
 import { GoBackButton } from "./goBackButton";
 import { MyForm } from "./form";
-
+import { SpinningRow } from "./carousel";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 // helper functions
@@ -63,12 +63,61 @@ const MarginText = ({ text, color }) => {
         </div>
     );
 };
-const HistoryAndPrivacyModal = () => {
+const HistoryAndPrivacy = () => {
+    const {
+        state: { theme },
+    } = useContext(SettingsContext);
+    const [movies, updateValue, clearValue] = useLocalStorage("movies", null);
+    const [playTime, updateTime, deleteTime] = useLocalStorage("play_time", 0);
+    //
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    //
+    const handleDeleteHistory = () => {
+        // Implement delete history functionality
+        clearValue("movies");
+    };
+
+    const handleDeleteTotalPlayTime = () => {
+        // Implement delete total play time functionality
+        deleteTime("play_time");
+    };
+    const styles = {
+        buttonContainer: {
+            display: "flex",
+            width: "100%",
+            justifyContent: "space-evenly",
+            marginTop: 20,
+        },
+
+        buttons: {
+            height: 50,
+            width: 200,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: theme.buttonColor,
+            borderRadius: 10,
+            border: "0px solid red",
+        },
+    };
+
+    // console.log(...movies.split(","));
     return (
         <>
+            <MyButtons
+                buttons={[
+                    {
+                        label: "History and Privacy",
+                        Icon_A: (props) => <MdHistory {...props} />,
+                        Component: null,
+                        onClick: () => () => {
+                            handleShow();
+                        },
+                    },
+                ]}
+            />
             <Modal
                 show={show}
                 onHide={handleClose}
@@ -78,8 +127,39 @@ const HistoryAndPrivacyModal = () => {
                 contentClassName="bg-transparent"
             >
                 <Modal.Body>
-                    <div style={{ height: 300, border: "1px solid red" }}>
-                        <Text>Not yet implemented</Text>
+                    <div
+                        style={{
+                            backgroundColor: theme.backgroundColor,
+                            padding: 10,
+                            borderRadius: 10,
+                        }}
+                    >
+                        <Text variant={"headlineSmall"}>
+                            History and Privacy
+                        </Text>
+
+                        <Text>Total play time: {isValidTime(playTime)}</Text>
+                        {movies.length ? (
+                            <Text>
+                                Movies visited: {...movies.replace(",", ", ")}
+                            </Text>
+                        ) : null}
+
+                        {/*  */}
+                        <div style={styles.buttonContainer}>
+                            <button
+                                onClick={handleDeleteHistory}
+                                style={styles.buttons}
+                            >
+                                Delete History
+                            </button>
+                            <button
+                                onClick={handleDeleteTotalPlayTime}
+                                style={styles.buttons}
+                            >
+                                Delete Total playTime
+                            </button>
+                        </div>
                     </div>
                 </Modal.Body>
             </Modal>
@@ -123,7 +203,7 @@ const SettingsButtons = () => {
 
     // hook
     const [playTime] = useLocalStorage("play_time", 0);
-    const [value] = useLocalStorage("movies", "");
+
     //
     const buttons = [
         {
@@ -153,14 +233,6 @@ const SettingsButtons = () => {
             Component: (props) => (
                 <MarginText text={`${isValidTime(playTime)}`} />
             ),
-        },
-        {
-            label: "History and Privacy",
-            Icon_A: (props) => <MdHistory {...props} />,
-            Component: null,
-            onClick: (props) => () => {
-                console.log(value);
-            },
         },
     ];
     return <MyButtons buttons={buttons} />;
@@ -241,4 +313,4 @@ const AudioLanguageButtons = () => {
     );
 };
 
-export { SettingsButtons, AudioLanguageButtons };
+export { SettingsButtons, AudioLanguageButtons, HistoryAndPrivacy };
