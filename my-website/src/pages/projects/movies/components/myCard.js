@@ -167,7 +167,7 @@ const MyCard = (props) => {
                 margin: 10,
             }}
         >
-            <div onClick={onClick ? onClick() : null}>
+            <div onClick={onClick ? onClick : null}>
                 <Image
                     alt="Movie Poster"
                     loader={ImageLoader}

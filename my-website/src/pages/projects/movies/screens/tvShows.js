@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState, useRef, Children } from "react";
+import { useContext } from "react";
 
 import { Text } from "../components/text";
 import { Provider as SettingsProvider } from "../context/settingsContext";
 import { Context as SettingsContext } from "../context/settingsContext";
 
-import { ImageLoader } from "../components/utils";
 import { CardRow } from "../components/cardRow";
-import { fibonacci } from "../components/codeChallenges";
 const data = [
     {
         id: 0,
@@ -58,6 +56,7 @@ const App = () => {
                     title={el.header_text}
                     bigRow={true}
                     seeAll={true}
+                    movieIDS={[]}
                 />
             ))}
         </div>

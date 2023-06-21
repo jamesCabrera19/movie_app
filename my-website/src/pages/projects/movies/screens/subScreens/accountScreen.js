@@ -78,40 +78,7 @@ const LogInModal = () => {
         </>
     );
 };
-const HistoryNPrivacyModal = () => {
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
-    const otherButtons = [
-        {
-            label: "History and Privacy",
-            Icon_A: (props) => <BiHistory {...props} />,
-            onClick: () => (e) => handleShow(),
-            Component: null,
-        },
-    ];
-
-    return (
-        <>
-            <MyButtons buttons={otherButtons} />
-            <Modal
-                show={show}
-                onHide={handleClose}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-                contentClassName="bg-transparent"
-            >
-                <Modal.Body>
-                    <div style={{ height: 300, border: "1px solid red" }}>
-                        <Text>Not yet implemented</Text>
-                    </div>
-                </Modal.Body>
-            </Modal>
-        </>
-    );
-};
 const AccountScreen = () => {
     const {
         state: { theme },
@@ -128,7 +95,6 @@ const AccountScreen = () => {
                 Account Management
             </Text>
             <LogInModal />
-            {/* <HistoryNPrivacyModal /> */}
 
             <div
                 onClick={signOut()}

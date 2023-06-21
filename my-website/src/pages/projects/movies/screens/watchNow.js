@@ -4,6 +4,7 @@ import Image from "next/image";
 //
 import { ImageLoader, genres } from "../components/utils";
 import { Context as MovieContext } from "../context/movieContext";
+import { Context as SettingsContext } from "../context/settingsContext";
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import NavigationContext from "../context/navigation";
 
@@ -83,7 +84,9 @@ const UpNext = ({}) => {
 
 function WatchNow({}) {
     const { state } = useContext(MovieContext);
+
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
+    // movies is an Array of objects with a genre as key and movie ids as value
     const movies = movieLibrary.moviesByGenre();
 
     const cardRows = Object.entries(movies)

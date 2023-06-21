@@ -4,13 +4,15 @@ import Image from "next/image";
 // BOOTSTRAP
 import Modal from "react-bootstrap/Modal";
 // OTHER
-import { ImageLoader, imageLoaderHighQuality } from "./utils";
+import { imageLoaderHighQuality } from "./utils";
 // COMPONENTS
 import { Text } from "./text";
 import MyCard from "./myCard";
 // CONTEXT
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import NavigationContext from "../context/navigation";
+// HOOKS
+import useLocalStorage from "../hooks/useLocalStorage";
 
 // THEME
 import { Context as ThemeContext } from "../context/settingsContext";
@@ -27,35 +29,47 @@ const initMovieProps = {
     original_language: "EN",
     id: 129182,
 };
-const MyButton = ({ title, onClick, disable }) => {
+const MyButton = ({ buttons }) => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
     //
 
     return (
-        <button
-            onClick={onClick()}
+        <div
             style={{
-                height: 50,
-                width: 200,
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: disable ? "" : "pointer",
-                backgroundColor: theme.buttonColor,
-                borderRadius: 10,
-                border: "0px solid red",
+                width: "100%",
+                justifyContent: "space-evenly",
+                marginTop: 20,
             }}
-            disabled={disable}
         >
-            <Text
-                variant="headlineExtraSmall"
-                color={disable ? "grey" : theme.buttonFontColor}
-            >
-                {title}
-            </Text>
-        </button>
+            {buttons.map((el) => (
+                <button
+                    key={el.title}
+                    onClick={el.onClick()}
+                    style={{
+                        height: 50,
+                        width: 200,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        cursor: el.disable ? "" : "pointer",
+                        backgroundColor: theme.buttonColor,
+                        borderRadius: 10,
+                        border: "0px solid red",
+                    }}
+                    disabled={el.disable}
+                >
+                    <Text
+                        variant="headlineExtraSmall"
+                        color={el.disable ? "grey" : theme.buttonFontColor}
+                    >
+                        {el.title}
+                    </Text>
+                </button>
+            ))}
+        </div>
     );
 };
 const ModalBodyText = ({ title, overview, vote, language, date }) => {
@@ -157,13 +171,14 @@ const ModalBody = (props) => {
         });
     //
 
-    const buttonData = [
+    const buttons = [
         {
             title: "Play",
             onClick: () =>
                 screenNavigator("Video Screen", {
                     id: props.movieID,
                 }),
+            disable: null,
         },
         {
             title: "Add to Up Next",
@@ -189,24 +204,7 @@ const ModalBody = (props) => {
                     vote={props.vote_average}
                     language={props.original_language}
                 />
-
-                <div
-                    style={{
-                        display: "flex",
-                        width: "100%",
-                        justifyContent: "space-evenly",
-                        marginTop: 20,
-                    }}
-                >
-                    {buttonData.map((el, idx) => (
-                        <MyButton
-                            onClick={el.onClick}
-                            title={el.title}
-                            key={idx}
-                            disable={el.disable}
-                        />
-                    ))}
-                </div>
+                <MyButton buttons={buttons} />
             </Modal.Body>
         </>
     );
@@ -214,6 +212,9 @@ const ModalBody = (props) => {
 
 function TheModal(props) {
     const { movieID, poster } = props;
+    //
+    const [value, updateValue, clearValue] = useLocalStorage("movies", "");
+
     // modal controls
     const [movie, setMovie] = useState(initMovieProps);
     const [show, setShow] = useState(false);
@@ -221,9 +222,11 @@ function TheModal(props) {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const closeModal = () => (e) => handleClose();
-    const openModal = () => (e) => {
+    const openModal = () => {
         setMovie(props);
         handleShow();
+        // console.log("card was clicked: ", props.title);
+        updateValue(props.title);
     };
 
     // * determine where or if the buttons prop has been passed down to Modal.

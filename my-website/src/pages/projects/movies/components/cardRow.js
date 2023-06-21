@@ -6,7 +6,7 @@ import { Text } from "./text";
 import NavigationContext from "../context/navigation";
 import { Context as MovieContext } from "../context/movieContext";
 // import { Context as ThemeContext } from "../context/themeContext";
-import { Context as ThemeContext } from "../context/settingsContext";
+import { Context as settingsContext } from "../context/settingsContext";
 
 import MyCard from "./myCard";
 //
@@ -14,7 +14,7 @@ import MyCard from "./myCard";
 const RowTitle = ({ title, movieIDS }) => {
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(settingsContext);
     const { screenNavigator } = useContext(NavigationContext);
     return (
         <div
@@ -49,7 +49,7 @@ const CardRowNoModal = ({ movieIDS }) => {
 
     const {
         state: { theme },
-    } = useContext(ThemeContext);
+    } = useContext(settingsContext);
     const movieIds = movieIDS || [];
 
     // filters movies from the main state
@@ -87,15 +87,13 @@ const CardRow = ({ title, movieIDS }) => {
         state: { movies },
     } = useContext(MovieContext);
 
-    const movieIds = movieIDS || [];
-
     // filters movies from the main state
-    const movieIdSet = new Set(movieIds); // set of unique movies
+    const movieIdSet = new Set(movieIDS); // set of unique movies
     const filteredMovies = movies.filter(({ id }) => movieIdSet.has(id)); // array of objs[{}]
 
     return (
         <div style={styles.bigContainer}>
-            <RowTitle title={title} movieIDS={movieIds} />
+            <RowTitle title={title} movieIDS={movieIDS} />
             <div style={styles.bigRowContainer}>
                 {filteredMovies.map((el) => (
                     <TheModal

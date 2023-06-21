@@ -1,35 +1,37 @@
-import { useContext, useState } from "react";
 import Switch from "react-switch";
-
 import {
+    MdWbSunny,
+    BsFillMoonStarsFill,
     MdOutlineCheck,
-    FaAudioDescription,
     FiXCircle,
-    MdPlayCircleOutline,
-    BsDownload,
-    MdOutlineTitle,
 } from "./icons";
 
-const MySwitch = ({ IconA, IconB, onChange }) => {
-    const [state, setState] = useState(false);
+const MySwitch = ({ onChange, checked, type }) => {
+    const handleChange = () => onChange();
 
-    const handleIt = () => {};
-    const checked = (
-        <MdOutlineCheck style={{ margin: "0 0 3px 5px" }} color="#FFFFFF" />
-    );
-    const unChecked = (
-        <FiXCircle style={{ margin: "0 0 2px 5px" }} color="#FFFFFF" />
-    );
+    const checkedIcon =
+        type === "theme" ? (
+            <MdWbSunny color="yellow" style={{ margin: "0px 0 1px 5px" }} />
+        ) : (
+            <MdOutlineCheck style={{ margin: "0 0 3px 5px" }} color="#FFFFFF" />
+        );
+
+    const uncheckedIcon =
+        type === "theme" ? (
+            <BsFillMoonStarsFill
+                color="white"
+                style={{ margin: "0px 0 1px 5px" }}
+            />
+        ) : (
+            <FiXCircle style={{ margin: "0 0 2px 5px" }} color="#FFFFFF" />
+        );
 
     return (
         <Switch
-            onChange={() => {
-                setState((prev) => !prev);
-                onChange();
-            }}
-            checked={state}
-            checkedHandleIcon={IconA ? IconA : checked}
-            uncheckedHandleIcon={IconB ? IconB : unChecked}
+            onChange={handleChange}
+            checked={checked}
+            checkedHandleIcon={checkedIcon}
+            uncheckedHandleIcon={uncheckedIcon}
             checkedIcon={false}
             uncheckedIcon={false}
             offHandleColor={"#232323"}
