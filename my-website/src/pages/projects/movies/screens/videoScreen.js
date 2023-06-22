@@ -111,8 +111,8 @@ const filterGenres = (movieGenres, allGenres) => {
     return allGenres.filter((el) => movieGenres.includes(el.id));
 };
 
-const CastAndCrew = ({ movie_id }) => {
-    const { data, error, isLoading } = useMoviedb(movie_id); // returns movie information about the cast, crew and reviews
+const CastAndCrew = ({ movie_id, type }) => {
+    const { data, error, isLoading } = useMoviedb(movie_id, type); // returns movie information about the cast, crew and reviews
 
     const {
         state: { theme },
@@ -258,8 +258,12 @@ const renderVideoContainers = (videos) => {
     ));
 };
 
-const VideoCategories = ({ id, videoLanguage }) => {
-    const { data, error, isLoading } = useFetchVideoLink(id, videoLanguage);
+const VideoCategories = ({ id, videoLanguage, type }) => {
+    const { data, error, isLoading } = useFetchVideoLink(
+        id,
+        videoLanguage,
+        type
+    );
     // useFetchVideoLink returns an array of videos for the movieID provided.
     const [vids, setVids] = useState(undefined);
 
@@ -272,6 +276,7 @@ const VideoCategories = ({ id, videoLanguage }) => {
 
     const defaultVideos = data.filter((el) => el.type === "Trailer");
     //
+
     const filterVideoFunction = (type) => {
         const videos = data.filter((el) => el.type === type);
         setVids((prev) => (type ? videos : prev));
@@ -351,17 +356,24 @@ const Overview = ({ title, release_date, genres, overview }) => {
 };
 
 const VideoScreen = () => {
-    const { state } = useContext(MovieContext);
+    const {
+        state: { tv_shows, movies },
+    } = useContext(MovieContext);
     //
     const {
-        params: { id },
+        params: { id, type },
     } = useContext(NavigationContext);
     const {
         state: { videoAudioLanguage },
     } = useContext(SettingsContext);
     //
 
-    const [movie] = state.movies.filter((el) => el.id === id);
+    let movie = null;
+    if (!type) {
+        [movie] = movies.filter((el) => el.id === id);
+    } else {
+        [movie] = tv_shows.filter((el) => el.id === id);
+    }
     //
     const movieGenres = filterGenres(movie.genre_ids, genres);
     //
@@ -402,7 +414,11 @@ const VideoScreen = () => {
                 />
             </div>
 
-            <VideoCategories id={id} videoLanguage={videoAudioLanguage} />
+            <VideoCategories
+                id={id}
+                videoLanguage={videoAudioLanguage}
+                type={type}
+            />
 
             <div
                 style={{
@@ -412,8 +428,9 @@ const VideoScreen = () => {
                     alignSelf: "center",
                 }}
             />
-            <CastAndCrew movie_id={id} />
+            <CastAndCrew movie_id={id} type={type} />
         </div>
+        // <></>
     );
 };
 

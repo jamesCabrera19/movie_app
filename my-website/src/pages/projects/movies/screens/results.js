@@ -12,7 +12,7 @@ import { withMovieContext } from "../components/withMovieContext";
 //
 const Content = ({ movies, selectedGenre }) => {
     const genres = movies.map((el) => el.genre_ids);
-    console.log(genres);
+    // console.log(genres);
     return (
         <MoviesContainer>
             <div style={{ marginTop: -50 }}>
@@ -41,7 +41,7 @@ const Content = ({ movies, selectedGenre }) => {
     );
 };
 
-const ContentWithProps = withMovieContext(Content, true);
+const ContentWithProps = withMovieContext(Content, "movies");
 
 function MyResults() {
     return <ContentWithProps />;

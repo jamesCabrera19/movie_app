@@ -82,27 +82,34 @@ const CardRowNoModal = ({ movieIDS }) => {
         </div>
     );
 };
-const CardRow = ({ title, movieIDS }) => {
+const CardRow = ({ title, IDS, type }) => {
     const {
-        state: { movies },
+        state: { tv_shows, movies },
     } = useContext(MovieContext);
 
     // filters movies from the main state
-    const movieIdSet = new Set(movieIDS); // set of unique movies
-    const filteredMovies = movies.filter(({ id }) => movieIdSet.has(id)); // array of objs[{}]
+    const idSet = new Set(IDS); // set of unique movies
+    //
+    const filteredData = (type === "TV_SHOWS" ? tv_shows : movies).filter(
+        ({ id }) => idSet.has(id)
+    );
 
     return (
         <div style={styles.bigContainer}>
-            <RowTitle title={title} movieIDS={movieIDS} />
+            <RowTitle title={title} movieIDS={IDS} />
             <div style={styles.bigRowContainer}>
-                {filteredMovies.map((el) => (
+                {filteredData.map((el) => (
                     <TheModal
                         key={el.id}
                         movieID={el.id}
                         poster={el.backdrop_path}
-                        title={el.title}
+                        title={type === "TV_SHOWS" ? el.name : el.title}
                         overview={el.overview}
-                        release_date={el.release_date}
+                        release_date={
+                            type === "TV_SHOWS"
+                                ? el.first_air_date
+                                : el.release_date
+                        }
                         vote_average={el.vote_average}
                         original_language={el.original_language}
                     />

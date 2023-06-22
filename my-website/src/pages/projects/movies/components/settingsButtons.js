@@ -75,14 +75,15 @@ const HistoryAndPrivacy = () => {
     const handleShow = () => setShow(true);
     //
     const handleDeleteHistory = () => {
-        // Implement delete history functionality
+        handleClose();
         clearValue("movies");
     };
 
     const handleDeleteTotalPlayTime = () => {
-        // Implement delete total play time functionality
+        handleClose();
         deleteTime("play_time");
     };
+
     const styles = {
         buttonContainer: {
             display: "flex",
@@ -134,13 +135,15 @@ const HistoryAndPrivacy = () => {
                             borderRadius: 10,
                         }}
                     >
-                        <Text variant={"headlineSmall"}>
+                        <Text variant={"headlineSmall"} color={theme.fontColor}>
                             History and Privacy
                         </Text>
 
-                        <Text>Total play time: {isValidTime(playTime)}</Text>
-                        {movies.length ? (
-                            <Text>
+                        <Text color={theme.fontColor}>
+                            Total play time: {isValidTime(playTime)}
+                        </Text>
+                        {movies ? (
+                            <Text color={theme.fontColor}>
                                 Movies visited: {...movies.replace(",", ", ")}
                             </Text>
                         ) : null}
@@ -149,13 +152,19 @@ const HistoryAndPrivacy = () => {
                         <div style={styles.buttonContainer}>
                             <button
                                 onClick={handleDeleteHistory}
-                                style={styles.buttons}
+                                style={{
+                                    ...styles.buttons,
+                                    disable: playTime > 0 ? false : true,
+                                }}
                             >
                                 Delete History
                             </button>
                             <button
                                 onClick={handleDeleteTotalPlayTime}
-                                style={styles.buttons}
+                                style={{
+                                    ...styles.buttons,
+                                    disable: movies ? false : true,
+                                }}
                             >
                                 Delete Total playTime
                             </button>

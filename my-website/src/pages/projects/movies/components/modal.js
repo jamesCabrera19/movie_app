@@ -168,8 +168,10 @@ const ModalBody = (props) => {
     const handlePlayNavigation = () =>
         screenNavigator("Video Screen", {
             id: props.movieID,
+            type: props.type,
         });
     //
+    // console.log(props);
 
     const buttons = [
         {
@@ -177,6 +179,7 @@ const ModalBody = (props) => {
             onClick: () =>
                 screenNavigator("Video Screen", {
                     id: props.movieID,
+                    type: props.type,
                 }),
             disable: null,
         },

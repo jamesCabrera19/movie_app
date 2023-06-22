@@ -28,7 +28,7 @@ const Recommendations = ({ genres }) => {
         </div>
     );
 };
-const Content = ({ movies, additionalProp }) => {
+const Movies = ({ movies, additionalProp }) => {
     const genres = movies.map((el) => el.genre_ids);
 
     return (
@@ -57,7 +57,7 @@ const Content = ({ movies, additionalProp }) => {
     );
 };
 
-const ContentWithProps = withMovieContext(Content, false);
+const ContentWithProps = withMovieContext(Movies, "myMovies");
 
 function MyMovies({}) {
     return (

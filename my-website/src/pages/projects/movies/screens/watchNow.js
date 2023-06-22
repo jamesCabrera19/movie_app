@@ -93,7 +93,7 @@ function WatchNow({}) {
         .sort(([keyA, idsA], [keyB, idsB]) => idsB.length - idsA.length)
         .map(([key, ids]) => {
             return ids.length === 0 ? null : (
-                <CardRow key={key} title={key} movieIDS={ids} />
+                <CardRow key={key} title={key} IDS={ids} type={"MOVIES"} />
             );
         });
 

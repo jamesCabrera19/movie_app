@@ -5,7 +5,7 @@ import movieApi from "../movieAPI";
 // URL: /movie/{movie_id}/reviews
 // URL: /movie/{movie_id}/recommendations
 
-export default (movie_id) => {
+export default (movie_id, type) => {
     const [data, setData] = useState({ results: [], crew: [], cast: [] });
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -13,12 +13,20 @@ export default (movie_id) => {
     useEffect(() => {
         const fetchData = async () => {
             let id = movie_id ? movie_id : 76600;
-            const endpoints = [`/movie/${id}/credits`, `/movie/${id}/reviews`];
+            const tvEndpoints = [
+                `tv/${id}/credits?language=en-US`,
+                `/tv/${id}/reviews?language=en-US&page=1`,
+            ];
+            const movieEndpoints = [
+                `/movie/${id}/credits`,
+                `/movie/${id}/reviews`,
+            ];
 
+            const endpoint = !type ? movieEndpoints : tvEndpoints;
             setIsLoading(true);
             try {
                 const responses = await Promise.all(
-                    endpoints.map((endpoint) => movieApi.get(endpoint))
+                    endpoint.map((endpoint) => movieApi.get(endpoint))
                 );
                 const responseData = await Promise.all(
                     responses.map((response) => response.data)
