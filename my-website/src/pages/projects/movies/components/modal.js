@@ -170,8 +170,6 @@ const ModalBody = (props) => {
             id: props.movieID,
             type: props.type,
         });
-    //
-    // console.log(props);
 
     const buttons = [
         {
@@ -226,6 +224,7 @@ function TheModal(props) {
     const handleShow = () => setShow(true);
     const closeModal = () => (e) => handleClose();
     const openModal = () => {
+        // console.log("TheModal props: ", props);
         setMovie(props);
         handleShow();
         // console.log("card was clicked: ", props.title);

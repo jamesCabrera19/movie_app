@@ -11,7 +11,13 @@ import { Context as settingsContext } from "../context/settingsContext";
 import MyCard from "./myCard";
 //
 
-const RowTitle = ({ title, movieIDS }) => {
+// helper functions
+function filterMoviesByIds(movieIds, movies) {
+    const movieIdSet = new Set(movieIds);
+    return movies.filter(({ id }) => movieIdSet.has(id));
+}
+
+const RowTitle = ({ title, movieIDS, type }) => {
     const {
         state: { theme },
     } = useContext(settingsContext);
@@ -33,6 +39,7 @@ const RowTitle = ({ title, movieIDS }) => {
                 onClick={screenNavigator("Results", {
                     ids: movieIDS,
                     genre: title,
+                    type: type,
                 })}
                 style={{ cursor: "pointer" }}
             >
@@ -43,7 +50,7 @@ const RowTitle = ({ title, movieIDS }) => {
         </div>
     );
 };
-const CardRowNoModal = ({ movieIDS }) => {
+const CardRowNoModal = ({ movieIDS, type }) => {
     const { state } = useContext(MovieContext);
     const { screenNavigator } = useContext(NavigationContext);
 
@@ -51,10 +58,8 @@ const CardRowNoModal = ({ movieIDS }) => {
         state: { theme },
     } = useContext(settingsContext);
     const movieIds = movieIDS || [];
-
     // filters movies from the main state
-    const movieIdSet = new Set(movieIds);
-    const filteredMovies = state.movies.filter(({ id }) => movieIdSet.has(id));
+    const filteredMovies = filterMoviesByIds(movieIds, state.movies);
 
     return (
         <div style={styles.smallContainer}>
@@ -66,11 +71,10 @@ const CardRowNoModal = ({ movieIDS }) => {
             <div style={{ display: "flex" }}>
                 {filteredMovies.map((el) => (
                     <MyCard
-                        onClick={() =>
-                            screenNavigator("Video Screen", {
-                                id: el.id,
-                            })
-                        }
+                        onClick={screenNavigator("Video Screen", {
+                            id: el.id,
+                            type: type,
+                        })}
                         poster={el.backdrop_path}
                         buttonPosition={{ left: 130 }}
                         sizePercent={0.26}
@@ -83,20 +87,24 @@ const CardRowNoModal = ({ movieIDS }) => {
     );
 };
 const CardRow = ({ title, IDS, type }) => {
+    const LIMIT = 4; // minimum amount of items per row
     const {
         state: { tv_shows, movies },
     } = useContext(MovieContext);
 
     // filters movies from the main state
-    const idSet = new Set(IDS); // set of unique movies
-    //
-    const filteredData = (type === "TV_SHOWS" ? tv_shows : movies).filter(
-        ({ id }) => idSet.has(id)
+    const filteredData = filterMoviesByIds(
+        IDS,
+        type === "TV_SHOWS" ? tv_shows : movies
     );
+
+    if (filteredData.length < LIMIT) {
+        return null;
+    }
 
     return (
         <div style={styles.bigContainer}>
-            <RowTitle title={title} movieIDS={IDS} />
+            <RowTitle title={title} movieIDS={IDS} type={type} />
             <div style={styles.bigRowContainer}>
                 {filteredData.map((el) => (
                     <TheModal
@@ -112,6 +120,7 @@ const CardRow = ({ title, IDS, type }) => {
                         }
                         vote_average={el.vote_average}
                         original_language={el.original_language}
+                        type={type}
                     />
                 ))}
             </div>

@@ -10,36 +10,44 @@ const filteredMovies = memoizeOne((moviesIds, moviesArray) => {
     return moviesArray.filter((el) => uniqueMovies.has(el.id));
 });
 
-export const withMovieContext = (WrappedComponent, selectedState) => {
+export const withMovieContext = (WrappedComponent, defaultType) => {
     // Return a new component that wraps the original component
     return (props) => {
         // Access the context values using useContext
         const {
-            state: { movies, tv_shows },
-        } = useContext(MovieContext);
+            params: { ids, genre, type },
+        } = useContext(NavigationContext);
+        //
         const {
             state: { myMovies },
         } = useContext(LikedMoviesContext); // saved movie ids
-        const {
-            params: { ids, genre },
-        } = useContext(NavigationContext);
-
+        const { state } = useContext(MovieContext);
+        //
+        //
+        let myType = defaultType ? defaultType : type;
         let extractedMovies = [];
 
-        if (selectedState === "movies") {
-            // used for Results component
-            extractedMovies = filteredMovies(ids, movies);
-        } else if (selectedState === "myMovies") {
-            // used for myMovies component
-            extractedMovies = filteredMovies(myMovies, movies);
-        } else if (selectedState === "tv_shows") {
-            extractedMovies = [];
+        console.log("withMovieContext : ", defaultType);
+
+        switch (myType) {
+            case "MOVIES":
+                extractedMovies = filteredMovies(ids, state.movies);
+                break;
+            case "TV_SHOWS":
+                extractedMovies = filteredMovies(ids, state.tv_shows);
+                break;
+            case "MY_MOVIES":
+                extractedMovies = filteredMovies(myMovies, state.movies);
+                break;
+            default:
+                break;
         }
         // Pass the context values as props to the wrapped component
         return (
             <WrappedComponent
                 movies={extractedMovies}
                 selectedGenre={genre}
+                type={type}
                 {...props}
             />
         );

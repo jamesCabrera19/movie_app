@@ -61,6 +61,34 @@ const movieRecommendation = (userGenres, movies) => {
     return recommendations.sort((a, b) => b.score > a.score);
 };
 
+const movieRecommendations = (userGenres, A, B) => {
+    // helper functions
+    const filter = (array, set) => array.filter((el) => set.has(el));
+
+    const map = (array, set) => {
+        return array.map((arrElement) => {
+            const commonGenres = new Set(filter(arrElement.genre_ids, set));
+            return {
+                score: commonGenres.size,
+                title: arrElement.title ? arrElement.title : arrElement.name,
+                genres: arrElement.genre_ids,
+                id: arrElement.id,
+            };
+        });
+    };
+    //
+    const userGenresSet = new Set(userGenres);
+
+    return map(A, userGenresSet)
+        .concat(map(B, userGenresSet))
+        .sort((a, b) => b.score > a.score);
+};
+
 //
 
-export { findGenre, movieGenreMerger, movieRecommendation };
+export {
+    findGenre,
+    movieGenreMerger,
+    movieRecommendation,
+    movieRecommendations,
+};

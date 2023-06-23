@@ -12,9 +12,11 @@ export default (movie_id, type) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setIsLoading(true);
+            //
             let id = movie_id ? movie_id : 76600;
             const tvEndpoints = [
-                `tv/${id}/credits?language=en-US`,
+                `/tv/${id}/credits?language=en-US`,
                 `/tv/${id}/reviews?language=en-US&page=1`,
             ];
             const movieEndpoints = [
@@ -22,8 +24,8 @@ export default (movie_id, type) => {
                 `/movie/${id}/reviews`,
             ];
 
-            const endpoint = !type ? movieEndpoints : tvEndpoints;
-            setIsLoading(true);
+            const endpoint = type === "MOVIES" ? movieEndpoints : tvEndpoints;
+
             try {
                 const responses = await Promise.all(
                     endpoint.map((endpoint) => movieApi.get(endpoint))

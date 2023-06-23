@@ -5,8 +5,9 @@ import { Context as movieContext } from "../context/movieContext";
 import { MovieOrganizer } from "../components/Helpers";
 import { genres } from "../components/utils";
 import { TheModal } from "../components/modal";
+import { CardRow } from "../components/cardRow";
 
-const CardRow = ({ title, IDS, type }) => {
+const CardRows = ({ title, IDS, type }) => {
     const {
         state: { tv_shows, movies },
     } = useContext(movieContext);

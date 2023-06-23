@@ -14,16 +14,21 @@ import { CardRow, CardRowNoModal } from "../components/cardRow";
 
 //
 const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
+// helper functions
 
-function ScreenCover({}) {
+const getRandomItem = (array) => {
+    const randomIndex = Math.floor(Math.random() * array.length);
+    return array[randomIndex];
+};
+
+//
+function ScreenCover({ type }) {
     const {
         state: { movies },
     } = useContext(MovieContext);
     const { screenNavigator } = useContext(NavigationContext);
 
-    const randomMovie = movies.filter(
-        (e, i) => i <= Math.floor(Math.random() * movies.length)
-    )[0];
+    const randomMovie = getRandomItem(movies);
 
     const styles = {
         flex: {
@@ -50,6 +55,7 @@ function ScreenCover({}) {
             style={{ ...styles.imageContainer, ...styles.flex }}
             onClick={screenNavigator("Video Screen", {
                 id: randomMovie ? randomMovie.id : 640146,
+                type: type,
             })}
         >
             <Image
@@ -64,7 +70,7 @@ function ScreenCover({}) {
         </div>
     );
 }
-const UpNext = ({}) => {
+const UpNext = ({ type }) => {
     const { state } = useContext(LikedMoviesContext);
     return (
         <>
@@ -75,16 +81,18 @@ const UpNext = ({}) => {
                     alignItems: "center",
                 }}
             >
-                <ScreenCover />
-                <CardRowNoModal movieIDS={state.upNext} />
+                <ScreenCover type={type} />
+                <CardRowNoModal movieIDS={state.upNext} type={type} />
             </div>
         </>
     );
 };
 
 function WatchNow({}) {
+    const type = "MOVIES"; // type is used for data filtration
+    //
     const { state } = useContext(MovieContext);
-
+    //
     const movieLibrary = new MovieOrganizer(state.movies, genres, true);
     // movies is an Array of objects with a genre as key and movie ids as value
     const movies = movieLibrary.moviesByGenre();
@@ -93,13 +101,13 @@ function WatchNow({}) {
         .sort(([keyA, idsA], [keyB, idsB]) => idsB.length - idsA.length)
         .map(([key, ids]) => {
             return ids.length === 0 ? null : (
-                <CardRow key={key} title={key} IDS={ids} type={"MOVIES"} />
+                <CardRow key={key} title={key} IDS={ids} type={type} />
             );
         });
 
     return (
         <div>
-            <UpNext />
+            <UpNext type={type} />
             {cardRows}
         </div>
     );

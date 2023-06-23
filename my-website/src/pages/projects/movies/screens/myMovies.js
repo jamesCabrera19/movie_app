@@ -6,6 +6,7 @@ import {
     findGenre,
     movieGenreMerger,
     movieRecommendation,
+    movieRecommendations,
 } from "../recommendationSystem";
 import { Text } from "../components/text";
 import MoviesContainer from "../components/moviesContainer";
@@ -16,21 +17,29 @@ const Recommendations = ({ genres }) => {
     const { state } = useContext(MovieContext);
     const uniqueGenres = movieGenreMerger(genres);
     //
-    const movieRecommendations = movieRecommendation(uniqueGenres, state.movies)
+    const movieRecommendation = movieRecommendations(
+        uniqueGenres,
+        state.movies,
+        state.tv_shows
+    )
         .filter((movie) => movie.score > 1)
-        .map((movie) => movie.id);
+        .map((movie) => {
+            return movie.title + "----" + movie.score;
+        });
 
-    console.log("movieRecommendations", movieRecommendations);
+    // console.log("movieRecommendations", movieRecommendation);
 
     return (
         <div style={{ color: "white" }}>
-            {movieRecommendations.length} recommendations
+            {movieRecommendation.map((el) => (
+                <li key={el}>{el}</li>
+            ))}
         </div>
     );
 };
-const Movies = ({ movies, additionalProp }) => {
+const Movies = ({ movies, additionalProp, type }) => {
     const genres = movies.map((el) => el.genre_ids);
-
+    // console.log("MY MOVIES: ", type);
     return (
         <div
             style={{
@@ -50,23 +59,26 @@ const Movies = ({ movies, additionalProp }) => {
                     addButtonOptions={false}
                     switchButtons={true}
                     movieID={el.id}
+                    type="MY_MOVIES"
                 />
             ))}
-            {/* <Recommendations genres={genres} /> */}
+            <Recommendations genres={genres} />
         </div>
     );
 };
 
-const ContentWithProps = withMovieContext(Movies, "myMovies");
+const ContentWithProps = withMovieContext(Movies, "MY_MOVIES");
 
 function MyMovies({}) {
     return (
-        <MoviesContainer>
-            <div style={{ marginTop: -50 }}>
-                <Text variant="headlineMedium">My Movies</Text>
-            </div>
-            <ContentWithProps additionalProp={null} />
-        </MoviesContainer>
+        <>
+            <MoviesContainer>
+                <div style={{}}>
+                    <Text variant="headlineMedium">My Movies</Text>
+                </div>
+                <ContentWithProps additionalProp={null} />
+            </MoviesContainer>
+        </>
     );
 }
 

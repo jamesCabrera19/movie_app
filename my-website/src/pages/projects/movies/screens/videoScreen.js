@@ -276,6 +276,7 @@ const VideoCategories = ({ id, videoLanguage, type }) => {
 
     const defaultVideos = data.filter((el) => el.type === "Trailer");
     //
+    // console.log("VideoCategories:", data);
 
     const filterVideoFunction = (type) => {
         const videos = data.filter((el) => el.type === type);
@@ -368,13 +369,29 @@ const VideoScreen = () => {
     } = useContext(SettingsContext);
     //
 
+    // console.log(id, type);
+
     let movie = null;
-    if (!type) {
-        [movie] = movies.filter((el) => el.id === id);
-    } else {
-        [movie] = tv_shows.filter((el) => el.id === id);
+    let movieType = type; // TV_SHOWS, MOVIES, MY_MOVIES
+    switch (movieType) {
+        case "TV_SHOWS":
+            [movie] = tv_shows.filter((el) => el.id === id);
+            break;
+        case "MOVIES":
+            [movie] = movies.filter((el) => el.id === id);
+            break;
+        case "MY_MOVIES":
+            [movie] = movies.filter((el) => el.id === id);
+            movieType = "MOVIES"; //
+            break;
+        default:
+            break;
     }
     //
+    if (!movie) {
+        return null;
+    }
+
     const movieGenres = filterGenres(movie.genre_ids, genres);
     //
 
@@ -408,16 +425,20 @@ const VideoScreen = () => {
                 />
                 <Overview
                     title={movie.title}
-                    release_date={movie.release_date}
+                    release_date={
+                        type === "TV_SHOWS"
+                            ? movie.first_air_date
+                            : movie.release_date
+                    }
                     genres={movieGenres}
                     overview={movie.overview}
                 />
             </div>
 
             <VideoCategories
-                id={id}
+                id={movie.id}
                 videoLanguage={videoAudioLanguage}
-                type={type}
+                type={movieType}
             />
 
             <div
@@ -428,7 +449,7 @@ const VideoScreen = () => {
                     alignSelf: "center",
                 }}
             />
-            <CastAndCrew movie_id={id} type={type} />
+            <CastAndCrew movie_id={movie.id} type={movieType} />
         </div>
         // <></>
     );

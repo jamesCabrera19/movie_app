@@ -10,9 +10,9 @@ import MoviesContainer from "../components/moviesContainer";
 import { withMovieContext } from "../components/withMovieContext";
 
 //
-const Content = ({ movies, selectedGenre }) => {
+const LibraryContent = ({ movies, selectedGenre, type }) => {
     const genres = movies.map((el) => el.genre_ids);
-    // console.log(genres);
+    console.log("LibraryContent", type);
     return (
         <MoviesContainer>
             <div style={{ marginTop: -50 }}>
@@ -27,13 +27,18 @@ const Content = ({ movies, selectedGenre }) => {
                 {movies.map((el) => (
                     <TheModal
                         key={el.id}
+                        movieID={el.id}
                         poster={el.backdrop_path}
-                        title={el.title}
+                        title={type === "TV_SHOWS" ? el.name : el.title}
                         overview={el.overview}
-                        release_date={el.release_date}
+                        release_date={
+                            type === "TV_SHOWS"
+                                ? el.first_air_date
+                                : el.release_date
+                        }
                         vote_average={el.vote_average}
                         original_language={el.original_language}
-                        addButtonOptions={false}
+                        type={type}
                     />
                 ))}
             </div>
@@ -41,10 +46,14 @@ const Content = ({ movies, selectedGenre }) => {
     );
 };
 
-const ContentWithProps = withMovieContext(Content, "movies");
+const MoviesWithProps = withMovieContext(LibraryContent);
 
 function MyResults() {
-    return <ContentWithProps />;
+    return (
+        <>
+            <MoviesWithProps additionalProp={null} />
+        </>
+    );
 }
 
 export default MyResults;

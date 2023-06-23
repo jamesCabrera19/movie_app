@@ -13,13 +13,15 @@ export default (movie_id, language, type) => {
             //
             let id = movie_id ? movie_id : 76600;
             let lan = language ? language.toLowerCase() : "en";
+            const moviesEndpoint = `/movie/${id}/videos?language=${lan}-US`;
+            const tvShowEndpoint = `/tv/${id}/videos?language=${lan}-US`;
             // api endpoint
-            let endpoint = !type
-                ? `/movie/${id}/videos?language=${lan}-US`
-                : `/tv/${id}/videos?language=${lan}-US`;
+            const endpoint =
+                type === "MOVIES" ? moviesEndpoint : tvShowEndpoint;
+
             try {
                 const response = await movieApi.get(endpoint);
-                // console.log(response.data.results);
+
                 setData(response.data.results);
             } catch (error) {
                 setError(error);
