@@ -7,6 +7,7 @@ import { Context as MovieContext } from "../context/movieContext";
 import { Context as SettingsContext } from "../context/settingsContext";
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import NavigationContext from "../context/navigation";
+import memoizeOne from "memoize-one";
 
 import { MovieOrganizer } from "../components/Helpers";
 //
@@ -16,10 +17,10 @@ import { CardRow, CardRowNoModal } from "../components/cardRow";
 const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 // helper functions
 
-const getRandomItem = (array) => {
+const getRandomItem = memoizeOne((array) => {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];
-};
+});
 
 //
 function ScreenCover({ type }) {

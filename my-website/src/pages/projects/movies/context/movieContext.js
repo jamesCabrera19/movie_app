@@ -12,39 +12,28 @@ const movieDataReducer = (state, action) => {
     }
 };
 
-const fetchMovies = (dispatch) => async () => {
+const fetchData = (dispatch) => async (type, endpoint) => {
+    const TV_SHOWS_ENDPOINT = "/tv/top_rated?language=en-US&page=1";
+    const MOVIE_ENDPOINT = "/discover/movie?sort_by=popularity.desc";
+    //
+    let selectedEndpoint =
+        endpoint === "tv" ? TV_SHOWS_ENDPOINT : MOVIE_ENDPOINT;
     try {
-        const response = await movieApi.get(
-            "/discover/movie?sort_by=popularity.desc"
-        );
+        const response = await movieApi.get(selectedEndpoint);
 
         dispatch({
-            type: "get_movies",
+            type: type,
             payload: response.data.results,
         });
     } catch (error) {
-        console.log("fetchMovies ERROR");
-    }
-};
-const fetchTVData = (dispatch) => async () => {
-    try {
-        const response = await movieApi.get(
-            "/tv/top_rated?language=en-US&page=1"
-        );
-        dispatch({
-            type: "get_tv",
-            payload: response.data.results,
-        });
-    } catch (error) {
-        console.log("fetchMovies ERROR");
+        console.log("ERROR: ", error);
     }
 };
 
 export const { Context, Provider } = createDataContext(
     movieDataReducer,
     {
-        fetchMovies,
-        fetchTVData,
+        fetchData,
     }, // action Functions
     { movies: [], tv_shows: [] } // init STATE
 );

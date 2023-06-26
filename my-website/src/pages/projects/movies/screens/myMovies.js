@@ -14,32 +14,28 @@ import { withMovieContext } from "../components/withMovieContext";
 
 //
 const Recommendations = ({ genres }) => {
-    const { state } = useContext(MovieContext);
+    const {
+        state: { movies, tv_shows },
+    } = useContext(MovieContext);
+    // collection of unique genres
     const uniqueGenres = movieGenreMerger(genres);
     //
-    const movieRecommendation = movieRecommendations(
-        uniqueGenres,
-        state.movies,
-        state.tv_shows
-    )
+    const recommendations = movieRecommendations(uniqueGenres, movies, tv_shows)
         .filter((movie) => movie.score > 1)
         .map((movie) => {
             return movie.title + "----" + movie.score;
         });
 
-    // console.log("movieRecommendations", movieRecommendation);
-
     return (
         <div style={{ color: "white" }}>
-            {movieRecommendation.map((el) => (
+            {recommendations.map((el) => (
                 <li key={el}>{el}</li>
             ))}
         </div>
     );
 };
-const Movies = ({ movies, additionalProp, type }) => {
+const Movies = ({ movies, additionalProp }) => {
     const genres = movies.map((el) => el.genre_ids);
-    // console.log("MY MOVIES: ", type);
     return (
         <div
             style={{
@@ -59,7 +55,7 @@ const Movies = ({ movies, additionalProp, type }) => {
                     addButtonOptions={false}
                     switchButtons={true}
                     movieID={el.id}
-                    type="MY_MOVIES"
+                    type="MY_MOVIES" //
                 />
             ))}
             <Recommendations genres={genres} />

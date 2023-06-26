@@ -122,7 +122,7 @@ const CastAndCrew = ({ movie_id, type }) => {
         return <div>Error: {error.message}</div>;
     }
 
-    const getInitials = (string) => {
+    const getNameInitials = (string) => {
         const nameArray = string.split(" ");
         const firstInitial = nameArray[0].charAt(0);
         const lastInitial = nameArray[nameArray.length - 1].charAt(0);
@@ -145,7 +145,7 @@ const CastAndCrew = ({ movie_id, type }) => {
                 backgroundColor: theme.fontColor,
             }}
         >
-            <p>{getInitials(name)}</p>
+            <p>{getNameInitials(name)}</p>
         </div>
     );
 
@@ -266,19 +266,18 @@ const VideoCategories = ({ id, videoLanguage, type }) => {
     );
     // useFetchVideoLink returns an array of videos for the movieID provided.
     const [vids, setVids] = useState(undefined);
-
+    //
+    /// this return an array of Strings ['trailers','Clip',...]
     const videoTypes = Object.keys(
         data.reduce((acc, cur) => {
             acc[cur.type] = true;
             return acc;
         }, {})
-    ); /// this return an array of Strings ['trailers','Clip',...]
-
+    );
+    //
     const defaultVideos = data.filter((el) => el.type === "Trailer");
     //
-    // console.log("VideoCategories:", data);
-
-    const filterVideoFunction = (type) => {
+    const filterVideosByType = (type) => {
         const videos = data.filter((el) => el.type === type);
         setVids((prev) => (type ? videos : prev));
     };
@@ -286,13 +285,12 @@ const VideoCategories = ({ id, videoLanguage, type }) => {
     if (error) {
         return <div>Error: {error.message}</div>;
     }
-
     if (data && !isLoading) {
         return (
             <div style={styles.VideoCategories.container}>
                 <div style={styles.VideoCategories.buttons}>
                     <VideoButtons
-                        onClick={filterVideoFunction}
+                        onClick={filterVideosByType}
                         buttons={videoTypes}
                     />
                 </div>

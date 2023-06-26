@@ -65,11 +65,15 @@ const movieRecommendations = (userGenres, A, B) => {
     // helper functions
     const filter = (array, set) => array.filter((el) => set.has(el));
 
-    const map = (array, set) => {
+    const recommendations = (array) => {
+        // unique userGenres Ids
+        const userGenresSet = new Set(userGenres);
+        //
         return array.map((arrElement) => {
-            const commonGenres = new Set(filter(arrElement.genre_ids, set));
+            // SCORE: unique userGenres of both genres and user genres
             return {
-                score: commonGenres.size,
+                score: new Set(filter(arrElement.genre_ids, userGenresSet))
+                    .size,
                 title: arrElement.title ? arrElement.title : arrElement.name,
                 genres: arrElement.genre_ids,
                 id: arrElement.id,
@@ -77,10 +81,9 @@ const movieRecommendations = (userGenres, A, B) => {
         });
     };
     //
-    const userGenresSet = new Set(userGenres);
 
-    return map(A, userGenresSet)
-        .concat(map(B, userGenresSet))
+    return recommendations(A)
+        .concat(recommendations(B))
         .sort((a, b) => b.score > a.score);
 };
 

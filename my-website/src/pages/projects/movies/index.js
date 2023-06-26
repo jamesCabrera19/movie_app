@@ -1,8 +1,5 @@
 import { useContext, useEffect } from "react";
 
-import { useRouter } from "next/router";
-import Link from "next/link";
-
 //
 import { Provider as MovieProvider } from "./context/movieContext";
 import { Context as MovieContext } from "./context/movieContext";
@@ -16,17 +13,18 @@ import MoviesApp from "./app";
 
 // In addition, the app has CRUD operations, react Hooks, and a AI system recommendation system.
 const App = () => {
-    const { fetchMovies } = useContext(MovieContext);
+    const { fetchData } = useContext(MovieContext);
+
     useEffect(() => {
-        fetchMovies();
+        // dispatch types: "get_movies", 'get_movies'
+        fetchData("get_movies", "movies");
+        fetchData("get_tv", "tv");
     }, []);
 
     return <MoviesApp />;
 };
 
 export default function Movies() {
-    const router = useRouter();
-
     return (
         <MovieProvider>
             <App />
