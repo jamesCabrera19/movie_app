@@ -33,7 +33,7 @@ const movieGenreMerger = (genreArray) => {
     return [...uniqueGenres];
 };
 
-//
+// first iteration - content-based filtering => RECOMMENDATION SYSTEM
 const movieRecommendation = (userGenres, movies) => {
     // movieRecommendation is a content-based filtering algorithm
     // it returns a sorted recommendation list of movies with a score
@@ -61,37 +61,40 @@ const movieRecommendation = (userGenres, movies) => {
     return recommendations.sort((a, b) => b.score > a.score);
 };
 
-const movieRecommendations = (userGenres, A, B) => {
-    // helper functions
-    const filter = (array, set) => array.filter((el) => set.has(el));
+// content-based filtering => RECOMMENDATION SYSTEM
+// content-based filtering => RECOMMENDATION SYSTEM
+// content-based filtering => RECOMMENDATION SYSTEM
+// content-based filtering => RECOMMENDATION SYSTEM
+const filterBySet = (array, set) => array.filter((el) => set.has(el));
 
-    const recommendations = (array) => {
-        // unique userGenres Ids
-        const userGenresSet = new Set(userGenres);
-        //
-        return array.map((arrElement) => {
-            // SCORE: unique userGenres of both genres and user genres
-            return {
-                score: new Set(filter(arrElement.genre_ids, userGenresSet))
-                    .size,
-                title: arrElement.title ? arrElement.title : arrElement.name,
-                genres: arrElement.genre_ids,
-                id: arrElement.id,
-            };
-        });
-    };
-    //
+const getRecommendations = (userGenresSet) => (array) => {
+    return array.map((element) => {
+        const { genre_ids, title, name, id } = element;
 
-    return recommendations(A)
-        .concat(recommendations(B))
-        .sort((a, b) => b.score > a.score);
+        const filteredGenres = filterBySet(genre_ids, userGenresSet);
+        return {
+            score: new Set(filteredGenres).size,
+            title: title || name,
+            genres: genre_ids,
+            id,
+        };
+    });
 };
+const movieRecommendations = (userGenres, A, B) => {
+    const userGenresSet = new Set(userGenres);
+    const recommendations = getRecommendations(userGenresSet);
+    //
+    const recommendationsA = recommendations(A);
+    const recommendationsB = recommendations(B);
 
-//
+    return recommendationsA
+        .concat(recommendationsB)
+        .sort((a, b) => b.score - a.score);
+};
 
 export {
     findGenre,
     movieGenreMerger,
-    movieRecommendation,
+    // movieRecommendation,
     movieRecommendations,
 };
