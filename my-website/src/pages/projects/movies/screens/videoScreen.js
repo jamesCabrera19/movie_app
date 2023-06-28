@@ -50,60 +50,6 @@ const styles = {
         overflow: "hidden",
         margin: 10,
     },
-    VideoButtons: {
-        display: "flex",
-        justifyContent: "center",
-        width: 200,
-        borderRadius: 10,
-        paddingTop: 15,
-    },
-    CastAndCrew: {
-        container: {
-            display: "flex",
-            overflowX: "scroll",
-            overflowY: "hidden",
-            width: "85%",
-            margin: "auto",
-        },
-        imageContainer: {
-            height: 150,
-            width: 150,
-            borderRadius: 150 / 2,
-        },
-        textContainer: {
-            height: 150,
-            width: 100,
-            borderRadius: 150 / 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontSize: 40,
-        },
-        lineBreaker: {
-            borderTop: `1px solid #808080`,
-            marginTop: 50,
-            marginBottom: 50,
-            width: "80%",
-            alignSelf: "center",
-        },
-        reviewsContainer: {
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            width: "85%",
-            margin: "auto",
-        },
-        reviews: {
-            width: 240,
-            height: 300,
-            overflowY: "scroll",
-            margin: 20,
-            borderRadius: 10,
-            padding: 20,
-        },
-    },
 };
 
 // helper functions
@@ -111,7 +57,7 @@ const filterGenres = (movieGenres, allGenres) => {
     return allGenres.filter((el) => movieGenres.includes(el.id));
 };
 
-const CastAndCrew = ({ movie_id, type }) => {
+const CastAndReviews = ({ movie_id, type }) => {
     const { data, error, isLoading } = useMoviedb(movie_id, type); // returns movie information about the cast, crew and reviews
 
     const {
@@ -128,6 +74,46 @@ const CastAndCrew = ({ movie_id, type }) => {
         const lastInitial = nameArray[nameArray.length - 1].charAt(0);
         return firstInitial + lastInitial;
     };
+    const styles = {
+        castContainer: {
+            display: "flex",
+            overflowX: "scroll",
+            overflowY: "hidden",
+        },
+
+        reviewsContainer: {
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            overflowX: "scroll",
+        },
+        reviews: {
+            height: 300,
+            minWidth: 240,
+            overflowY: "scroll",
+            margin: "20px 30px 20px 0",
+            padding: 20,
+            borderRadius: 10,
+            backgroundColor: theme.panelBackgroundColor,
+        },
+        imageContainer: {
+            height: 150,
+            width: 150,
+            borderRadius: 150 / 2,
+        },
+
+        initialsText: {
+            height: 150,
+            width: 100,
+            borderRadius: 150 / 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: 40,
+        },
+    };
+
     const renderImage = (el) => (
         <Image
             alt={el.name}
@@ -141,22 +127,24 @@ const CastAndCrew = ({ movie_id, type }) => {
     const renderText = (name) => (
         <div
             style={{
-                ...styles.CastAndCrew.textContainer,
+                ...styles.initialsText,
                 backgroundColor: theme.fontColor,
             }}
         >
-            <p>{getNameInitials(name)}</p>
+            <Text color={theme.backgroundColor} variant="headlineSmall">
+                {getNameInitials(name)}
+            </Text>
         </div>
     );
 
     if (data && !isLoading) {
         return (
-            <>
-                <div style={styles.CastAndCrew.container}>
+            <div style={{ width: "85%", margin: "auto" }}>
+                <div style={styles.castContainer}>
                     {data.cast &&
                         data.cast.map((el) => (
                             <div key={el.id}>
-                                <div style={styles.CastAndCrew.imageContainer}>
+                                <div style={styles.imageContainer}>
                                     {el.profile_path
                                         ? renderImage(el)
                                         : renderText(el.name)}
@@ -178,16 +166,20 @@ const CastAndCrew = ({ movie_id, type }) => {
                             </div>
                         ))}
                 </div>
-                <div style={styles.CastAndCrew.lineBreaker} />
 
-                <div style={styles.CastAndCrew.reviewsContainer}>
+                {/*  */}
+                <div
+                    style={{
+                        borderTop: `1px solid #808080`,
+                        marginTop: 50,
+                        marginBottom: 50,
+                        alignSelf: "center",
+                    }}
+                />
+                {/*  */}
+                <div style={styles.reviewsContainer}>
                     {data.results.map((review) => (
-                        <div
-                            style={{
-                                ...styles.CastAndCrew.reviews,
-                                backgroundColor: theme.panelBackgroundColor,
-                            }}
-                        >
+                        <div style={styles.reviews}>
                             <Text color={theme.fontColor}>{review.author}</Text>
                             <p
                                 style={{
@@ -200,7 +192,7 @@ const CastAndCrew = ({ movie_id, type }) => {
                         </div>
                     ))}
                 </div>
-            </>
+            </div>
         );
     }
 };
@@ -212,8 +204,12 @@ const VideoButtons = ({ buttons, onClick }) => {
     return buttons.map((el, idx) => (
         <div
             style={{
-                ...styles.VideoButtons,
                 backgroundColor: theme.panelBackgroundColor,
+                display: "flex",
+                justifyContent: "center",
+                width: 200,
+                borderRadius: 10,
+                paddingTop: 15,
             }}
             role="button"
             tabIndex="0"
@@ -304,7 +300,7 @@ const VideoCategories = ({ id, videoLanguage, type }) => {
         );
     }
 };
-const Overview = ({ title, release_date, genres, overview }) => {
+const MovieOverview = ({ title, release_date, genres, overview }) => {
     const {
         state: { theme },
     } = useContext(SettingsContext);
@@ -316,12 +312,11 @@ const Overview = ({ title, release_date, genres, overview }) => {
             marginBottom: 0,
             width: 1080,
             padding: 20,
-            // border: "1px solid red",
+            borderRadius: 5,
             borderBottomRightRadius: 10,
             borderBottomLeftRadius: 10,
-            borderRadius: 5,
-            backgroundColor: "rgba(255, 255, 255, 0.5)",
-            overflow: "hidden",
+            background:
+                "linear-gradient(to top, rgba(220, 220, 220, 0.9), rgba(220, 220, 220, 0.1))",
         },
     };
     return (
@@ -329,26 +324,26 @@ const Overview = ({ title, release_date, genres, overview }) => {
             <Text variant={"headlineLarge"} color={theme.backgroundColor}>
                 {title}
             </Text>
-            <Text color={theme.backgroundColor}>
-                Release Date: {release_date}
-            </Text>
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                }}
-            >
-                <Text color={theme.backgroundColor}>
-                    Genres:{" "}
-                    {genres.map((el, idx) => (
-                        <React.Fragment key={el.id}>
-                            {el.name}
-                            {idx !== genres.length - 1 && ", "}
-                        </React.Fragment>
-                    ))}
-                </Text>
-            </div>
+            <>
+                <Text color={theme.backgroundColor}>Release Date</Text>
+                <div style={{ marginTop: -20 }}>
+                    <Text color={theme.backgroundColor}>{release_date}</Text>
+                </div>
+            </>
+
+            <>
+                <Text color={theme.backgroundColor}>Genres</Text>
+                <div style={{ marginTop: -20 }}>
+                    <Text color={theme.backgroundColor}>
+                        {genres.map((el, idx) => (
+                            <React.Fragment key={el.id}>
+                                {el.name}
+                                {idx !== genres.length - 1 && ", "}
+                            </React.Fragment>
+                        ))}
+                    </Text>
+                </div>
+            </>
             <Text color={theme.backgroundColor}>{overview}</Text>
         </div>
     );
@@ -421,13 +416,9 @@ const VideoScreen = () => {
                         boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
                     }}
                 />
-                <Overview
+                <MovieOverview
                     title={movie.title}
-                    release_date={
-                        type === "TV_SHOWS"
-                            ? movie.first_air_date
-                            : movie.release_date
-                    }
+                    release_date={movie.first_air_date || movie.release_date}
                     genres={movieGenres}
                     overview={movie.overview}
                 />
@@ -443,11 +434,19 @@ const VideoScreen = () => {
                 style={{
                     borderTop: `1px solid #808080`,
                     marginBottom: 50,
-                    width: "80%",
+                    width: "85%",
                     alignSelf: "center",
                 }}
             />
-            <CastAndCrew movie_id={movie.id} type={movieType} />
+            <CastAndReviews movie_id={movie.id} type={movieType} />
+            <div
+                style={{
+                    borderTop: `1px solid #808080`,
+                    marginBottom: 50,
+                    width: "85%",
+                    alignSelf: "center",
+                }}
+            />
         </div>
         // <></>
     );

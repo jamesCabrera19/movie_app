@@ -81,6 +81,9 @@ const getRecommendations = (userGenresSet) => (array) => {
     });
 };
 const movieRecommendations = (userGenres, A, B) => {
+    // this recommendation system is content-based filtering algorithm
+    // it takes three inputs: user selected genres ('userGenres')
+    // movie genres ('A') and tv show genres ('B')
     const userGenresSet = new Set(userGenres);
     const recommendations = getRecommendations(userGenresSet);
     //
