@@ -1,28 +1,20 @@
 import { useState, useContext } from "react";
+// context
 import { Context as SettingsContext } from "../context/settingsContext";
-import Switch from "react-switch";
+// components
+import Modal from "react-bootstrap/Modal";
+import { MyButtons } from "./myButtons";
+import { MySwitch } from "./mySwitch";
+import { Text } from "./text";
+// icons
 import {
-    IoMdStats,
-    MdWbSunny,
-    BsPaletteFill,
-    BsFillMoonStarsFill,
-    RiParentLine,
-    MdOutlineCheck,
-    FiXCircle,
     FaAudioDescription,
-    HiIdentification,
-    BsApple,
-    BsMeta,
+    BsPaletteFill,
+    RiParentLine,
+    IoMdStats,
     MdHistory,
 } from "./icons";
-
-import { MyButtons } from "./myButtons";
-import { Text } from "./text";
-import { MySwitch } from "./mySwitch";
-import Modal from "react-bootstrap/Modal";
-import { GoBackButton } from "./goBackButton";
-import { MyForm } from "./form";
-import { SpinningRow } from "./carousel";
+// hooks
 import useLocalStorage from "../hooks/useLocalStorage";
 
 // helper functions

@@ -1,22 +1,20 @@
 import React, { useContext } from "react";
-//
-import Image from "next/image";
-//
-import { ImageLoader, genres } from "../components/utils";
-import { Context as MovieContext } from "../context/movieContext";
-import { Context as SettingsContext } from "../context/settingsContext";
+// context
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
+import { Context as SettingsContext } from "../context/settingsContext";
+import { Context as MovieContext } from "../context/movieContext";
 import NavigationContext from "../context/navigation";
-import memoizeOne from "memoize-one";
-
-import { MovieOrganizer } from "../components/Helpers";
-//
+// components
 import { CardRow, CardRowNoModal } from "../components/cardRow";
-
+import Image from "next/image";
+// helper functions
+import { ImageLoader, genres } from "../components/utils";
+import { MovieOrganizer } from "../components/Helpers";
+import memoizeOne from "memoize-one";
 //
 const img_src = `https://image.tmdb.org/t/p/original/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
+//
 // helper functions
-
 const getRandomItem = memoizeOne((array) => {
     const randomIndex = Math.floor(Math.random() * array.length);
     return array[randomIndex];

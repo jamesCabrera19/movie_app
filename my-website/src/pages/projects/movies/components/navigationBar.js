@@ -1,8 +1,11 @@
-import { useContext, useEffect, useState, useRef } from "react";
-import { Text } from "./text";
-import NavigationContext from "../context/navigation";
+import { useContext, useState } from "react";
+// context
 import { Context as ThemeContext } from "../context/settingsContext";
-
+import NavigationContext from "../context/navigation";
+// components
+import { Text } from "./text";
+//
+//
 const NavigationButton = ({ styles, title, onClick }) => {
     return (
         <div

@@ -1,26 +1,19 @@
-import React, { useContext, useState } from "react";
-
-import { Context as MovieContext } from "../context/movieContext";
-import NavigationContext from "../context/navigation";
-//
-import { Text } from "../components/text";
-import { TheModal } from "../components/modal";
-import {
-    findGenre,
-    movieRecommendations,
-    movieGenreMerger,
-} from "../recommendationSystem";
-import MoviesContainer from "../components/moviesContainer";
+import React from "react";
+// context
 import { withMovieContext } from "../components/withMovieContext";
+// helper functions
 import { MovieRecommendation } from "../components/movieRecommendation";
+// components
+import { TheModal } from "../components/modal";
+import { Text } from "../components/text";
 //
 const LibraryContent = ({ movies, selectedGenre, type }) => {
     return (
-        <MoviesContainer>
+        <>
             <div style={{ marginTop: -50 }}>
                 <Text variant="headlineMedium">{selectedGenre}</Text>
             </div>
-            <div>
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
                 {movies.map((el) => (
                     <TheModal
                         key={el.id}
@@ -41,18 +34,14 @@ const LibraryContent = ({ movies, selectedGenre, type }) => {
             </div>
 
             <MovieRecommendation movies={movies} type={type} />
-        </MoviesContainer>
+        </>
     );
 };
 
 const MoviesWithProps = withMovieContext(LibraryContent);
 
 function MyResults() {
-    return (
-        <>
-            <MoviesWithProps additionalProp={null} />
-        </>
-    );
+    return <MoviesWithProps additionalProp={null} />;
 }
 
 export default MyResults;

@@ -1,24 +1,23 @@
 import React, { useContext } from "react";
-import { Context as MovieContext } from "../context/movieContext";
+// context
 import { Context as SettingsContext } from "../context/settingsContext";
-
+import { Context as MovieContext } from "../context/movieContext";
+// components
 import { TheModal } from "./modal";
+import { Text } from "./text";
+// helper functions
 import {
     movieGenreMerger,
     movieRecommendations,
 } from "../recommendationSystem";
-import { Text } from "./text";
-
-//
 //
 const MovieRecommendation = ({ movies, type }) => {
     const MINIMUM_SCORE = 1;
     //
+    const { state } = useContext(MovieContext);
     const {
         state: { theme },
     } = useContext(SettingsContext);
-    //
-    const { state } = useContext(MovieContext);
     // get unique movie genres
     const uniqueMovieGenres = movieGenreMerger(
         movies.map((el) => el.genre_ids)
@@ -27,12 +26,14 @@ const MovieRecommendation = ({ movies, type }) => {
     const recommendations = movieRecommendations(
         uniqueMovieGenres, // genres ids
         state.movies, // movie array
-        [] // tv_show array
+        type === "TV_SHOWS" ? state.tv_shows : [] // tv_show array
     ).filter((movie) => movie.score > MINIMUM_SCORE);
     // Get unique movie IDs
-    const getUniqueMovieIds = (movies, recommendations) => {
-        const movieIds = new Set(movies.map((movie) => movie.id));
-        const recommendationsIds = recommendations.map((movie) => movie.id);
+    const getUniqueMovieIds = (moviesArray, recommendationsArray) => {
+        const movieIds = new Set(moviesArray.map((movie) => movie.id));
+        const recommendationsIds = recommendationsArray.map(
+            (movie) => movie.id
+        );
         const uniqueMovieIds = recommendationsIds.filter(
             (id) => !movieIds.has(id)
         );
@@ -41,8 +42,14 @@ const MovieRecommendation = ({ movies, type }) => {
     };
     // Retrieve recommended movies
     const uniqueMovieIds = getUniqueMovieIds(movies, recommendations);
-    const movieRecommendation = state.movies.filter((el) =>
-        uniqueMovieIds.includes(el.id)
+    // helper filtration function
+    const movieFiltration = (array) => {
+        return array.filter((el) => uniqueMovieIds.includes(el.id));
+    };
+    // Recommendation Results
+    const tvShowsRecommended = movieFiltration(state.tv_shows);
+    const moviesRecommended = movieFiltration(state.movies).concat(
+        tvShowsRecommended
     );
 
     if (!type) {
@@ -51,32 +58,33 @@ const MovieRecommendation = ({ movies, type }) => {
         );
     }
 
+    if (!moviesRecommended.length) {
+        return null;
+    }
+
     return (
         <div style={{ marginTop: 50 }}>
-            <Text color={theme.fontColor} variant="headlineSmall">
-                Movies Recommended
+            <Text color={theme.fontColor} variant="headlineExtraSmall">
+                Recommendations
             </Text>
             <div
                 style={{
+                    scrollbarWidth: "none",
                     display: "flex",
                     flexDirection: "row",
                     overflowX: "scroll",
                     overflowY: "hidden",
-                    height: 200,
+                    height: 180,
                 }}
             >
-                {movieRecommendation.map((el) => (
+                {moviesRecommended.map((el) => (
                     <TheModal
                         key={el.id}
                         movieID={el.id}
                         poster={el.backdrop_path}
-                        title={type === "TV_SHOWS" ? el.name : el.title}
+                        title={el.name || el.title}
                         overview={el.overview}
-                        release_date={
-                            type === "TV_SHOWS"
-                                ? el.first_air_date
-                                : el.release_date
-                        }
+                        release_date={el.first_air_date || el.release_date}
                         vote_average={el.vote_average}
                         original_language={el.original_language}
                         type={type}

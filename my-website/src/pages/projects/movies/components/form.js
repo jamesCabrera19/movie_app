@@ -1,8 +1,11 @@
 import React, { useState, useContext } from "react";
-import { Text } from "./text";
-import { BsApple, BsMeta, HiIdentification } from "./icons";
+// context
 import { Context as ThemeContext } from "../context/settingsContext";
-
+// components
+import { Text } from "./text";
+// icons
+import { BsApple, BsMeta, HiIdentification } from "./icons";
+//
 const Button = ({ children, label }) => {
     return (
         <button

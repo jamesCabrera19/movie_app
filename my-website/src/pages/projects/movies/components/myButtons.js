@@ -1,9 +1,11 @@
-import { useRef, useCallback, useEffect, useState, useContext } from "react";
-
+import { useContext } from "react";
+// context
 import { Context as ThemeContext } from "../context/settingsContext";
+// components
 import { Text } from "./text";
+// icons
 import { MdKeyboardArrowRight } from "./icons";
-
+//
 const MyButtons = ({ buttons }) => {
     const {
         state: { theme },

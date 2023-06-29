@@ -10,13 +10,11 @@ import { Text } from "./text";
 import MyCard from "./myCard";
 // CONTEXT
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
+import { Context as ThemeContext } from "../context/settingsContext";
 import NavigationContext from "../context/navigation";
 // HOOKS
 import useLocalStorage from "../hooks/useLocalStorage";
 
-// THEME
-import { Context as ThemeContext } from "../context/settingsContext";
-//
 //
 
 const initMovieProps = {

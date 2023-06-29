@@ -1,11 +1,13 @@
 import { useContext } from "react";
-
-import { Text } from "../components/text";
-import { Context as movieContext } from "../context/movieContext";
+// context
 import { Context as settingsContext } from "../context/settingsContext";
+import { Context as movieContext } from "../context/movieContext";
+// helper functions
 import { MovieOrganizer } from "../components/Helpers";
-import { genres } from "../components/utils";
+// components
 import { CardRow } from "../components/cardRow";
+import { genres } from "../components/utils";
+import { Text } from "../components/text";
 
 export default function TVShows() {
     const {

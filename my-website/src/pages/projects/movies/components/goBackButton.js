@@ -1,9 +1,10 @@
-import { useRef, useCallback, useEffect, useState, useContext } from "react";
-
-import NavigationContext from "../context/navigation";
+import { useContext } from "react";
+// context
 import { Context as ThemeContext } from "../context/settingsContext";
+import NavigationContext from "../context/navigation";
+// icons
 import { IoMdArrowBack } from "./icons";
-
+//
 const GoBackButton = ({}) => {
     const { screenNavigator } = useContext(NavigationContext);
     const {

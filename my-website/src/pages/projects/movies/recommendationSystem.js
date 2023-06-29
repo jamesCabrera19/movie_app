@@ -90,9 +90,7 @@ const movieRecommendations = (userGenres, A, B) => {
     const recommendationsA = recommendations(A);
     const recommendationsB = recommendations(B);
 
-    return recommendationsA
-        .concat(recommendationsB)
-        .sort((a, b) => b.score - a.score);
+    return recommendationsA.concat(recommendationsB);
 };
 
 export {

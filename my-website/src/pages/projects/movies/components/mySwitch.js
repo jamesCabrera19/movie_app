@@ -1,11 +1,14 @@
+// components
 import Switch from "react-switch";
+// icons
 import {
     MdWbSunny,
     BsFillMoonStarsFill,
     MdOutlineCheck,
     FiXCircle,
 } from "./icons";
-
+//
+//
 const MySwitch = ({ onChange, checked, type }) => {
     const handleChange = () => onChange();
 

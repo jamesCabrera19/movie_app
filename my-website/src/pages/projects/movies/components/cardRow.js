@@ -1,15 +1,12 @@
-import { useContext, useCallback } from "react";
-//
+import { useContext } from "react";
+// context
+import { Context as settingsContext } from "../context/settingsContext";
+import { Context as MovieContext } from "../context/movieContext";
+import NavigationContext from "../context/navigation";
+// components
 import { TheModal } from "./modal";
 import { Text } from "./text";
-//
-import NavigationContext from "../context/navigation";
-import { Context as MovieContext } from "../context/movieContext";
-// import { Context as ThemeContext } from "../context/themeContext";
-import { Context as settingsContext } from "../context/settingsContext";
-
 import MyCard from "./myCard";
-//
 
 // helper functions
 function filterMoviesByIds(movieIds, movies) {

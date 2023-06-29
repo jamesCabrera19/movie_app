@@ -1,13 +1,16 @@
 import { useState, useContext } from "react";
-
-import Image from "next/image";
-import { ImageLoader } from "./utils";
-import useHover from "../hooks/useHover";
+// context
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import { Context as ThemeContext } from "../context/settingsContext";
+// components
+import Image from "next/image";
+// helper functions
+import { ImageLoader } from "./utils";
+//hooks
+import useHover from "../hooks/useHover";
 
 //
-
+//
 const IMG_SRC = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 //
 const OverlayButton = ({ title, onClick }) => {

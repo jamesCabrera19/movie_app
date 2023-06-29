@@ -1,21 +1,20 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
-//
-import NavigationContext from "../context/navigation";
+import React, { useContext, useState } from "react";
+// context
 import { Context as SettingsContext } from "../context/settingsContext";
-
 import { Context as MovieContext } from "../context/movieContext";
-//
-import ReactPlayer from "react-player/lazy";
-import Image from "next/image";
-//
-import { imageLoaderHighQuality, ImageLoader } from "../components/utils";
+import NavigationContext from "../context/navigation";
+// components
 import { Text } from "../components/text";
-//
-import useMoviedb from "../hooks/useMoviedb";
-import useVideoPlayTime from "../hooks/useVideoPlayTime";
-import useFetchVideoLink from "../hooks/useFetchVideoLink";
-import useLocalStorage from "../hooks/useLocalStorage";
+import Image from "next/image";
+// helper functions
+import { imageLoaderHighQuality, ImageLoader } from "../components/utils";
+import ReactPlayer from "react-player/lazy";
 import { genres } from "../components/utils";
+// hooks
+import useFetchVideoLink from "../hooks/useFetchVideoLink";
+import useVideoPlayTime from "../hooks/useVideoPlayTime";
+import useLocalStorage from "../hooks/useLocalStorage";
+import useMoviedb from "../hooks/useMoviedb";
 //
 
 //* ADDITIONAL MOVIE INFO
@@ -79,17 +78,20 @@ const CastAndReviews = ({ movie_id, type }) => {
             display: "flex",
             overflowX: "scroll",
             overflowY: "hidden",
+            // justifyContent: "center",
         },
 
         reviewsContainer: {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
+            // justifyContent: "center",
             overflowX: "scroll",
         },
         reviews: {
             height: 300,
             minWidth: 240,
+            maxWidth: 240,
             overflowY: "scroll",
             margin: "20px 30px 20px 0",
             padding: 20,
@@ -417,7 +419,7 @@ const VideoScreen = () => {
                     }}
                 />
                 <MovieOverview
-                    title={movie.title}
+                    title={movie.title || movie.name}
                     release_date={movie.first_air_date || movie.release_date}
                     genres={movieGenres}
                     overview={movie.overview}

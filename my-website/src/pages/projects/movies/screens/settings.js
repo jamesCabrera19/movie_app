@@ -1,22 +1,22 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 // context
 import NavigationContext from "../context/navigation";
 import { Context as SettingsContext } from "../context/settingsContext";
+// screens
+import AccountScreen from "./subScreens/accountScreen";
+import { SpinningRow } from "../components/carousel";
 // components
 import { NavigationBar } from "../components/navigationBar";
 import { MyButtons } from "../components/myButtons";
 import { Text } from "../components/text";
-import Modal from "react-bootstrap/Modal";
-// icons
-import { MdHistory, AiOutlineUser } from "../components/icons";
-// screens
-import AccountScreen from "./subScreens/accountScreen";
-import { SpinningRow } from "../components/carousel";
 import {
     SettingsButtons,
     AudioLanguageButtons,
     HistoryAndPrivacy,
 } from "../components/settingsButtons";
+// icons
+import { AiOutlineUser } from "../components/icons";
+
 //
 
 // SCREENS // SCREENS // SCREENS // SCREENS  // SCREENS // SCREENS // SCREENS // SCREENS

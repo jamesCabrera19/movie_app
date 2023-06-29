@@ -1,8 +1,10 @@
 import { useContext } from "react";
+// context
 import { Context as MovieContext } from "../context/movieContext";
+// components
 import Image from "next/image";
+// helper functions
 import { ImageLoader } from "../components/utils";
-
 // styles
 import _styles from "../../../../styles/carousel.module.css";
 
