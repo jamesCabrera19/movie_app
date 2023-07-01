@@ -59,7 +59,7 @@ const HistoryAndPrivacy = () => {
     const {
         state: { theme },
     } = useContext(SettingsContext);
-    const [movies, updateValue, clearValue] = useLocalStorage("movies", null);
+    const [movies, updateValue, clearValue] = useLocalStorage("movies", "");
     const [playTime, updateTime, deleteTime] = useLocalStorage("play_time", 0);
     //
     const [show, setShow] = useState(false);
@@ -96,7 +96,12 @@ const HistoryAndPrivacy = () => {
         },
     };
 
-    // console.log(...movies.split(","));
+    const renderPlayedMovies = movies ? (
+        <Text color={theme.fontColor}>
+            Movies visited: {movies.replace(/,\s*$/, "")}
+        </Text>
+    ) : null;
+
     return (
         <>
             <MyButtons
@@ -134,11 +139,7 @@ const HistoryAndPrivacy = () => {
                         <Text color={theme.fontColor}>
                             Total play time: {isValidTime(playTime)}
                         </Text>
-                        {movies ? (
-                            <Text color={theme.fontColor}>
-                                Movies visited: {...movies.replace(",", ", ")}
-                            </Text>
-                        ) : null}
+                        {renderPlayedMovies}
 
                         {/*  */}
                         <div style={styles.buttonContainer}>
