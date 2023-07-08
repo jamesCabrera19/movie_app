@@ -399,7 +399,165 @@ function weave(sourceOne, sourceTwo) {
 
     return q;
 }
+class Hashes {
+    constructor(size) {
+        this.data = new Array(size);
+    }
+    _hash(key) {
+        let hash = 0;
+        for (let i = 0; i < key.length; i++) {
+            hash = (hash + key.charCodeAt(i) * i) % this.data.length;
+        }
+        return hash;
+    }
+    set(key, value) {
+        const index = this._hash(key);
+        if (!this.data[index]) {
+            this.data[index] = [];
+        }
+        this.data[index].push([index, value]);
+    }
+    get(key) {
+        // get the address
+        const index = this._hash(key);
+        const currentBucket = this.data[index];
+        if (currentBucket) {
+            for (let i = 0; i < currentBucket.length; i++) {
+                if (currentBucket[i][0] === key) {
+                    return currentBucket[i][1];
+                }
+            }
+            // return the data at the address
+            return currentBucket[key];
+        }
+        return undefined;
+    }
+    keys() {
+        const keys = [];
+        // iterate over the data
+        for (let i = 0; i < this.data.length; i++) {
+            const element = this.data[i];
+            if (element) {
+                keys.push(element[0][0]);
+            }
+        }
+        return keys;
+    }
+    values() {
+        const values = [];
+        // iterate over the data
+        for (let i = 0; i < this.data.length; i++) {
+            const element = this.data[i];
+            if (element) {
+                keys.push(element[0][1]);
+            }
+        }
+        return values;
+    }
+}
 
+const reccuring = (array) => {
+    // [1, 2, 1, 3, 5, 6]
+    // [1, 2, 2, 1]
+    // * 1
+    // {1:2,2:1,3:1...}
+    const map = {};
+    const initVal = 1;
+    let key = undefined;
+
+    for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (!map[element]) {
+            map[element] = initVal;
+        } else {
+            map[element]++;
+            key = element;
+            return key;
+        }
+    }
+
+    return key;
+};
+class Node {
+    constructor(data) {
+        this.head = {
+            value: data,
+            next: null,
+            // prev: null,
+        };
+    }
+}
+class LinkedList {
+    constructor(value) {
+        this.head = new Node(value);
+        this.tail = this.head;
+        this.length = 1;
+    }
+
+    append(value) {
+        const newNode = new Node(value);
+        // newNode.prev = this.tail;
+        this.tail.next = newNode;
+        this.tail = newNode;
+        this.length++;
+        return this;
+    }
+
+    prepend(value) {
+        const newNode = new Node(value);
+        newNode.next = this.head;
+        // this.head.prev = newNode;
+
+        this.head = newNode;
+        this.length++;
+        return this;
+    }
+    printList() {
+        const arr = [];
+        let currentNode = this.head;
+        while (currentNode) {
+            arr.push(currentNode.value);
+            currentNode = currentNode.next;
+        }
+        return arr;
+    }
+    insert(index, value) {
+        if (index >= this.length) {
+            return this.append(value);
+        }
+        const newNode = new Node(value);
+        const leaderNode = this.traverseToIndex(index - 1);
+
+        const holdingPointer = leaderNode.next;
+        leaderNode.next = newNode;
+        newNode.next = holdingPointer;
+        this.length++;
+    }
+    traverseToIndex(index) {
+        let counter = 0;
+        let currentNode = this.head;
+        while (counter !== index) {
+            currentNode = currentNode.next;
+            counter++;
+        }
+        return currentNode;
+    }
+    remove(index) {
+        const leaderNode = this.traverseToIndex(index - 1);
+        const unwantedNode = leaderNode.next;
+        leaderNode.next = unwantedNode.next;
+        this.length--;
+        return this;
+    }
+    reverse() {
+        if (!this.head.next) {
+            return this.head;
+        }
+
+        let first = this.head;
+        let second = first.next;
+    }
+}
 export {
     chunk,
     vowels,
@@ -416,4 +574,6 @@ export {
     pyramids,
     vowelsS,
     fibonacci,
+    reccuring,
+    LinkedList,
 };

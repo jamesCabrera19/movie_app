@@ -31,12 +31,13 @@ const LogInModal = () => {
     const handleShow = () => setShow(true);
 
     const handleAuth = (type) => {
+        handleShow();
+
         let label = type.split(" ")[4];
         if (label === "Local") {
             label = "Local Account";
         }
         setBtn(label);
-        handleShow();
     };
 
     const modalButtons = [
@@ -89,17 +90,20 @@ const AccountScreen = () => {
     };
 
     return (
-        <div style={{ height: "65vh" }}>
+        <div style={{}}>
             <GoBackButton />
             <Text color={theme.fontColor} variant={"headlineSmall"}>
                 Account Management
             </Text>
             <LogInModal />
 
+            <br />
+            <br />
+            <br />
             <div
                 onClick={signOut()}
                 style={{
-                    marginTop: 50,
+                    // marginTop: 50,
                     display: "flex",
                     justifyContent: "center",
                     cursor: "pointer",
@@ -107,7 +111,6 @@ const AccountScreen = () => {
             >
                 <div
                     style={{
-                        // border: "1px solid red",
                         width: 200,
                         display: "flex",
                         justifyContent: "center",

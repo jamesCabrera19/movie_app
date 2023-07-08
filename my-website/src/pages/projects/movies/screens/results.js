@@ -6,8 +6,15 @@ import { MovieRecommendation } from "../components/movieRecommendation";
 // components
 import { TheModal } from "../components/modal";
 import { Text } from "../components/text";
+import { LinkedList } from "../components/codeChallenges";
 //
 const LibraryContent = ({ movies, selectedGenre, type }) => {
+    const linked = new LinkedList(1);
+    linked.append(3);
+
+    // linked.printList();
+    console.log(linked);
+
     return (
         <>
             <div style={{ marginTop: -50 }}>

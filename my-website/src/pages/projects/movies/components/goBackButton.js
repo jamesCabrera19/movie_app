@@ -14,7 +14,7 @@ const GoBackButton = ({}) => {
     return (
         <div
             onClick={screenNavigator("General")}
-            style={{ position: "absolute", marginTop: -120, cursor: "pointer" }}
+            style={{ marginTop: -130, marginBottom: 75, cursor: "pointer" }}
         >
             <IoMdArrowBack color={theme.fontColor} size={40} />
         </div>
