@@ -1,10 +1,14 @@
 import React, { useState, useContext } from "react";
 // context
 import { Context as ThemeContext } from "../context/settingsContext";
+import NavigationContext from "../context/navigation";
+
 // components
 import { Text } from "./text";
 // icons
 import { BsApple, BsMeta, HiIdentification } from "./icons";
+import authApi from "../movieAPI/authApi";
+
 //
 const Button = ({ children, label }) => {
     return (
@@ -64,6 +68,8 @@ const IconButton = (key) => {
 };
 
 function MyForm({ label }) {
+    const { screenNavigator } = useContext(NavigationContext);
+
     const {
         state: { theme },
     } = useContext(ThemeContext);
@@ -102,16 +108,42 @@ function MyForm({ label }) {
         const result = await response.json();
         alert(`Is this your full name: ${result.data}`);
     };
+    // Get the inner function from screenNavigator
+    const navigate = screenNavigator("General");
 
-    // james@james.com
-    // password
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Get data from the form.
+        const data = {
+            email: e.target.email.value,
+            password: e.target.password.value,
+        };
+        // test@email.com   // password
+        const endpoint = "/signin";
+
+        const response = await authApi.post(endpoint, data);
+        const status = response.status;
+        const token = response.data.token;
+
+        // check for token
+        if (token) {
+            // if token exist navigate to Settings Screen
+            navigate();
+        }
+
+        // check for currentToken
+        // user can be signed in with a different Account other than local
+        // if there is a currentToken perform a sign-out operation to clear the session or token.
+        // if currentToken exist delete it and then sign in
+    };
+
     return (
         <form
             style={{
                 ...styles.form,
                 backgroundColor: theme.backgroundColor,
             }}
-            onSubmit={onSubmit()}
+            onSubmit={(e) => handleSubmit(e)}
         >
             <Text variant="headlineSmall" color={theme.fontColor}>
                 Sign in
