@@ -8,6 +8,7 @@ import { Text } from "./text";
 // icons
 import { BsApple, BsMeta, HiIdentification } from "./icons";
 import authApi from "../movieAPI/authApi";
+import Link from "next/link";
 
 //
 const Button = ({ children, label }) => {
@@ -184,6 +185,97 @@ function MyForm({ label }) {
         </form>
     );
 }
+
+const AuthenticationForm = ({ label, screen }) => {
+    const { screenNavigator } = useContext(NavigationContext);
+    // sign in state
+    const [isSignUp, setIsSignUp] = useState(false);
+    // theme
+    const {
+        state: { theme },
+    } = useContext(ThemeContext);
+    //
+    const handleToggle = () => {
+        setIsSignUp(!isSignUp);
+    };
+    // Get the inner function from screenNavigator
+    const navigate = screenNavigator("General");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Get data from the form.
+        const data = {
+            email: e.target.email.value,
+            password: e.target.password.value,
+        };
+        // test@email.com   // password
+        const endpoint = isSignUp ? "/signup" : "/signin";
+
+        // const response = await authApi.post(endpoint, data);
+        const status = response.status;
+        const token = response.data.token;
+    };
+
+    return (
+        <form
+            style={{
+                ...styles.form,
+                backgroundColor: theme.backgroundColor,
+            }}
+            onSubmit={(e) => handleSubmit(e)}
+        >
+            <Text variant="headlineSmall" color={theme.fontColor}>
+                {isSignUp ? "Sign Up" : "Log In"}
+            </Text>
+            <div style={styles.container}>
+                <label htmlFor="email">
+                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                        Email:
+                    </Text>
+                </label>
+
+                <input
+                    style={styles.input}
+                    type="text"
+                    id="email"
+                    name="email"
+                    placeholder={"email@email.com"}
+                    required
+                />
+            </div>
+            <div style={styles.container}>
+                <label htmlFor="email">
+                    <Text variant="headlineExtraSmall" color={theme.fontColor}>
+                        Password:
+                    </Text>
+                </label>
+                <input
+                    style={styles.input}
+                    type="text"
+                    id="password"
+                    name="password"
+                    placeholder="password"
+                    required
+                />
+            </div>
+            <button type="submit">{isSignUp ? "Sign Up" : "Log In"}</button>
+
+            <Text>
+                Not a member? &nbsp;
+                <button
+                    type="button"
+                    onClick={handleToggle}
+                    style={{ border: "none", background: "none" }}
+                >
+                    <code className={styles.code}>
+                        {isSignUp ? "Log In" : "Sign Up"}
+                    </code>
+                </button>
+            </Text>
+        </form>
+    );
+};
+
 const styles = {
     form: {
         display: "flex",
@@ -218,4 +310,4 @@ const styles = {
         border: "none",
     },
 };
-export { MyForm };
+export { MyForm, AuthenticationForm };

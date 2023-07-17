@@ -23,10 +23,10 @@ export default function Home() {
             </Head>
             <main className={styles.main}>
                 <div className={styles.description}>
-                    <Link href={"/projects/movies"}>
+                    <Link href={"/login"}>
                         <p>
-                            Movie app&nbsp;
-                            <code className={styles.code}>projects/movies</code>
+                            Click here to see the app&nbsp;
+                            <code className={styles.code}>Movies</code>
                         </p>
                     </Link>
 

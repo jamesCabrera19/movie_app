@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 // context
 import { withMovieContext } from "../components/withMovieContext";
+import { Context as settingsContext } from "../context/settingsContext";
+
 // helper functions
 import { MovieRecommendation } from "../components/movieRecommendation";
+
 // components
 import { TheModal } from "../components/modal";
 import { Text } from "../components/text";
-import { LinkedList } from "../components/codeChallenges";
 //
 const LibraryContent = ({ movies, selectedGenre, type }) => {
-    const linked = new LinkedList(1);
-    linked.append(3);
-
-    // linked.printList();
-    console.log(linked);
-
+    const {
+        state: { theme },
+    } = useContext(settingsContext);
+    //
     return (
         <>
             <div style={{ marginTop: -50 }}>
-                <Text variant="headlineMedium">{selectedGenre}</Text>
+                <Text variant="headlineMedium" color={theme.fontColor}>
+                    {selectedGenre}
+                </Text>
             </div>
             <div style={{ display: "flex", flexWrap: "wrap" }}>
                 {movies.map((el) => (
