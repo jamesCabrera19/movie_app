@@ -1,23 +1,21 @@
 import { useRouter } from "next/router";
-import { useState, useRef, useContext } from "react";
-import authApi from "./projects/movies/movieAPI/authApi";
+import { useState, useContext, useEffect } from "react";
+
 import { Text } from "./projects/movies/components/text";
 import { Context as AuthContext } from "./projects/movies/context/AuthContext";
 
-const AuthenticationForm = ({}) => {
+const AuthenticationForm = ({ theme }) => {
     // AuthContext
     const { state, logIn } = useContext(AuthContext);
-
-    //
-    const formRef = useRef(null);
+    // navigation router
     const router = useRouter();
     // sign in state
     const [isSignUp, setIsSignUp] = useState(false);
-    //
+    // switch between server endpoints '/signin' or '/signup'
     const handleToggle = () => {
         setIsSignUp(!isSignUp);
     };
-
+    //
     const handleSubmit = (e) => {
         e.preventDefault();
         // Get data from the form.
@@ -27,41 +25,53 @@ const AuthenticationForm = ({}) => {
         };
         //  server endpoint
         const endpoint = isSignUp ? "/signup" : "/signin";
-
+        // dispatching auth process
         logIn({ endpoint, data });
-
-        if (state.redirect && state.token) {
-            router.push(state.redirect);
-        }
     };
-    const theme = {
-        type: "dark",
-        backgroundColor: "#232323",
-        panelBackgroundColor: "#1b1b1b",
-        //
-        fontColor: "#a09f9d",
-        fontColorSecondary: "#eb6395",
-        //
 
-        buttonColor: "#eb6395",
-        buttonFontColor: "#1b1b1b",
-        boxShadowColor: "0 1px 1px rgba(0,0,0,.05)",
-        themeColorToRGBA: function (alpha, hex) {
-            const opacity = alpha || 0.9;
-            const color = hex || "red";
-            const [r, g, b] = color.match(/\w\w/g).map((x) => parseInt(x, 16));
-            return `rgba(${r},${g},${b},${opacity})`;
+    useEffect(() => {
+        if (state.token && state.endpoint) {
+            router.push(state.endpoint);
+        }
+    }, [state.endpoint, state.token]);
+
+    const styles = {
+        input: {
+            fontSize: 18,
+            padding: 5,
+            borderRadius: 5,
+            border: "none",
+            outline: "none",
+        },
+        container: {
+            display: "flex",
+            flexDirection: "column",
+            marginBottom: 10,
+            width: 340,
+        },
+        button: {
+            width: "45%",
+            height: 50,
+            borderRadius: 10,
+            display: "flex",
+            justifyContent: "center",
+            cursor: "pointer",
+            border: "none",
         },
     };
 
     return (
         <form
-            ref={formRef}
+            onSubmit={(e) => handleSubmit(e)}
             style={{
-                ...styles.form,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                backgroundColor: "white",
+                borderRadius: 10,
+                paddingTop: 20,
                 backgroundColor: theme.backgroundColor,
             }}
-            onSubmit={(e) => handleSubmit(e)}
         >
             <Text variant="headlineSmall" color={theme.fontColor}>
                 {isSignUp ? "Sign Up" : "Log In"}
@@ -72,7 +82,6 @@ const AuthenticationForm = ({}) => {
                         Email:
                     </Text>
                 </label>
-
                 <input
                     style={styles.input}
                     type="text"
@@ -81,8 +90,7 @@ const AuthenticationForm = ({}) => {
                     placeholder={"email@email.com"}
                     required
                 />
-            </div>
-            <div style={styles.container}>
+
                 <label htmlFor="email">
                     <Text variant="headlineExtraSmall" color={theme.fontColor}>
                         Password:
@@ -97,10 +105,29 @@ const AuthenticationForm = ({}) => {
                     required
                 />
             </div>
-            <button type="submit">{isSignUp ? "Sign Up" : "Log In"}</button>
+
+            <button
+                type="submit"
+                style={{
+                    cursor: "pointer",
+                    width: 340,
+                    height: 50,
+                    display: "flex",
+                    justifyContent: "center",
+                    backgroundColor: theme.buttonColor,
+                    borderRadius: 10,
+                    border: "none",
+                    paddingTop: 7,
+                }}
+            >
+                <Text color={theme.buttonFontColor}>
+                    {isSignUp ? "Sign Up" : "Log In"}
+                </Text>
+            </button>
 
             <Text>
-                Not a member? &nbsp;
+                {isSignUp ? "A member?" : "Not a member?"}
+                &nbsp;
                 <button
                     type="button"
                     onClick={handleToggle}
@@ -114,46 +141,26 @@ const AuthenticationForm = ({}) => {
         </form>
     );
 };
-const styles = {
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        backgroundColor: "white",
-        borderRadius: 10,
-        height: 350,
-        paddingTop: 20,
-    },
-    input: {
-        fontSize: 18,
-        border: "1px solid grey",
-        outline: "none",
-        padding: 5,
-        borderRadius: 5,
-    },
-    container: {
-        display: "flex",
-        flexDirection: "column",
-        // backgroundColor: "white",
-        marginBottom: 10,
-        width: 340,
-    },
-    button: {
-        width: "45%",
-        height: 50,
-        borderRadius: 10,
-        display: "flex",
-        justifyContent: "center",
-        cursor: "pointer",
-        border: "none",
-    },
-};
 
 const ProtectedRoute = () => {
+    const theme = {
+        backgroundColor: "#232323",
+        fontColor: "#a09f9d",
+        buttonColor: "#eb6395",
+        buttonFontColor: "#1b1b1b",
+    };
     return (
-        <>
-            <AuthenticationForm />
-        </>
+        <div
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+                backgroundColor: theme.backgroundColor,
+            }}
+        >
+            <AuthenticationForm theme={theme} />
+        </div>
     );
 };
 

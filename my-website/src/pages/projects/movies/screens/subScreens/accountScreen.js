@@ -1,27 +1,12 @@
 import { useContext, useState } from "react";
 import { Context as ThemeContext } from "../../context/settingsContext";
-
-import Switch from "react-switch";
-import {
-    MdOutlineCheck,
-    BsPaletteFill,
-    FiXCircle,
-    MdPlayCircleOutline,
-    IoShareSocial,
-    MdOutlineFormatListNumbered,
-    BsMeta,
-    BsApple,
-    HiIdentification,
-    RiParentLine,
-    BiHistory,
-} from "../../components/icons";
-
+import { BsMeta, BsApple, HiIdentification } from "../../components/icons";
 import { GoBackButton } from "../../components/goBackButton";
 import { MyButtons } from "../../components/myButtons";
 import { Text } from "../../components/text";
-import { MySwitch } from "../../components/mySwitch";
 import Modal from "react-bootstrap/Modal";
 import { MyForm } from "../../components/form";
+import { Context as AuthContext } from "../../context/AuthContext";
 
 const LogInModal = () => {
     const [btn, setBtn] = useState("Locally"); // local//apple/meta
@@ -79,15 +64,32 @@ const LogInModal = () => {
         </>
     );
 };
+const SignOutButton = ({ colors }) => {
+    const { logOut } = useContext(AuthContext);
+    const signOut = () => logOut();
 
+    return (
+        <div
+            onClick={() => signOut()}
+            style={{
+                cursor: "pointer",
+                width: 200,
+                display: "flex",
+                justifyContent: "center",
+                borderRadius: 10,
+                backgroundColor: colors.buttonColor,
+            }}
+        >
+            <Text variant="headlineExtraSmall" color={colors.fontColor}>
+                Sign Out
+            </Text>
+        </div>
+    );
+};
 const AccountScreen = () => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
-
-    const signOut = () => (e) => {
-        console.log("Sign out Function");
-    };
 
     return (
         <div style={{}}>
@@ -96,35 +98,19 @@ const AccountScreen = () => {
                 Account Management
             </Text>
             <LogInModal />
-
-            <br />
-            <br />
-            <br />
             <div
-                onClick={signOut()}
                 style={{
-                    // marginTop: 50,
                     display: "flex",
                     justifyContent: "center",
-                    cursor: "pointer",
+                    marginTop: 100,
                 }}
             >
-                <div
-                    style={{
-                        width: 200,
-                        display: "flex",
-                        justifyContent: "center",
-                        borderRadius: 10,
-                        backgroundColor: theme.buttonColor,
+                <SignOutButton
+                    colors={{
+                        buttonColor: theme.buttonColor,
+                        fontColor: theme.buttonFontColor,
                     }}
-                >
-                    <Text
-                        variant="headlineExtraSmall"
-                        color={theme.buttonFontColor}
-                    >
-                        Sign Out
-                    </Text>
-                </div>
+                />
             </div>
         </div>
     );

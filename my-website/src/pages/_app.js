@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 // import "~video-react/dist/video-react.css";
 import { Provider as AuthProvider } from "./projects/movies/context/AuthContext";
+// import { Provider as AuthProvider } from "./projects/movies/context/AuthContext";
 
 import { Lato } from "next/font/google";
 
