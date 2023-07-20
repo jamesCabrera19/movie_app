@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 // context
 import { Context as SettingsContext } from "../context/settingsContext";
 import { withMovieContext } from "../components/withMovieContext";
@@ -8,7 +8,41 @@ import { MovieRecommendation } from "../components/movieRecommendation";
 import { TheModal } from "../components/modal";
 import { Text } from "../components/text";
 //
+import movieApi from "../movieAPI";
 //
+
+const DataFetcher = ({ endpoint, render }) => {
+    const [data, setData] = useState([]);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setIsLoading(true);
+            try {
+                const response = await movieApi.get(endpoint);
+                setData(response);
+            } catch (error) {
+                setError(error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        console.log("running");
+        fetchData();
+    }, [endpoint]);
+
+    return render({ data, error, isLoading });
+};
+const DataResults = () => {
+    return (
+        <DataFetcher
+            endpoint={"/movie/667538"}
+            render={({ data }) => console.log(data)}
+        />
+    );
+};
+
 const Movies = ({ movies, additionalProp }) => {
     // const genres = movies.map((el) => el.genre_ids);
     const {
@@ -40,6 +74,7 @@ const Movies = ({ movies, additionalProp }) => {
                 ))}
             </div>
             <MovieRecommendation movies={movies} type={"MY_MOVIES"} />
+            <DataResults />
         </>
     );
 };

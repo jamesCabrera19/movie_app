@@ -24,8 +24,8 @@ const App = ({}) => {
             router.push("/login");
         } else {
             // authenticated data fetching
-            fetchData("get_movies", "movies");
-            fetchData("get_tv", "tv");
+            fetchData();
+            // fetchData("get_tv", "tv");
         }
     }, [token]);
 
