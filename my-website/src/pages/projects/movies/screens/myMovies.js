@@ -20,25 +20,51 @@ const DataFetcher = ({ endpoint, render }) => {
         const fetchData = async () => {
             setIsLoading(true);
             try {
-                const response = await movieApi.get(endpoint);
-                setData(response);
+                const responses = await Promise.all(
+                    endpoint.map((endpoint) => movieApi.get(endpoint))
+                );
+                const responseData = await Promise.all(
+                    responses.map((response) => response.data)
+                );
+                setData(responseData);
             } catch (error) {
                 setError(error);
             } finally {
                 setIsLoading(false);
             }
         };
-        console.log("running");
+
         fetchData();
     }, [endpoint]);
 
     return render({ data, error, isLoading });
 };
 const DataResults = () => {
+    //  `/tv/${id}/credits?language=en-US`,
+    //  `/tv/${id}/reviews?language=en-US&page=1`,
+    // movie/${id}/credits
+    // tv show id 1396
+    // movie id 667538
+
+    const parsedData = (data) => {
+        return (
+            (acc, curr) => {
+                return {
+                    reviews: curr.results || acc.results,
+                    // crew: curr.crew || acc.crew,
+                    cast: curr.cast || acc.cast,
+                };
+            },
+            { results: [], crew: [], cast: [] }
+        );
+    };
     return (
         <DataFetcher
-            endpoint={"/movie/667538"}
-            render={({ data }) => console.log(data)}
+            endpoint={[
+                "/tv/1396/credits?language=en-US",
+                "/tv/1396/reviews?language=en-US&page=1",
+            ]}
+            render={({ data }) => console.log("DataResults: ", data)}
         />
     );
 };

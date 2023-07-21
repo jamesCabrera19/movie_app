@@ -25,7 +25,6 @@ const App = ({}) => {
         } else {
             // authenticated data fetching
             fetchData();
-            // fetchData("get_tv", "tv");
         }
     }, [token]);
 

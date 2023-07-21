@@ -1,40 +1,39 @@
 import createDataContext from "../../../../../context/index";
 import movieApi from "../movieAPI/index";
 
+const ENDPOINTS = [
+    "/tv/top_rated?language=en-US&page=1",
+    "/discover/movie?sort_by=popularity.desc",
+];
+
 const movieDataReducer = (state, action) => {
     switch (action.type) {
         case "get_data":
-            const [tvShows, movies] = action.payload;
-            return {
-                ...state,
-                movies: movies.results,
-                tv_shows: tvShows.results,
-            };
-
+            return action.payload;
         default:
             return state;
     }
 };
 
 const fetchData = (dispatch) => async () => {
-    const TV_SHOWS_ENDPOINT = "/tv/top_rated?language=en-US&page=1";
-    const MOVIE_ENDPOINT = "/discover/movie?sort_by=popularity.desc";
     try {
         const responses = await Promise.all(
-            [TV_SHOWS_ENDPOINT, MOVIE_ENDPOINT].map((endpoint) =>
-                movieApi.get(endpoint)
-            )
+            ENDPOINTS.map((endpoint) => movieApi.get(endpoint))
         );
         const responseData = await Promise.all(
             responses.map((response) => response.data)
         );
+        // data
+        const [tvShows, movies] = responseData;
+        // state object
+        const data = { movies: movies.results, tv_shows: tvShows.results };
 
         dispatch({
             type: "get_data",
-            payload: responseData,
+            payload: data,
         });
     } catch (error) {
-        console.log("ERROR: ", error);
+        console.error("Error fetching data:", error);
     }
 };
 

@@ -15,6 +15,7 @@ import useFetchVideoLink from "../hooks/useFetchVideoLink";
 import useVideoPlayTime from "../hooks/useVideoPlayTime";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useMoviedb from "../hooks/useMoviedb";
+import DataFetcher from "../hooks/useFetch";
 //
 
 //* ADDITIONAL MOVIE INFO
@@ -56,22 +57,107 @@ const filterGenres = (movieGenres, allGenres) => {
     return allGenres.filter((el) => movieGenres.includes(el.id));
 };
 
-const CastAndReviews = ({ movie_id, type }) => {
-    const { data, error, isLoading } = useMoviedb(movie_id, type); // returns movie information about the cast, crew and reviews
-
+const CastAndReviewData = ({ movie_id, type }) => {
     const {
         state: { theme },
     } = useContext(SettingsContext);
 
-    if (error) {
-        return <div>Error: {error.message}</div>;
-    }
+    const id = movie_id ? movie_id : 76600;
+    const tvEndpoints = [
+        `/tv/${id}/credits?language=en-US`,
+        `/tv/${id}/reviews?language=en-US&page=1`,
+    ];
+    const movieEndpoints = [`/movie/${id}/credits`, `/movie/${id}/reviews`];
+    const endpoint = type === "MOVIES" ? movieEndpoints : tvEndpoints;
+
+    const parsedData = (array) => {
+        return array.reduce(
+            (acc, curr) => {
+                return {
+                    results: curr.results || acc.results,
+                    cast: curr.cast || acc.cast,
+                    // crew: curr.crew || acc.crew,
+                };
+            },
+            { results: [], crew: [], cast: [] }
+        );
+    };
 
     const getNameInitials = (string) => {
         const nameArray = string.split(" ");
         const firstInitial = nameArray[0].charAt(0);
         const lastInitial = nameArray[nameArray.length - 1].charAt(0);
         return firstInitial + lastInitial;
+    };
+    const renderImage = (el) => (
+        <Image
+            alt={el.name}
+            loader={ImageLoader}
+            src={el.profile_path}
+            width={100}
+            height={150}
+            style={{ borderRadius: 150 / 2 }}
+        />
+    );
+    const renderText = (name) => (
+        <div
+            style={{
+                ...styles.initialsText,
+                backgroundColor: theme.fontColor,
+            }}
+        >
+            <Text color={theme.backgroundColor} variant="headlineSmall">
+                {getNameInitials(name)}
+            </Text>
+        </div>
+    );
+
+    const Cast = ({ actors }) => {
+        return (
+            <div style={styles.castContainer}>
+                {actors.map((el) => (
+                    <div key={el.id}>
+                        <div style={styles.imageContainer}>
+                            {el.profile_path
+                                ? renderImage(el)
+                                : renderText(el.name)}
+                        </div>
+
+                        <div>
+                            <p style={{ color: theme.fontColor }}>{el.name}</p>
+                            <p
+                                style={{
+                                    fontSize: 12,
+                                    color: theme.fontColor,
+                                }}
+                            >
+                                {el.character}
+                            </p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    const Reviews = ({ reviews }) => {
+        return (
+            <div style={styles.reviewsContainer}>
+                {reviews.map((review) => (
+                    <div style={styles.reviews}>
+                        <Text color={theme.fontColor}>{review.author}</Text>
+                        <p
+                            style={{
+                                fontSize: 14,
+                                color: theme.fontColor,
+                            }}
+                        >
+                            {review.content}
+                        </p>
+                    </div>
+                ))}
+            </div>
+        );
     };
     const styles = {
         castContainer: {
@@ -115,89 +201,179 @@ const CastAndReviews = ({ movie_id, type }) => {
             fontSize: 40,
         },
     };
-
-    const renderImage = (el) => (
-        <Image
-            alt={el.name}
-            loader={ImageLoader}
-            src={el.profile_path}
-            width={100}
-            height={150}
-            style={{ borderRadius: 150 / 2 }}
+    return (
+        <DataFetcher
+            endpoint={endpoint}
+            render={({ data, error, isLoading }) => (
+                <>
+                    {isLoading ? (
+                        <div>Loading...</div>
+                    ) : error ? (
+                        <div>
+                            <p>Error: {error.message}</p>
+                        </div>
+                    ) : (
+                        <div style={{ width: "85%", margin: "auto" }}>
+                            <Cast actors={parsedData(data).cast} />
+                            <div
+                                style={{
+                                    borderTop: `1px solid #808080`,
+                                    marginTop: 50,
+                                    marginBottom: 50,
+                                    alignSelf: "center",
+                                }}
+                            />
+                            <Reviews reviews={parsedData(data).results} />
+                        </div>
+                    )}
+                </>
+            )}
         />
     );
-    const renderText = (name) => (
-        <div
-            style={{
-                ...styles.initialsText,
-                backgroundColor: theme.fontColor,
-            }}
-        >
-            <Text color={theme.backgroundColor} variant="headlineSmall">
-                {getNameInitials(name)}
-            </Text>
-        </div>
-    );
-
-    if (data && !isLoading) {
-        return (
-            <div style={{ width: "85%", margin: "auto" }}>
-                <div style={styles.castContainer}>
-                    {data.cast &&
-                        data.cast.map((el) => (
-                            <div key={el.id}>
-                                <div style={styles.imageContainer}>
-                                    {el.profile_path
-                                        ? renderImage(el)
-                                        : renderText(el.name)}
-                                </div>
-
-                                <div>
-                                    <p style={{ color: theme.fontColor }}>
-                                        {el.name}
-                                    </p>
-                                    <p
-                                        style={{
-                                            fontSize: 12,
-                                            color: theme.fontColor,
-                                        }}
-                                    >
-                                        {el.character}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                </div>
-
-                {/*  */}
-                <div
-                    style={{
-                        borderTop: `1px solid #808080`,
-                        marginTop: 50,
-                        marginBottom: 50,
-                        alignSelf: "center",
-                    }}
-                />
-                {/*  */}
-                <div style={styles.reviewsContainer}>
-                    {data.results.map((review) => (
-                        <div style={styles.reviews}>
-                            <Text color={theme.fontColor}>{review.author}</Text>
-                            <p
-                                style={{
-                                    fontSize: 14,
-                                    color: theme.fontColor,
-                                }}
-                            >
-                                {review.content}
-                            </p>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        );
-    }
 };
+
+// const CastAndReviews = ({ movie_id, type }) => {
+//     const { data, error, isLoading } = useMoviedb(movie_id, type); // returns movie information about the cast, crew and reviews
+
+//     const {
+//         state: { theme },
+//     } = useContext(SettingsContext);
+
+//     if (error) {
+//         return <div>Error: {error.message}</div>;
+//     }
+
+//     const getNameInitials = (string) => {
+//         const nameArray = string.split(" ");
+//         const firstInitial = nameArray[0].charAt(0);
+//         const lastInitial = nameArray[nameArray.length - 1].charAt(0);
+//         return firstInitial + lastInitial;
+//     };
+//     const styles = {
+//         castContainer: {
+//             display: "flex",
+//             overflowX: "scroll",
+//             overflowY: "hidden",
+//             // justifyContent: "center",
+//         },
+
+//         reviewsContainer: {
+//             display: "flex",
+//             flexDirection: "row",
+//             alignItems: "center",
+//             // justifyContent: "center",
+//             overflowX: "scroll",
+//         },
+//         reviews: {
+//             height: 300,
+//             minWidth: 240,
+//             maxWidth: 240,
+//             overflowY: "scroll",
+//             margin: "20px 30px 20px 0",
+//             padding: 20,
+//             borderRadius: 10,
+//             backgroundColor: theme.panelBackgroundColor,
+//         },
+//         imageContainer: {
+//             height: 150,
+//             width: 150,
+//             borderRadius: 150 / 2,
+//         },
+
+//         initialsText: {
+//             height: 150,
+//             width: 100,
+//             borderRadius: 150 / 2,
+//             display: "flex",
+//             alignItems: "center",
+//             justifyContent: "center",
+//             color: "white",
+//             fontSize: 40,
+//         },
+//     };
+
+//     const renderImage = (el) => (
+//         <Image
+//             alt={el.name}
+//             loader={ImageLoader}
+//             src={el.profile_path}
+//             width={100}
+//             height={150}
+//             style={{ borderRadius: 150 / 2 }}
+//         />
+//     );
+//     const renderText = (name) => (
+//         <div
+//             style={{
+//                 ...styles.initialsText,
+//                 backgroundColor: theme.fontColor,
+//             }}
+//         >
+//             <Text color={theme.backgroundColor} variant="headlineSmall">
+//                 {getNameInitials(name)}
+//             </Text>
+//         </div>
+//     );
+
+//     if (data && !isLoading) {
+//         return (
+//             <div style={{ width: "85%", margin: "auto" }}>
+//                 <div style={styles.castContainer}>
+//                     {data.cast &&
+//                         data.cast.map((el) => (
+//                             <div key={el.id}>
+//                                 <div style={styles.imageContainer}>
+//                                     {el.profile_path
+//                                         ? renderImage(el)
+//                                         : renderText(el.name)}
+//                                 </div>
+
+//                                 <div>
+//                                     <p style={{ color: theme.fontColor }}>
+//                                         {el.name}
+//                                     </p>
+//                                     <p
+//                                         style={{
+//                                             fontSize: 12,
+//                                             color: theme.fontColor,
+//                                         }}
+//                                     >
+//                                         {el.character}
+//                                     </p>
+//                                 </div>
+//                             </div>
+//                         ))}
+//                 </div>
+
+//                 {/*  */}
+//                 <div
+//                     style={{
+//                         borderTop: `1px solid #808080`,
+//                         marginTop: 50,
+//                         marginBottom: 50,
+//                         alignSelf: "center",
+//                     }}
+//                 />
+//                 {/*  */}
+//                 <div style={styles.reviewsContainer}>
+//                     {data.results.map((review) => (
+//                         <div style={styles.reviews}>
+//                             <Text color={theme.fontColor}>{review.author}</Text>
+//                             <p
+//                                 style={{
+//                                     fontSize: 14,
+//                                     color: theme.fontColor,
+//                                 }}
+//                             >
+//                                 {review.content}
+//                             </p>
+//                         </div>
+//                     ))}
+//                 </div>
+//             </div>
+//         );
+//     }
+// };
 const VideoButtons = ({ buttons, onClick }) => {
     const {
         state: { theme },
@@ -440,7 +616,9 @@ const VideoScreen = () => {
                     alignSelf: "center",
                 }}
             />
-            <CastAndReviews movie_id={movie.id} type={movieType} />
+            {/* <CastAndReviews movie_id={movie.id} type={movieType} /> */}
+
+            <CastAndReviewData movie_id={movie.id} type={movieType} />
             <div
                 style={{
                     borderTop: `1px solid #808080`,
