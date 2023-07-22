@@ -14,7 +14,7 @@ import { genres } from "../components/utils";
 import useFetchVideoLink from "../hooks/useFetchVideoLink";
 import useVideoPlayTime from "../hooks/useVideoPlayTime";
 import useLocalStorage from "../hooks/useLocalStorage";
-import useMoviedb from "../hooks/useMoviedb";
+// import useMoviedb from "../hooks/useMoviedb";
 import DataFetcher from "../hooks/useFetch";
 //
 
@@ -57,117 +57,96 @@ const filterGenres = (movieGenres, allGenres) => {
     return allGenres.filter((el) => movieGenres.includes(el.id));
 };
 
-const CastAndReviewData = ({ movie_id, type }) => {
+// // // // // // // //
+// returns the name initials
+const getNameInitials = (string) => {
+    const nameArray = string.split(" ");
+    const firstInitial = nameArray[0].charAt(0);
+    const lastInitial = nameArray[nameArray.length - 1].charAt(0);
+    return firstInitial + lastInitial;
+};
+const renderImage = (el) => (
+    <Image
+        src={el.profile_path}
+        loader={ImageLoader}
+        alt={el.name}
+        height={150}
+        width={100}
+        style={{ borderRadius: 150 / 2 }}
+    />
+);
+const renderText = (name, { fontColor, backgroundColor }) => (
+    <div
+        style={{
+            height: 150,
+            width: 100,
+            borderRadius: 150 / 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "white",
+            fontSize: 40,
+            backgroundColor: fontColor,
+        }}
+    >
+        <Text color={backgroundColor} variant="headlineSmall">
+            {getNameInitials(name)}
+        </Text>
+    </div>
+);
+
+const RenderCast = ({ actors }) => {
     const {
         state: { theme },
     } = useContext(SettingsContext);
 
-    const id = movie_id ? movie_id : 76600;
-    const tvEndpoints = [
-        `/tv/${id}/credits?language=en-US`,
-        `/tv/${id}/reviews?language=en-US&page=1`,
-    ];
-    const movieEndpoints = [`/movie/${id}/credits`, `/movie/${id}/reviews`];
-    const endpoint = type === "MOVIES" ? movieEndpoints : tvEndpoints;
-
-    const parsedData = (array) => {
-        return array.reduce(
-            (acc, curr) => {
-                return {
-                    results: curr.results || acc.results,
-                    cast: curr.cast || acc.cast,
-                    // crew: curr.crew || acc.crew,
-                };
-            },
-            { results: [], crew: [], cast: [] }
-        );
-    };
-
-    const getNameInitials = (string) => {
-        const nameArray = string.split(" ");
-        const firstInitial = nameArray[0].charAt(0);
-        const lastInitial = nameArray[nameArray.length - 1].charAt(0);
-        return firstInitial + lastInitial;
-    };
-    const renderImage = (el) => (
-        <Image
-            alt={el.name}
-            loader={ImageLoader}
-            src={el.profile_path}
-            width={100}
-            height={150}
-            style={{ borderRadius: 150 / 2 }}
-        />
-    );
-    const renderText = (name) => (
-        <div
-            style={{
-                ...styles.initialsText,
-                backgroundColor: theme.fontColor,
-            }}
-        >
-            <Text color={theme.backgroundColor} variant="headlineSmall">
-                {getNameInitials(name)}
-            </Text>
-        </div>
-    );
-
-    const Cast = ({ actors }) => {
-        return (
-            <div style={styles.castContainer}>
-                {actors.map((el) => (
-                    <div key={el.id}>
-                        <div style={styles.imageContainer}>
-                            {el.profile_path
-                                ? renderImage(el)
-                                : renderText(el.name)}
-                        </div>
-
-                        <div>
-                            <p style={{ color: theme.fontColor }}>{el.name}</p>
-                            <p
-                                style={{
-                                    fontSize: 12,
-                                    color: theme.fontColor,
-                                }}
-                            >
-                                {el.character}
-                            </p>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        );
-    };
-
-    const Reviews = ({ reviews }) => {
-        return (
-            <div style={styles.reviewsContainer}>
-                {reviews.map((review) => (
-                    <div style={styles.reviews}>
-                        <Text color={theme.fontColor}>{review.author}</Text>
-                        <p
-                            style={{
-                                fontSize: 14,
-                                color: theme.fontColor,
-                            }}
-                        >
-                            {review.content}
-                        </p>
-                    </div>
-                ))}
-            </div>
-        );
-    };
     const styles = {
-        castContainer: {
+        container: {
             display: "flex",
             overflowX: "scroll",
             overflowY: "hidden",
-            // justifyContent: "center",
         },
+        imageContainer: {
+            height: 150,
+            width: 150,
+            borderRadius: 150 / 2,
+        },
+    };
+    return (
+        <div style={styles.container}>
+            {actors.map((el) => (
+                <div key={el.id}>
+                    <div style={styles.imageContainer}>
+                        {el.profile_path
+                            ? renderImage(el)
+                            : renderText(el.name, theme)}
+                    </div>
 
-        reviewsContainer: {
+                    <div>
+                        <p style={{ color: theme.fontColor }}>{el.name}</p>
+                        <p
+                            style={{
+                                fontSize: 12,
+                                color: theme.fontColor,
+                            }}
+                        >
+                            {el.character}
+                        </p>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
+const RenderReviews = ({ reviews }) => {
+    const {
+        state: {
+            theme: { fontColor, panelBackgroundColor },
+        },
+    } = useContext(SettingsContext);
+
+    const styles = {
+        container: {
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
@@ -182,25 +161,53 @@ const CastAndReviewData = ({ movie_id, type }) => {
             margin: "20px 30px 20px 0",
             padding: 20,
             borderRadius: 10,
-            backgroundColor: theme.panelBackgroundColor,
-        },
-        imageContainer: {
-            height: 150,
-            width: 150,
-            borderRadius: 150 / 2,
-        },
-
-        initialsText: {
-            height: 150,
-            width: 100,
-            borderRadius: 150 / 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontSize: 40,
+            backgroundColor: panelBackgroundColor,
         },
     };
+    return (
+        <div style={styles.container}>
+            {reviews.map((review) => (
+                <div style={styles.reviews}>
+                    <Text color={fontColor}>{review.author}</Text>
+                    <p
+                        style={{
+                            fontSize: 14,
+                            color: fontColor,
+                        }}
+                    >
+                        {review.content}
+                    </p>
+                </div>
+            ))}
+        </div>
+    );
+};
+
+const CastAndReviewData = ({ movie_id, type }) => {
+    const id = movie_id || 76600;
+
+    const getEndpoints = (id, type) => {
+        const baseEndpoint = type === "MOVIES" ? "/movie" : "/tv";
+        return [
+            `${baseEndpoint}/${id}/credits?language=en-US`,
+            `${baseEndpoint}/${id}/reviews?language=en-US&page=1`,
+        ];
+    };
+    const endpoint = getEndpoints(id, type);
+
+    const reduceData = (array) => {
+        return array.reduce(
+            (acc, curr) => {
+                return {
+                    results: curr.results || acc.results,
+                    cast: curr.cast || acc.cast,
+                    // crew: curr.crew || acc.crew,
+                };
+            },
+            { results: [], crew: [], cast: [] }
+        );
+    };
+
     return (
         <DataFetcher
             endpoint={endpoint}
@@ -214,7 +221,7 @@ const CastAndReviewData = ({ movie_id, type }) => {
                         </div>
                     ) : (
                         <div style={{ width: "85%", margin: "auto" }}>
-                            <Cast actors={parsedData(data).cast} />
+                            <RenderCast actors={reduceData(data).cast} />
                             <div
                                 style={{
                                     borderTop: `1px solid #808080`,
@@ -223,7 +230,7 @@ const CastAndReviewData = ({ movie_id, type }) => {
                                     alignSelf: "center",
                                 }}
                             />
-                            <Reviews reviews={parsedData(data).results} />
+                            <RenderReviews reviews={reduceData(data).results} />
                         </div>
                     )}
                 </>
@@ -231,158 +238,19 @@ const CastAndReviewData = ({ movie_id, type }) => {
         />
     );
 };
+// // // // // // // //
 
-// const CastAndReviews = ({ movie_id, type }) => {
-//     const { data, error, isLoading } = useMoviedb(movie_id, type); // returns movie information about the cast, crew and reviews
-
-//     const {
-//         state: { theme },
-//     } = useContext(SettingsContext);
-
-//     if (error) {
-//         return <div>Error: {error.message}</div>;
-//     }
-
-//     const getNameInitials = (string) => {
-//         const nameArray = string.split(" ");
-//         const firstInitial = nameArray[0].charAt(0);
-//         const lastInitial = nameArray[nameArray.length - 1].charAt(0);
-//         return firstInitial + lastInitial;
-//     };
-//     const styles = {
-//         castContainer: {
-//             display: "flex",
-//             overflowX: "scroll",
-//             overflowY: "hidden",
-//             // justifyContent: "center",
-//         },
-
-//         reviewsContainer: {
-//             display: "flex",
-//             flexDirection: "row",
-//             alignItems: "center",
-//             // justifyContent: "center",
-//             overflowX: "scroll",
-//         },
-//         reviews: {
-//             height: 300,
-//             minWidth: 240,
-//             maxWidth: 240,
-//             overflowY: "scroll",
-//             margin: "20px 30px 20px 0",
-//             padding: 20,
-//             borderRadius: 10,
-//             backgroundColor: theme.panelBackgroundColor,
-//         },
-//         imageContainer: {
-//             height: 150,
-//             width: 150,
-//             borderRadius: 150 / 2,
-//         },
-
-//         initialsText: {
-//             height: 150,
-//             width: 100,
-//             borderRadius: 150 / 2,
-//             display: "flex",
-//             alignItems: "center",
-//             justifyContent: "center",
-//             color: "white",
-//             fontSize: 40,
-//         },
-//     };
-
-//     const renderImage = (el) => (
-//         <Image
-//             alt={el.name}
-//             loader={ImageLoader}
-//             src={el.profile_path}
-//             width={100}
-//             height={150}
-//             style={{ borderRadius: 150 / 2 }}
-//         />
-//     );
-//     const renderText = (name) => (
-//         <div
-//             style={{
-//                 ...styles.initialsText,
-//                 backgroundColor: theme.fontColor,
-//             }}
-//         >
-//             <Text color={theme.backgroundColor} variant="headlineSmall">
-//                 {getNameInitials(name)}
-//             </Text>
-//         </div>
-//     );
-
-//     if (data && !isLoading) {
-//         return (
-//             <div style={{ width: "85%", margin: "auto" }}>
-//                 <div style={styles.castContainer}>
-//                     {data.cast &&
-//                         data.cast.map((el) => (
-//                             <div key={el.id}>
-//                                 <div style={styles.imageContainer}>
-//                                     {el.profile_path
-//                                         ? renderImage(el)
-//                                         : renderText(el.name)}
-//                                 </div>
-
-//                                 <div>
-//                                     <p style={{ color: theme.fontColor }}>
-//                                         {el.name}
-//                                     </p>
-//                                     <p
-//                                         style={{
-//                                             fontSize: 12,
-//                                             color: theme.fontColor,
-//                                         }}
-//                                     >
-//                                         {el.character}
-//                                     </p>
-//                                 </div>
-//                             </div>
-//                         ))}
-//                 </div>
-
-//                 {/*  */}
-//                 <div
-//                     style={{
-//                         borderTop: `1px solid #808080`,
-//                         marginTop: 50,
-//                         marginBottom: 50,
-//                         alignSelf: "center",
-//                     }}
-//                 />
-//                 {/*  */}
-//                 <div style={styles.reviewsContainer}>
-//                     {data.results.map((review) => (
-//                         <div style={styles.reviews}>
-//                             <Text color={theme.fontColor}>{review.author}</Text>
-//                             <p
-//                                 style={{
-//                                     fontSize: 14,
-//                                     color: theme.fontColor,
-//                                 }}
-//                             >
-//                                 {review.content}
-//                             </p>
-//                         </div>
-//                     ))}
-//                 </div>
-//             </div>
-//         );
-//     }
-// };
 const VideoButtons = ({ buttons, onClick }) => {
     const {
-        state: { theme },
+        state: {
+            theme: { panelBackgroundColor, fontColor },
+        },
     } = useContext(SettingsContext);
 
     return buttons.map((el, idx) => (
         <div
             style={{
-                backgroundColor: theme.panelBackgroundColor,
+                backgroundColor: panelBackgroundColor,
                 display: "flex",
                 justifyContent: "center",
                 width: 200,
@@ -394,11 +262,11 @@ const VideoButtons = ({ buttons, onClick }) => {
             onClick={() => onClick(el)}
             key={idx}
         >
-            <Text color={theme.fontColor}>{el}</Text>
+            <Text color={fontColor}>{el}</Text>
         </div>
     ));
 };
-const VideoContainer = ({ id }) => {
+const VideoPlayer = ({ id }) => {
     const [playTime, handlePlay, handlePause, handleStop] = useVideoPlayTime();
     const [value, updatePlayTime, clear] = useLocalStorage("play_time");
 
@@ -428,7 +296,7 @@ const VideoContainer = ({ id }) => {
 };
 const renderVideoContainers = (videos) => {
     return videos.map((video) => (
-        <VideoContainer key={video.key} id={video.key} />
+        <VideoPlayer key={video.key} id={video.key} />
     ));
 };
 
@@ -538,12 +406,10 @@ const VideoScreen = () => {
     const {
         state: { videoAudioLanguage },
     } = useContext(SettingsContext);
-    //
-
-    // console.log(id, type);
 
     let movie = null;
     let movieType = type; // TV_SHOWS, MOVIES, MY_MOVIES
+
     switch (movieType) {
         case "TV_SHOWS":
             [movie] = tv_shows.filter((el) => el.id === id);
@@ -616,8 +482,6 @@ const VideoScreen = () => {
                     alignSelf: "center",
                 }}
             />
-            {/* <CastAndReviews movie_id={movie.id} type={movieType} /> */}
-
             <CastAndReviewData movie_id={movie.id} type={movieType} />
             <div
                 style={{

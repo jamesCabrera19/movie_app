@@ -38,7 +38,8 @@ export const { Context, Provider } = createDataContext(
     authReducer,
     { logIn, logOut }, // action Functions
     {
-        token: undefined,
+        token: "temp",
+        // token: undefined,
         error: null,
     }
 );
