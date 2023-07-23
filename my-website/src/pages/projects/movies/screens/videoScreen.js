@@ -11,90 +11,42 @@ import { imageLoaderHighQuality, ImageLoader } from "../components/utils";
 import ReactPlayer from "react-player/lazy";
 import { genres } from "../components/utils";
 // hooks
-import useFetchVideoLink from "../hooks/useFetchVideoLink";
 import useVideoPlayTime from "../hooks/useVideoPlayTime";
 import useLocalStorage from "../hooks/useLocalStorage";
-// import useMoviedb from "../hooks/useMoviedb";
 import DataFetcher from "../hooks/useFetch";
 //
+//
+//
 
-//* ADDITIONAL MOVIE INFO
-// URL: /movie/{movie_id}/credits
-// URL: /movie/{movie_id}/reviews
-// URL: /movie/{movie_id}/recommendations
-// Define the list of movies and their genres
+const renderText = (name, { fontColor, backgroundColor }) => {
+    // returns the name initials
+    const getNameInitials = (string) => {
+        const nameArray = string.split(" ");
+        const firstInitial = nameArray[0].charAt(0);
+        const lastInitial = nameArray[nameArray.length - 1].charAt(0);
+        return firstInitial + lastInitial;
+    };
 
-const styles = {
-    VideoCategories: {
-        container: {
-            display: "flex",
-            flexDirection: "column",
-            marginTop: 40,
-        },
-        buttons: {
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            flexWrap: "wrap",
-        },
-        videoContainer: {
-            justifyContent: "space-evenly",
-            display: "flex",
-            flexWrap: "wrap",
-            marginTop: 40,
-            marginBottom: 60,
-        },
-    },
-    VideoContainer: {
-        borderRadius: 10,
-        overflow: "hidden",
-        margin: 10,
-    },
+    return (
+        <div
+            style={{
+                height: 150,
+                width: 100,
+                borderRadius: 150 / 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "white",
+                fontSize: 40,
+                backgroundColor: fontColor,
+            }}
+        >
+            <Text color={backgroundColor} variant="headlineSmall">
+                {getNameInitials(name)}
+            </Text>
+        </div>
+    );
 };
-
-// helper functions
-const filterGenres = (movieGenres, allGenres) => {
-    return allGenres.filter((el) => movieGenres.includes(el.id));
-};
-
-// // // // // // // //
-// returns the name initials
-const getNameInitials = (string) => {
-    const nameArray = string.split(" ");
-    const firstInitial = nameArray[0].charAt(0);
-    const lastInitial = nameArray[nameArray.length - 1].charAt(0);
-    return firstInitial + lastInitial;
-};
-const renderImage = (el) => (
-    <Image
-        src={el.profile_path}
-        loader={ImageLoader}
-        alt={el.name}
-        height={150}
-        width={100}
-        style={{ borderRadius: 150 / 2 }}
-    />
-);
-const renderText = (name, { fontColor, backgroundColor }) => (
-    <div
-        style={{
-            height: 150,
-            width: 100,
-            borderRadius: 150 / 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontSize: 40,
-            backgroundColor: fontColor,
-        }}
-    >
-        <Text color={backgroundColor} variant="headlineSmall">
-            {getNameInitials(name)}
-        </Text>
-    </div>
-);
-
 const RenderCast = ({ actors }) => {
     const {
         state: { theme },
@@ -115,11 +67,20 @@ const RenderCast = ({ actors }) => {
     return (
         <div style={styles.container}>
             {actors.map((el) => (
-                <div key={el.id}>
+                <div key={el.name}>
                     <div style={styles.imageContainer}>
-                        {el.profile_path
-                            ? renderImage(el)
-                            : renderText(el.name, theme)}
+                        {el.profile_path ? (
+                            <Image
+                                src={el.profile_path}
+                                loader={ImageLoader}
+                                alt={el.name}
+                                height={150}
+                                width={100}
+                                style={{ borderRadius: 150 / 2 }}
+                            />
+                        ) : (
+                            renderText(el.name, theme)
+                        )}
                     </div>
 
                     <div>
@@ -167,7 +128,7 @@ const RenderReviews = ({ reviews }) => {
     return (
         <div style={styles.container}>
             {reviews.map((review) => (
-                <div style={styles.reviews}>
+                <div style={styles.reviews} key={review.id}>
                     <Text color={fontColor}>{review.author}</Text>
                     <p
                         style={{
@@ -280,7 +241,7 @@ const VideoPlayer = ({ id }) => {
     };
 
     return (
-        <div style={styles.VideoContainer}>
+        <div style={{ borderRadius: 10, overflow: "hidden", margin: 10 }}>
             <ReactPlayer
                 onPlay={() => handlePlay()}
                 onPause={videoPause()}
@@ -294,58 +255,102 @@ const VideoPlayer = ({ id }) => {
         </div>
     );
 };
-const renderVideoContainers = (videos) => {
-    return videos.map((video) => (
-        <VideoPlayer key={video.key} id={video.key} />
-    ));
-};
 
-const VideoCategories = ({ id, videoLanguage, type }) => {
-    const { data, error, isLoading } = useFetchVideoLink(
-        id,
-        videoLanguage,
-        type
+const RenderVideos = ({ id, videoLanguage, type }) => {
+    const getEndpoints = (id, type, lan) => {
+        const baseEndpoint = type === "MOVIES" ? "/movie" : "/tv";
+        return [`${baseEndpoint}/${id}/videos?language=${lan}-US`];
+    };
+    const endpoints = getEndpoints(id, type, videoLanguage);
+
+    return (
+        <DataFetcher
+            endpoint={endpoints}
+            render={({ data, error, isLoading }) => {
+                if (isLoading) {
+                    return <div>Loading...</div>;
+                }
+
+                if (error) {
+                    return <div>Error: {error.message}</div>;
+                }
+
+                const videos = data?.[0]?.results;
+                return videos ? (
+                    <VideoContainer data={videos} />
+                ) : (
+                    <div>No videos available</div>
+                );
+            }}
+        />
     );
-    // useFetchVideoLink returns an array of videos for the movieID provided.
-    const [vids, setVids] = useState(undefined);
-    //
-    /// this return an array of Strings ['trailers','Clip',...]
-    const videoTypes = Object.keys(
-        data.reduce((acc, cur) => {
-            acc[cur.type] = true;
-            return acc;
-        }, {})
+};
+const VideoContainer = ({ data }) => {
+    const [videos, setVideos] = useState(
+        data.filter((el) => el.type === "Trailer")
     );
-    //
-    const defaultVideos = data.filter((el) => el.type === "Trailer");
-    //
-    const filterVideosByType = (type) => {
-        const videos = data.filter((el) => el.type === type);
-        setVids((prev) => (type ? videos : prev));
+
+    // returns an array of Strings ['trailers','Clip',...]
+    const getUniqueVideoTypes = (data) => {
+        return Object.keys(
+            data.reduce((acc, cur) => {
+                acc[cur.type] = true;
+                return acc;
+            }, {})
+        );
     };
 
-    if (error) {
-        return <div>Error: {error.message}</div>;
-    }
-    if (data && !isLoading) {
-        return (
-            <div style={styles.VideoCategories.container}>
-                <div style={styles.VideoCategories.buttons}>
-                    <VideoButtons
-                        onClick={filterVideosByType}
-                        buttons={videoTypes}
-                    />
-                </div>
+    const filterVideosByType = (type) => {
+        const newVideos = data.filter((el) => el.type === type);
+        setVideos((prev) => (type ? newVideos : prev));
+    };
 
-                <div style={styles.VideoCategories.videoContainer}>
-                    {vids
-                        ? renderVideoContainers(vids)
-                        : renderVideoContainers(defaultVideos)}
-                </div>
-            </div>
+    const renderVideoContainers = (videos) => {
+        return videos.length ? (
+            videos.map((video) => (
+                <VideoPlayer key={video.key} id={video.key} />
+            ))
+        ) : (
+            <div>No videos of this type available</div>
         );
-    }
+    };
+
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                marginTop: 40,
+            }}
+        >
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
+                    flexWrap: "wrap",
+                }}
+            >
+                <VideoButtons
+                    onClick={filterVideosByType}
+                    buttons={getUniqueVideoTypes(data)}
+                />
+            </div>
+            <div
+                style={{
+                    justifyContent: "space-evenly",
+                    display: "flex",
+                    flexWrap: "wrap",
+                    marginTop: 40,
+                    marginBottom: 60,
+                }}
+            >
+                {renderVideoContainers(videos)}
+            </div>
+        </div>
+    );
 };
+//// // // // // // // //
 const MovieOverview = ({ title, release_date, genres, overview }) => {
     const {
         state: { theme },
@@ -394,7 +399,7 @@ const MovieOverview = ({ title, release_date, genres, overview }) => {
         </div>
     );
 };
-
+//
 const VideoScreen = () => {
     const {
         state: { tv_shows, movies },
@@ -403,22 +408,29 @@ const VideoScreen = () => {
     const {
         params: { id, type },
     } = useContext(NavigationContext);
+
     const {
         state: { videoAudioLanguage },
     } = useContext(SettingsContext);
+
+    // helper functions
+    const filterGenres = (movieGenres, allGenres) => {
+        return allGenres.filter((el) => movieGenres.includes(el.id));
+    };
 
     let movie = null;
     let movieType = type; // TV_SHOWS, MOVIES, MY_MOVIES
 
     switch (movieType) {
         case "TV_SHOWS":
-            [movie] = tv_shows.filter((el) => el.id === id);
+            // [movie] = tv_shows.filter((el) => el.id === id);
+            movie = tv_shows.find((el) => el.id === id);
             break;
         case "MOVIES":
-            [movie] = movies.filter((el) => el.id === id);
+            movie = movies.find((el) => el.id === id);
             break;
         case "MY_MOVIES":
-            [movie] = movies.filter((el) => el.id === id);
+            movie = movies.find((el) => el.id === id);
             movieType = "MOVIES"; //
             break;
         default:
@@ -468,7 +480,7 @@ const VideoScreen = () => {
                 />
             </div>
 
-            <VideoCategories
+            <RenderVideos
                 id={movie.id}
                 videoLanguage={videoAudioLanguage}
                 type={movieType}
