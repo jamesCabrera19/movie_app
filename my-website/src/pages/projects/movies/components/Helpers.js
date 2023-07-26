@@ -4,9 +4,11 @@ class MovieOrganizer {
         this.genres = genres;
         this.onlyIDs = onlyIDs;
     }
+
     getIds(arr = []) {
         return arr.map((el) => el.id);
     }
+
     getMovieGenres() {
         return this.genres.map((el) => el.name);
     }

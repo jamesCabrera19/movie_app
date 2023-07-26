@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 // context
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
-import { Context as SettingsContext } from "../context/settingsContext";
 import { Context as MovieContext } from "../context/movieContext";
 import NavigationContext from "../context/navigation";
 // components

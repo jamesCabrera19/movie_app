@@ -11,7 +11,11 @@ import {
     BsChatLeftText,
     BsFacebook,
 } from "react-icons/bs";
-import { FaAudioDescription, FaFileAudio } from "react-icons/fa";
+import {
+    FaAudioDescription,
+    FaFileAudio,
+    FaGithubSquare,
+} from "react-icons/fa";
 import { FiXCircle } from "react-icons/fi";
 import {
     IoIosNotificationsOutline,
@@ -59,4 +63,5 @@ export {
     BiHistory,
     BsChatLeftText,
     MdOutlineFormatListNumbered,
+    FaGithubSquare,
 };

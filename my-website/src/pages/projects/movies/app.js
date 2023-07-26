@@ -14,6 +14,7 @@ import MySettings from "./screens/settings";
 import WatchNow from "./screens/watchNow";
 import VideoScreen from "./screens/videoScreen";
 import MyResults from "./screens/results";
+import Footer from "./components/footer";
 
 const screens = [
     {
@@ -65,6 +66,7 @@ function App() {
                 hide={["Results", "Video Screen"]}
                 components={screens}
             />
+            <Footer />
         </div>
     );
 }
