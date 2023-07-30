@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 // context
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import { Context as ThemeContext } from "../context/settingsContext";
@@ -8,27 +8,27 @@ import Image from "next/image";
 import { ImageLoader } from "./utils";
 //hooks
 import useHover from "../hooks/useHover";
+import useLikedMovies from "../hooks/useLikedMovies";
 
 //
 //
 const IMG_SRC = `/irwQcdjwtjLnaA0iErabab9PrmG.jpg`;
 //
-const OverlayButton = ({ title, onClick }) => {
-    const [active, setActive] = useState(true);
+const OverlayButton = ({ title, onClick, disable }) => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
+
     return (
         <button
+            disabled={disable}
             onClick={() => {
                 onClick();
-                setActive((prev) => !prev);
             }}
             style={{
                 height: 40,
                 border: "none",
                 backgroundColor: theme.buttonColor,
-                color: active ? theme.buttonFontColor : theme.fontColor,
             }}
         >
             {title}
@@ -36,9 +36,11 @@ const OverlayButton = ({ title, onClick }) => {
     );
 };
 
-const CardOverlay = ({ options, movieID, switchButtons }) => {
+const CardOverlay = ({ movieID }) => {
     const { handleDispatch } = useContext(LikedMoviesContext);
     const [hoverRef, isHovered] = useHover(3000);
+    const { isMovieInMyMovies, isMovieInUpNext } = useLikedMovies(movieID);
+
     const {
         state: { theme },
     } = useContext(ThemeContext); //
@@ -74,99 +76,72 @@ const CardOverlay = ({ options, movieID, switchButtons }) => {
         },
     };
 
-    const buttonSwitch = {
-        title: switchButtons ? "remove from My Movies" : "add to My Movies",
-        dispatch: switchButtons ? "del_my_movies" : "my_movies",
-    };
+    const buttons = [
+        {
+            title: isMovieInMyMovies ? "Remove from library" : "Add to library",
+            onClick: () =>
+                handleDispatch(
+                    isMovieInMyMovies ? "del_my_movies" : "my_movies",
+                    movieID
+                ),
+        },
+        {
+            title: isMovieInUpNext ? "Remove from Up Next" : "Add to Up Next",
+            onClick: () =>
+                handleDispatch(
+                    isMovieInUpNext ? "del_up_next" : "up_next",
+                    movieID
+                ),
+        },
+    ];
 
-    const overviewButton = {
-        myMovies: {
-            title: buttonSwitch.title,
-            onClick: (props) => handleDispatch(buttonSwitch.dispatch, movieID),
-        },
-        upNext: {
-            title: "add to Up Next",
-            onClick: (props) => handleDispatch("up_next", movieID),
-        },
-        remove: {
-            title: "Remove from Up Next",
-            onClick: (props) => handleDispatch("del_up_next", movieID),
-        },
-    };
-    const SingleButton = () => {
-        return (
-            <div
-                style={{
-                    ...styles.overlay,
-                    backgroundColor: theme.buttonColor,
-                    justifyContent: "center",
-                    height: 60,
-                }}
-            >
-                <OverlayButton {...overviewButton.remove} />
-            </div>
-        );
-    };
-    const DoubleButton = () => {
-        return (
-            <div style={styles.overlay}>
-                <>
-                    <OverlayButton {...overviewButton.upNext} />
-                    <div
-                        style={{
-                            borderTop: `1px solid ${theme.backgroundColor}`,
-                        }}
-                    />
-                    <OverlayButton {...overviewButton.myMovies} />
-                </>
-            </div>
-        );
-    };
+    const RenderButtons = () => (
+        <div style={styles.overlay}>
+            {buttons.map((button, index) => (
+                <React.Fragment key={index}>
+                    {index > 0 && (
+                        <div
+                            style={{
+                                borderTop: `1px solid ${theme.backgroundColor}`,
+                            }}
+                        />
+                    )}
+                    <OverlayButton {...button} />
+                </React.Fragment>
+            ))}
+        </div>
+    );
 
     return (
         <>
-            <div ref={hoverRef} style={{ ...styles.container, ...options }}>
+            <div ref={hoverRef} style={styles.container}>
                 <div style={styles.dot} />
                 <div style={styles.dot} />
                 <div style={styles.dot} />
             </div>
-            {isHovered ? (
+            {isHovered && (
                 <div
                     style={{
                         position: "relative",
-                        right: options ? -100 : -150,
-                        top: options ? -100 : -80,
+                        right: -150,
+                        top: -80,
                     }}
                 >
-                    {options ? <SingleButton /> : <DoubleButton />}
+                    <RenderButtons />
                 </div>
-            ) : null}
+            )}
         </>
     );
 };
 
-const MyCard = (props) => {
-    const {
-        onClick,
-        poster,
-        sizePercent,
-        buttonPosition,
-        movieID,
-        switchButtons,
-    } = props;
+const MyCard = ({ onClick, poster, movieID }) => {
     //
-    //
-    const options = {
-        height: sizePercent ? 130 * -sizePercent + 130 : 130,
-        width: sizePercent ? 230 * -sizePercent + 230 : 230,
-        button: buttonPosition ? buttonPosition : null,
-    };
 
     return (
         <div
             style={{
-                height: options.height,
-                width: options.width,
+                height: 130,
+                width: 230,
                 margin: 10,
             }}
         >
@@ -174,20 +149,16 @@ const MyCard = (props) => {
                 <Image
                     alt="Movie Poster"
                     loader={ImageLoader}
-                    src={poster ? poster : IMG_SRC}
-                    height={options.height}
-                    width={options.width}
+                    src={poster || IMG_SRC}
+                    height={130}
+                    width={230}
                     style={{
                         borderRadius: 10,
                         boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
                     }}
                 />
             </div>
-            <CardOverlay
-                switchButtons={switchButtons}
-                options={options.button}
-                movieID={movieID}
-            />
+            <CardOverlay movieID={movieID} />
         </div>
     );
 };

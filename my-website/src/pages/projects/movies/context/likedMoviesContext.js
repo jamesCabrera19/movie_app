@@ -1,48 +1,39 @@
 import createDataContext from "../../../../../context/index";
-//helper functions
-const isMovieIncluded = (state, id) => state.includes(id);
-const filterOutMovie = (state, id) => state.filter((el) => el !== id);
+//helper functions - adds or removes movies to the or from the state
+const toggleMovieInState = (state, movie, key) => {
+    const isMovieIncluded = state[key].includes(movie);
+    return {
+        ...state,
+        [key]: isMovieIncluded
+            ? state[key].filter((el) => el !== movie)
+            : [...state[key], movie],
+    };
+};
 
 const likedMoviesReducer = (state, action) => {
     switch (action.type) {
         case "my_movies":
-            if (!isMovieIncluded(state.myMovies, action.payload)) {
-                return {
-                    ...state,
-                    myMovies: [...state.myMovies, action.payload],
-                };
-            }
-            return state;
+            return toggleMovieInState(state, action.payload, "myMovies");
 
         case "del_my_movies":
-            return {
-                ...state,
-                myMovies: filterOutMovie(state.myMovies, action.payload),
-            };
+            return toggleMovieInState(state, action.payload, "myMovies");
 
         case "up_next":
-            if (!isMovieIncluded(state.upNext, action.payload)) {
-                return {
-                    ...state,
-                    upNext: [...state.upNext, action.payload],
-                };
-            }
-            return state;
+            return toggleMovieInState(state, action.payload, "upNext");
 
         case "del_up_next":
-            return {
-                ...state,
-                upNext: filterOutMovie(state.upNext, action.payload),
-            };
+            return toggleMovieInState(state, action.payload, "upNext");
 
         default:
             return state;
     }
 };
 function handleDispatch(dispatch) {
-    return (location = "", movie) => {
-        console.log("dispatch: ", location, "movie id: ", movie);
-        dispatch({ type: location, payload: movie });
+    return (action, movie) => {
+        // console.log("dispatch: ", action, "movie id: ", movie);
+        dispatch({ type: action, payload: movie });
+
+        // actions: [del_up_next,up_next,del_my_movies,my_movies]
     };
 }
 

@@ -80,5 +80,15 @@ function MoviesApp() {
         </LikedMoviesProvider>
     );
 }
+// TODO * Features
+// Search Functionality
+// User Reviews and Ratings - User Interaction
+// Social Sharing
+// Notifications
+// ? User Profiles ?
+// Community Discussions
+// User Dashboard
+// User Activity Feeds
+// ? Enhanced Analytics ?
 
 export default MoviesApp;

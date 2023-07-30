@@ -49,14 +49,20 @@ const RowTitle = ({ title, movieIDS, type }) => {
 };
 const CardRowNoModal = ({ movieIDS, type }) => {
     const { state } = useContext(MovieContext);
+
     const { screenNavigator } = useContext(NavigationContext);
 
     const {
         state: { theme },
     } = useContext(settingsContext);
+
     const movieIds = movieIDS || [];
+
     // filters movies from the main state
     const filteredMovies = filterMoviesByIds(movieIds, state.movies);
+    if (!filteredMovies.length) {
+        return null;
+    }
 
     return (
         <div style={styles.smallContainer}>
@@ -65,7 +71,7 @@ const CardRowNoModal = ({ movieIDS, type }) => {
                     Up Next
                 </Text>
             </div>
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex", marginBottom: 20 }}>
                 {filteredMovies.map((el) => (
                     <MyCard
                         onClick={screenNavigator("Video Screen", {

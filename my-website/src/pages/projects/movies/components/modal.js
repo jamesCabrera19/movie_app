@@ -14,6 +14,7 @@ import { Context as ThemeContext } from "../context/settingsContext";
 import NavigationContext from "../context/navigation";
 // HOOKS
 import useLocalStorage from "../hooks/useLocalStorage";
+import useLikedMovies from "../hooks/useLikedMovies";
 
 //
 
@@ -131,7 +132,7 @@ const ModalBodyText = ({ title, overview, vote, language, date }) => {
         </div>
     );
 };
-const ModalImage = ({ src, onClick }) => {
+const ModalImage = ({ src }) => {
     return (
         <div
             style={{
@@ -139,7 +140,6 @@ const ModalImage = ({ src, onClick }) => {
                 display: "flex",
                 justifyContent: "center",
             }}
-            onClick={onClick()}
         >
             <Image
                 alt="Movie Poster"
@@ -153,21 +153,15 @@ const ModalImage = ({ src, onClick }) => {
     );
 };
 const ModalBody = (props) => {
-    const {
-        handleDispatch,
-        state: { upNext, myMovies },
-    } = useContext(LikedMoviesContext); //upNext // myMovies
-
+    const { handleDispatch } = useContext(LikedMoviesContext); //upNext // myMovies
     const { screenNavigator } = useContext(NavigationContext);
+    // checks if movie is saved in either state
+    const { isMovieInMyMovies, isMovieInUpNext } = useLikedMovies(
+        props.movieID
+    );
 
-    //
     const date = new Date(props.release_date).toDateString();
     //
-    const handlePlayNavigation = () =>
-        screenNavigator("Video Screen", {
-            id: props.movieID,
-            type: props.type,
-        });
 
     const buttons = [
         {
@@ -182,26 +176,25 @@ const ModalBody = (props) => {
         {
             title: "Add to Up Next",
             onClick: (args) => (e) => handleDispatch("up_next", props.movieID),
-            disable: upNext.includes(props.movieID),
+            disable: isMovieInUpNext,
         },
         {
-            title: "Add to My Movies",
+            title: "Add to Library",
             onClick: (args) => (e) =>
                 handleDispatch("my_movies", props.movieID),
-            disable: myMovies.includes(props.movieID),
+            disable: isMovieInMyMovies,
         },
     ];
     return (
         <>
             <Modal.Body style={{ padding: 0, margin: 0, width: 800 }}>
-                <ModalImage onClick={handlePlayNavigation} src={props.poster} />
-
+                <ModalImage src={props.poster} />
                 <ModalBodyText
-                    title={props.title}
-                    overview={props.overview}
-                    date={date}
-                    vote={props.vote_average}
                     language={props.original_language}
+                    vote={props.vote_average}
+                    overview={props.overview}
+                    title={props.title}
+                    date={date}
                 />
                 <MyButton buttons={buttons} />
             </Modal.Body>
@@ -222,26 +215,14 @@ function TheModal(props) {
     const handleShow = () => setShow(true);
     const closeModal = () => (e) => handleClose();
     const openModal = () => {
-        console.log("TheModal props: ", props.title);
-
         setMovie(props);
         handleShow();
-        // console.log("card was clicked: ", props.title);
         updateValue(`${props.title},`);
     };
 
-    // * determine where or if the buttons prop has been passed down to Modal.
-    // * when user navigates to My Movies TheModal  should not include the following buttons:
-    // * 'Add to My Movies', this button title should be rename to "remove from My Movies"
-
     return (
         <>
-            <MyCard
-                poster={poster}
-                movieID={movieID}
-                onClick={openModal}
-                switchButtons={props.switchButtons}
-            />
+            <MyCard poster={poster} movieID={movieID} onClick={openModal} />
 
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"

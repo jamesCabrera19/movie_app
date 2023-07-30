@@ -431,7 +431,7 @@ const VideoScreen = () => {
             break;
         case "MY_MOVIES":
             movie = movies.find((el) => el.id === id);
-            movieType = "MOVIES"; //
+            movieType = "MOVIES"; // movie type has to be reverted to Movies to fetch details of the movie
             break;
         default:
             break;

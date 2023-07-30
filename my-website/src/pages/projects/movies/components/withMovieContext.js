@@ -37,7 +37,7 @@ export const withMovieContext = (WrappedComponent, defaultType) => {
         let myType = defaultType ? defaultType : type;
         let extractedMovies = [];
 
-        console.log("withMovieContext function : ", defaultType);
+        // console.log(myMovies);
 
         switch (myType) {
             case "MOVIES":
@@ -47,7 +47,9 @@ export const withMovieContext = (WrappedComponent, defaultType) => {
                 extractedMovies = filteredMovies(ids, tv_shows);
                 break;
             case "MY_MOVIES":
-                extractedMovies = filteredMovies(myMovies, movies);
+                const extractedTVshows = filteredMovies(myMovies, tv_shows);
+                const moviesFiltered = filteredMovies(myMovies, movies);
+                extractedMovies = [...extractedTVshows, ...moviesFiltered];
                 break;
             default:
                 break;

@@ -14,6 +14,8 @@ const Movies = ({ movies, additionalProp }) => {
         state: { theme },
     } = useContext(SettingsContext);
 
+    // console.log(movies[0], movies[1]);
+
     return (
         <>
             <div>
@@ -25,16 +27,16 @@ const Movies = ({ movies, additionalProp }) => {
                 {movies.map((el) => (
                     <TheModal
                         key={el.id}
+                        movieID={el.id}
                         poster={el.backdrop_path}
-                        title={el.title}
+                        title={el.name || el.title}
                         overview={el.overview}
-                        release_date={el.release_date}
+                        release_date={el.first_air_date || el.release_date}
                         vote_average={el.vote_average}
                         original_language={el.original_language}
-                        addButtonOptions={false}
-                        switchButtons={true}
-                        movieID={el.id}
-                        type="MY_MOVIES" //
+                        // IF el has a 'name' property, el IS a tv show
+                        // IF el has a 'title' property, el IS a movie
+                        type={el.name ? "TV_SHOWS" : "MY_MOVIES"} //
                     />
                 ))}
             </div>
