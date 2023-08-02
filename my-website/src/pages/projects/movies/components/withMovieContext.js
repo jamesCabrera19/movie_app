@@ -17,6 +17,7 @@ export const withMovieContext = (WrappedComponent, defaultType) => {
     // Return a new component that wraps the original component
     return (props) => {
         // Access the context values using useContext
+        // * when user clicks on genre 'see all' button the row ids are collected and passed down as params
         const {
             params: { ids, genre, type },
         } = useContext(NavigationContext);

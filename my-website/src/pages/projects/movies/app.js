@@ -15,6 +15,7 @@ import WatchNow from "./screens/watchNow";
 import VideoScreen from "./screens/videoScreen";
 import MyResults from "./screens/results";
 import Footer from "./components/footer";
+import Search from "./screens/searchScreen";
 
 const screens = [
     {
@@ -54,7 +55,14 @@ const screens = [
         id: 5,
         component: <VideoScreen />,
     },
+    {
+        title: "Search",
+        active: false,
+        id: 5,
+        component: <Search />,
+    },
 ];
+
 function App() {
     const {
         state: { theme },

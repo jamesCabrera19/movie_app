@@ -169,7 +169,7 @@ const Footer = ({}) => {
                     padding: "10px 20px",
                     backgroundColor: buttonFontColor,
                     color: "#fff",
-                    border: "none",
+                    border: `1px solid ${fontColor}`,
                     borderRadius: "5px",
                     cursor: "pointer",
                 }}
