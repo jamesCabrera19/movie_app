@@ -26,6 +26,8 @@ const GeneralButtons = () => {
         state: { theme },
     } = useContext(SettingsContext);
 
+    const textColor = theme.themeColorToRGBA(0.5, theme.fontColor);
+
     const userSettings = [
         {
             label: "Account Management",
@@ -53,12 +55,8 @@ const GeneralButtons = () => {
                     marginTop: 50,
                 }}
             >
-                <Text color={theme.themeColorToRGBA(0.5, theme.fontColor)}>
-                    last updated 06/7/2023
-                </Text>
-                <Text color={theme.themeColorToRGBA(0.5, theme.fontColor)}>
-                    James Cabrera
-                </Text>
+                <Text color={textColor}>last updated 06/7/2023</Text>
+                <Text color={textColor}>James Cabrera</Text>
             </div>
         </>
     );

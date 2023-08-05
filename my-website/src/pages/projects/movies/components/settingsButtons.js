@@ -171,8 +171,18 @@ const HistoryAndPrivacy = () => {
 //
 const LanguageButtons = (props) => {
     const { buttons, selectedButton, handleClick, fontColor } = props;
-    const getColors = (label) =>
-        label.toLowerCase() === selectedButton ? "white" : fontColor;
+
+    const handleSelectedColor = (label) => {
+        const color =
+            label.toLowerCase() === selectedButton ? "white" : fontColor;
+        return {
+            backgroundColor: "transparent",
+            borderRadius: 5,
+            padding: 5,
+            border: `2px solid ${color}`,
+            color: color,
+        };
+    };
 
     return (
         <>
@@ -180,13 +190,7 @@ const LanguageButtons = (props) => {
                 <button
                     key={label}
                     onClick={handleClick(label)}
-                    style={{
-                        borderRadius: 5,
-                        padding: 5,
-                        backgroundColor: "transparent",
-                        border: `2px solid ${getColors(label)}`,
-                        color: getColors(label),
-                    }}
+                    style={handleSelectedColor(label)}
                 >
                     {label}
                 </button>

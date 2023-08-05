@@ -11,6 +11,8 @@ import MyCard from "./myCard";
 // CONTEXT
 import { Context as LikedMoviesContext } from "../context/likedMoviesContext";
 import { Context as ThemeContext } from "../context/settingsContext";
+import { Context as movieContext } from "../context/movieContext";
+
 import NavigationContext from "../context/navigation";
 // HOOKS
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -152,25 +154,38 @@ const ModalImage = ({ src }) => {
         </div>
     );
 };
+
 const ModalBody = (props) => {
     const { handleDispatch } = useContext(LikedMoviesContext); //upNext // myMovies
     const { screenNavigator } = useContext(NavigationContext);
-    // checks if movie is saved in either state
-    const { isMovieInMyMovies, isMovieInUpNext } = useLikedMovies(
-        props.movieID
-    );
+    const { state, addToState } = useContext(movieContext);
 
+    const MOVIE_ID = props.movieID || props.id;
+    // checks if movie is saved in either state
+    const { isMovieInMyMovies, isMovieInUpNext } = useLikedMovies(MOVIE_ID);
     const date = new Date(props.release_date).toDateString();
     //
+    const navigator = screenNavigator("Video Screen", {
+        id: MOVIE_ID,
+        type: props.type,
+    });
+
+    const movieStateSet = new Set(state.movies.map((movie) => movie.id));
+
+    const addMovieToStateIfNotExists = (movieStateSet, MOVIE_ID, props) => {
+        if (!movieStateSet.has(MOVIE_ID) && props.type === "MOVIES") {
+            // add movie to state
+            addToState(props);
+        }
+    };
 
     const buttons = [
         {
             title: "Play",
-            onClick: () =>
-                screenNavigator("Video Screen", {
-                    id: props.movieID,
-                    type: props.type,
-                }),
+            onClick: () => (e) => {
+                addMovieToStateIfNotExists(movieStateSet, MOVIE_ID, props);
+                navigator();
+            },
             disable: null,
         },
         {
@@ -213,13 +228,13 @@ function TheModal(props) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
     const closeModal = () => (e) => handleClose();
     const openModal = () => {
         setMovie(props);
         handleShow();
         updateValue(`${props.title},`);
     };
-
     return (
         <>
             <MyCard poster={poster} movieID={movieID} onClick={openModal} />

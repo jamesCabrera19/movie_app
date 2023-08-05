@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import DataFetch from "../hooks/useFetch";
 import memoizeOne from "memoize-one";
 import { genres } from "../components/utils";
@@ -6,48 +6,68 @@ import { Text } from "../components/text";
 import { TheModal } from "../components/modal";
 import movieApi from "../movieAPI/index";
 import { Context as settingsContext } from "../context/settingsContext";
+import { Context as movieContext } from "../context/movieContext";
 import { SpinningRow } from "../components/carousel";
 
-// Extracted functional component for rendering search results
-const SearchResult = ({ isLoading, searchResults, apiCalled }) => {
-    const {
-        state: { theme },
-    } = useContext(settingsContext);
+//
 
+const RenderModalCards = ({ results }) => {
+    const containerRef = useRef();
+
+    return (
+        <div
+            ref={containerRef}
+            style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                flexWrap: "wrap",
+            }}
+        >
+            {results.map((el) => (
+                <TheModal
+                    {...el}
+                    key={el.id}
+                    poster={el.backdrop_path || el.poster_path}
+                    type={"MOVIES"}
+                />
+            ))}
+        </div>
+    );
+};
+// Extracted functional component for rendering search results
+const SearchResults = ({ isLoading, searchResults, apiCalled, fontColor }) => {
     const renderResults = () => {
-        if (isLoading) {
+        if (!apiCalled) {
+            return null;
+        } else if (isLoading) {
             return (
-                <Text variant="headlineLarge" color={theme.buttonColor}>
+                <Text variant="headlineLarge" color={fontColor}>
                     Loading...
                 </Text>
             );
-        } else if (!apiCalled) {
-            return null;
         } else if (!searchResults.length) {
             return (
-                <Text variant="headlineLarge" color={theme.buttonColor}>
+                <Text variant="headlineLarge" color={fontColor}>
                     No results found.
                 </Text>
             );
         } else {
             return (
-                <div>
-                    <Text variant="headlineLarge" color={theme.buttonColor}>
-                        Search Results
-                    </Text>
-                    <ul
+                <>
+                    <div
                         style={{
-                            color: theme.buttonColor,
+                            display: "flex",
+                            justifyContent: "center",
                         }}
                     >
-                        {searchResults.map((result) => (
-                            <li key={result.id}>
-                                {result.title || result.name} -{" "}
-                                {result.release_date}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                        <Text variant="headlineLarge" color={fontColor}>
+                            Search Results
+                        </Text>
+                    </div>
+                    <RenderModalCards results={searchResults} />
+                </>
             );
         }
     };
@@ -56,24 +76,25 @@ const SearchResult = ({ isLoading, searchResults, apiCalled }) => {
 };
 
 // GenreButtons Component
-const GenreButtons = ({ genres, selectedGenre, onClick }) => {
-    const {
-        state: { theme },
-    } = useContext(settingsContext);
+const GenreButtons = ({ selectedGenre, onClick, selectedColor }) => {
+    const handleSelected = (genreId) => {
+        const selectColor =
+            genreId === selectedGenre?.id ? "white" : selectedColor;
+
+        return {
+            ...styles.genreButton,
+            color: selectColor,
+            border: `2px solid ${selectColor}`,
+        };
+    };
+
     return (
         <>
             {genres.map((genre) => (
                 <li
                     key={genre.id}
                     onClick={() => onClick(genre)}
-                    style={{
-                        ...styles.genreButton,
-                        color:
-                            selectedGenre?.id === genre.id
-                                ? theme.buttonColor
-                                : "white",
-                        borderColor: theme.buttonColor,
-                    }}
+                    style={handleSelected(genre.id)}
                 >
                     {genre.name}
                 </li>
@@ -83,6 +104,10 @@ const GenreButtons = ({ genres, selectedGenre, onClick }) => {
 };
 
 const Search = () => {
+    const {
+        state: { theme },
+    } = useContext(settingsContext);
+
     const [selectedGenre, setSelectedGenre] = useState(null);
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -113,11 +138,8 @@ const Search = () => {
     const fetchMovies = async (query, type) => {
         setIsLoading(true);
         try {
-            let endpoint =
-                type === "genre"
-                    ? `/search/movie?query=${query}&include_adult=false&language=en-US&page=1`
-                    : `/search/movie?query=${query}&include_adult=false&language=en-US&page=1`;
-
+            // endpoint is for movies only
+            let endpoint = `/search/movie?query=${query}&include_adult=false&language=en-US&page=1`;
             // Perform API request to fetch movies
             const response = await movieApi.get(endpoint);
             const data = response.data.results;
@@ -130,7 +152,6 @@ const Search = () => {
         }
     };
 
-    console.log("render");
     return (
         <div>
             {/* Search Bar */}
@@ -145,29 +166,30 @@ const Search = () => {
 
             {/* Genres Dropdown */}
             <div>
-                <h2>Genres</h2>
+                <Text variant="headlineMedium" color={theme.fontColor}>
+                    Genres
+                </Text>
                 <ul style={styles.genreList}>
                     <GenreButtons
-                        genres={genres} // Pass the genres array as a prop
                         selectedGenre={selectedGenre}
                         onClick={handleGenreSelect}
+                        selectedColor={theme.fontColor}
                     />
                 </ul>
             </div>
 
             {/* Search Results */}
-            <SearchResult
+            <SearchResults
                 isLoading={isLoading}
                 searchResults={searchResults}
                 apiCalled={apiCalled}
+                fontColor={theme.buttonColor}
             />
         </div>
     );
 };
 // Styles
 const styles = {
-    resultHeading: { color: "white" },
-
     genreList: {
         display: "flex",
         flexDirection: "row",

@@ -443,6 +443,7 @@ const VideoScreen = () => {
 
     const movieGenres = filterGenres(movie.genre_ids, genres);
     //
+    console.log("VideoScreen: ", id);
 
     return (
         <div

@@ -10,6 +10,9 @@ const movieDataReducer = (state, action) => {
     switch (action.type) {
         case "get_data":
             return action.payload;
+        case "add_to_state":
+            // Spreading the existing "movies" array and adding "action.payload" to it
+            return { ...state, movies: [...state.movies, action.payload] };
         default:
             return state;
     }
@@ -37,10 +40,19 @@ const fetchData = (dispatch) => async () => {
     }
 };
 
+const addToState = (dispatch) => (obj) => {
+    // console.log("fired");
+    dispatch({
+        type: "add_to_state",
+        payload: obj,
+    });
+};
+
 export const { Context, Provider } = createDataContext(
     movieDataReducer,
     {
         fetchData,
+        addToState,
     }, // action Functions
     { movies: [], tv_shows: [] } // init STATE
 );
