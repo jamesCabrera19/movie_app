@@ -112,17 +112,10 @@ const CardRow = ({ title, IDS, type }) => {
                 {filteredData.map((el) => (
                     <TheModal
                         key={el.id}
-                        movieID={el.id}
-                        poster={el.backdrop_path}
-                        title={type === "TV_SHOWS" ? el.name : el.title}
-                        overview={el.overview}
-                        release_date={
-                            type === "TV_SHOWS"
-                                ? el.first_air_date
-                                : el.release_date
-                        }
-                        vote_average={el.vote_average}
-                        original_language={el.original_language}
+                        {...el}
+                        title={el.title || el.name}
+                        poster={el.backdrop_path || el.poster_path}
+                        release_date={el.release_date || el.first_air_date}
                         type={type}
                     />
                 ))}

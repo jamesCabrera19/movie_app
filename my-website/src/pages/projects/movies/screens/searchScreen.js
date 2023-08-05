@@ -27,9 +27,11 @@ const RenderModalCards = ({ results }) => {
         >
             {results.map((el) => (
                 <TheModal
-                    {...el}
                     key={el.id}
+                    {...el}
+                    title={el.title || el.name}
                     poster={el.backdrop_path || el.poster_path}
+                    release_date={el.release_date || el.first_air_date}
                     type={"MOVIES"}
                 />
             ))}

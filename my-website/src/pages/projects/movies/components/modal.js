@@ -18,8 +18,7 @@ import NavigationContext from "../context/navigation";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useLikedMovies from "../hooks/useLikedMovies";
 
-//
-
+// Define initial movie properties
 const initMovieProps = {
     poster: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
     title: "Movie App",
@@ -30,7 +29,7 @@ const initMovieProps = {
     original_language: "EN",
     id: 129182,
 };
-const MyButton = ({ buttons }) => {
+const ModalButtons = ({ buttons }) => {
     const {
         state: { theme },
     } = useContext(ThemeContext);
@@ -74,19 +73,22 @@ const MyButton = ({ buttons }) => {
     );
 };
 const ModalBodyText = ({ title, overview, vote, language, date }) => {
+    // Get the theme from the ThemeContext
     const {
         state: { theme },
     } = useContext(ThemeContext);
-    const roundTo = (n, digits) => {
+
+    // Function to round a number to a specific number of decimal places
+    const roundNumber = (n, digits) => {
         if (digits === undefined) {
             digits = 0;
         }
         const multiplicator = Math.pow(10, digits);
         n = parseFloat((n * multiplicator).toFixed(11));
         const test = Math.round(n) / multiplicator;
-
         return +test.toFixed(digits);
     };
+    // Styles for the component
     const styles = {
         container: {
             display: "flex",
@@ -114,18 +116,20 @@ const ModalBodyText = ({ title, overview, vote, language, date }) => {
     return (
         <div style={styles.container}>
             <div style={styles.boxContainer}>
+                {/* Display the movie title */}
                 <Text variant="headlineExtraSmall" color={styles.textColor}>
                     {title}
                 </Text>
+                {/* Display the movie overview */}
                 <Text color={styles.textColor}>{overview}</Text>
+                {/* Display the movie release date, rating, and original language */}
                 <div style={styles.date}>
                     <Text variant="headlineExtraSmall" color={styles.textColor}>
                         Released — {date}
                     </Text>
                     <Text variant="headlineExtraSmall" color={styles.textColor}>
-                        Rating — {roundTo((vote / 10) * 100, 1)}%
+                        Rating — {roundNumber((vote / 10) * 100, 1)}%
                     </Text>
-
                     <Text variant="headlineExtraSmall" color={styles.textColor}>
                         Original language — {language.toUpperCase()}
                     </Text>
@@ -134,6 +138,7 @@ const ModalBodyText = ({ title, overview, vote, language, date }) => {
         </div>
     );
 };
+
 const ModalImage = ({ src }) => {
     return (
         <div
@@ -156,29 +161,40 @@ const ModalImage = ({ src }) => {
 };
 
 const ModalBody = (props) => {
-    const { handleDispatch } = useContext(LikedMoviesContext); //upNext // myMovies
-    const { screenNavigator } = useContext(NavigationContext);
-    const { state, addToState } = useContext(movieContext);
+    const { handleDispatch } = useContext(LikedMoviesContext); // For handling liked movies
+    const { screenNavigator } = useContext(NavigationContext); // For navigation
+    const {
+        state: { movies },
+        addToState,
+    } = useContext(movieContext); // Movie context state and function
 
+    // Extract movie ID from props
     const MOVIE_ID = props.movieID || props.id;
-    // checks if movie is saved in either state
+
+    // Check if movie is saved in either state
     const { isMovieInMyMovies, isMovieInUpNext } = useLikedMovies(MOVIE_ID);
+
+    // Format release date as a string
     const date = new Date(props.release_date).toDateString();
-    //
+
+    // Create a navigator function for video screen
     const navigator = screenNavigator("Video Screen", {
         id: MOVIE_ID,
         type: props.type,
     });
 
-    const movieStateSet = new Set(state.movies.map((movie) => movie.id));
+    // Create a set to store movie IDs in state
+    const movieStateSet = new Set(movies.map((movie) => movie.id));
 
+    // Function to add movie to state if it doesn't exist
     const addMovieToStateIfNotExists = (movieStateSet, MOVIE_ID, props) => {
         if (!movieStateSet.has(MOVIE_ID) && props.type === "MOVIES") {
-            // add movie to state
+            // Add movie to state
             addToState(props);
         }
     };
 
+    // Buttons configuration
     const buttons = [
         {
             title: "Play",
@@ -190,19 +206,26 @@ const ModalBody = (props) => {
         },
         {
             title: "Add to Up Next",
-            onClick: (args) => (e) => handleDispatch("up_next", props.movieID),
-            disable: isMovieInUpNext,
+            onClick: (args) => (e) => {
+                addMovieToStateIfNotExists(movieStateSet, MOVIE_ID, props);
+                handleDispatch("up_next", MOVIE_ID);
+            },
+            disable: isMovieInUpNext, // Disable the button if the movie is already in the "Up Next" list
         },
         {
             title: "Add to Library",
-            onClick: (args) => (e) =>
-                handleDispatch("my_movies", props.movieID),
-            disable: isMovieInMyMovies,
+            onClick: (args) => (e) => {
+                addMovieToStateIfNotExists(movieStateSet, MOVIE_ID, props);
+                handleDispatch("my_movies", MOVIE_ID);
+            },
+            disable: isMovieInMyMovies, // Disable the button if the movie is already in the "Library"
         },
     ];
     return (
         <>
+            {/* The Modal Body */}
             <Modal.Body style={{ padding: 0, margin: 0, width: 800 }}>
+                {/* Add the ModalImage, ModalBodyText, and MyButton components */}
                 <ModalImage src={props.poster} />
                 <ModalBodyText
                     language={props.original_language}
@@ -211,34 +234,87 @@ const ModalBody = (props) => {
                     title={props.title}
                     date={date}
                 />
-                <MyButton buttons={buttons} />
+                <ModalButtons buttons={buttons} />
             </Modal.Body>
         </>
     );
 };
 
-function TheModal(props) {
-    const { movieID, poster } = props;
-    //
+// function TheModal(props) {
+//     // Get value, updateValue, and clearValue from local storage using the useLocalStorage hook
+//     const [value, updateValue, clearValue] = useLocalStorage("movies", "");
+
+//     // Define state for the movie data and modal visibility
+//     const [movie, setMovie] = useState(initMovieProps);
+//     const [show, setShow] = useState(false);
+
+//     // Function to close the modal
+//     const handleClose = () => setShow(false);
+
+//     // Function to open the modal
+//     const handleShow = () => {
+//         setMovie(props); // Set the movie data to the props received
+//         setShow(true); // Set the show state to true, showing the modal
+//         updateValue(`${props.title},`); // Update the local storage value with the movie title
+//     };
+
+//     // Function to close the modal when clicked
+//     const closeModal = () => (e) => handleClose();
+
+//     return (
+//         <>
+//             {/* Render the MyCard component with the movie poster and movieID */}
+//             <MyCard
+//                 poster={props.poster}
+//                 movieID={props.movieID}
+//                 onClick={handleShow}
+//             />
+//             {/* The Modal */}
+//             <Modal
+//                 aria-labelledby="contained-modal-title-vcenter"
+//                 contentClassName="bg-transparent border-0"
+//                 onHide={closeModal()}
+//                 show={show}
+//                 animation
+//                 size="lg"
+//                 centered
+//             >
+//                 {/* Pass the movie data to the ModalBody component */}
+//                 <ModalBody {...movie} />
+//             </Modal>
+//         </>
+//     );
+// }
+const TheModal = React.memo((props) => {
+    // Get value, updateValue, and clearValue from local storage using the useLocalStorage hook
     const [value, updateValue, clearValue] = useLocalStorage("movies", "");
 
-    // modal controls
+    // Define state for the movie data and modal visibility
     const [movie, setMovie] = useState(initMovieProps);
     const [show, setShow] = useState(false);
 
+    // Function to close the modal
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
-    const closeModal = () => (e) => handleClose();
-    const openModal = () => {
-        setMovie(props);
-        handleShow();
-        updateValue(`${props.title},`);
+    // Function to open the modal
+    const handleShow = () => {
+        setMovie(props); // Set the movie data to the props received
+        setShow(true); // Set the show state to true, showing the modal
+        updateValue(`${props.title},`); // Update the local storage value with the movie title
     };
+
+    // Function to close the modal when clicked
+    const closeModal = () => (e) => handleClose();
+
     return (
         <>
-            <MyCard poster={poster} movieID={movieID} onClick={openModal} />
-
+            {/* Render the MyCard component with the movie poster and movieID */}
+            <MyCard
+                poster={props.poster}
+                movieID={props.id}
+                onClick={handleShow}
+            />
+            {/* The Modal */}
             <Modal
                 aria-labelledby="contained-modal-title-vcenter"
                 contentClassName="bg-transparent border-0"
@@ -248,10 +324,11 @@ function TheModal(props) {
                 size="lg"
                 centered
             >
+                {/* Pass the movie data to the ModalBody component */}
                 <ModalBody {...movie} />
             </Modal>
         </>
     );
-}
+});
 
 export { TheModal };

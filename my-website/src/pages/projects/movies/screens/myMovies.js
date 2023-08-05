@@ -27,15 +27,10 @@ const Movies = ({ movies, additionalProp }) => {
                 {movies.map((el) => (
                     <TheModal
                         key={el.id}
-                        movieID={el.id}
-                        poster={el.backdrop_path}
-                        title={el.name || el.title}
-                        overview={el.overview}
-                        release_date={el.first_air_date || el.release_date}
-                        vote_average={el.vote_average}
-                        original_language={el.original_language}
-                        // IF el has a 'name' property, el IS a tv show
-                        // IF el has a 'title' property, el IS a movie
+                        {...el}
+                        title={el.title || el.name}
+                        poster={el.backdrop_path || el.poster_path}
+                        release_date={el.release_date || el.first_air_date}
                         type={el.name ? "TV_SHOWS" : "MY_MOVIES"} //
                     />
                 ))}
