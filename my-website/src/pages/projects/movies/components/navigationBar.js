@@ -27,7 +27,7 @@ const NavigationButton = ({ styles, title, onClick }) => {
     );
 };
 
-function NavigationBar({ components, hide }) {
+function NavigationBar({ components, hiddenComponents }) {
     const [state, setState] = useState(components);
     const {
         state: { theme },
@@ -48,7 +48,9 @@ function NavigationBar({ components, hide }) {
                 return updatedScreens;
             });
         };
-    const filteredState = state.filter((el) => !hide.includes(el.title));
+    const filteredState = state.filter(
+        (el) => !hiddenComponents.includes(el.title)
+    );
     const activeComponent = state.filter((el) => el.active)[0];
 
     return (

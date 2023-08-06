@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 // context
-import { withMovieContext } from "../components/withMovieContext";
+import { withExtractedMovies } from "../components/withExtractedMovies";
+
 import { Context as settingsContext } from "../context/settingsContext";
 
 // helper functions
@@ -41,7 +42,7 @@ const LibraryContent = ({ movies, selectedGenre, type }) => {
     );
 };
 
-const MoviesWithProps = withMovieContext(LibraryContent);
+const MoviesWithProps = withExtractedMovies(LibraryContent);
 
 function MyResults() {
     return <MoviesWithProps additionalProp={null} />;

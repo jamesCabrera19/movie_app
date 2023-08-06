@@ -42,7 +42,7 @@ const RenderModalCards = ({ results }) => {
 const SearchResults = ({ isLoading, searchResults, apiCalled, fontColor }) => {
     const renderResults = () => {
         if (!apiCalled) {
-            return null;
+            return <div style={{ minHeight: "40vh" }} />;
         } else if (isLoading) {
             return (
                 <Text variant="headlineLarge" color={fontColor}>
@@ -51,9 +51,11 @@ const SearchResults = ({ isLoading, searchResults, apiCalled, fontColor }) => {
             );
         } else if (!searchResults.length) {
             return (
-                <Text variant="headlineLarge" color={fontColor}>
-                    No results found.
-                </Text>
+                <div style={{ minHeight: "40vh" }}>
+                    <Text variant="headlineLarge" color={fontColor}>
+                        No results found.
+                    </Text>
+                </div>
             );
         } else {
             return (
@@ -84,10 +86,19 @@ const GenreButtons = ({ selectedGenre, onClick, selectedColor }) => {
             genreId === selectedGenre?.id ? "white" : selectedColor;
 
         return {
-            ...styles.genreButton,
+            ...styles,
             color: selectColor,
             border: `2px solid ${selectColor}`,
         };
+    };
+    const styles = {
+        margin: 5,
+        padding: 10,
+        width: 120,
+        borderRadius: 10,
+        cursor: "pointer",
+        display: "flex",
+        justifyContent: "center",
     };
 
     return (
@@ -154,24 +165,70 @@ const Search = () => {
         }
     };
 
+    const styles = {
+        container: {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+        },
+        form: {
+            width: 340,
+            borderRadius: 10,
+            height: 50,
+            display: "flex",
+            overflow: "hidden",
+            justifyContent: "space-around",
+        },
+        formInput: {
+            width: "75%",
+            padding: 10,
+            border: 0,
+            color: theme.fontColor,
+        },
+        formButton: {
+            width: "25%",
+            color: theme.fontColor,
+            border: "2px solid white",
+            backgroundColor: theme.panelBackgroundColor,
+            borderBottomRightRadius: 10,
+            borderTopRightRadius: 10,
+            borderLeftWidth: 0,
+        },
+        buttonContainer: {
+            display: "flex",
+            flexDirection: "row",
+            listStyle: "none",
+            alignItems: "center",
+            overflowX: "scroll",
+            flexWrap: "wrap",
+        },
+    };
+
     return (
-        <div>
+        <div style={styles.container}>
             {/* Search Bar */}
-            <form onSubmit={handleSearch}>
+            <form onSubmit={handleSearch} style={styles.form}>
                 <input
+                    style={styles.formInput}
                     type="text"
                     ref={inputRef}
                     placeholder="Search for movies or TV shows..."
                 />
-                <button type="submit">Search</button>
+                <button type="submit" style={styles.formButton}>
+                    Search
+                </button>
             </form>
 
             {/* Genres Dropdown */}
             <div>
-                <Text variant="headlineMedium" color={theme.fontColor}>
-                    Genres
-                </Text>
-                <ul style={styles.genreList}>
+                <div style={{ marginLeft: 40 }}>
+                    <Text variant="headlineMedium" color={theme.fontColor}>
+                        Genres
+                    </Text>
+                </div>
+
+                <ul style={styles.buttonContainer}>
                     <GenreButtons
                         selectedGenre={selectedGenre}
                         onClick={handleGenreSelect}
@@ -189,25 +246,6 @@ const Search = () => {
             />
         </div>
     );
-};
-// Styles
-const styles = {
-    genreList: {
-        display: "flex",
-        flexDirection: "row",
-        listStyle: "none",
-        alignItems: "center",
-        overflowX: "scroll",
-        flexWrap: "wrap",
-    },
-    genreButton: {
-        margin: 5,
-        padding: 10,
-        width: 120,
-        borderRadius: 10,
-        border: "1px solid white",
-        cursor: "pointer",
-    },
 };
 
 export default Search;

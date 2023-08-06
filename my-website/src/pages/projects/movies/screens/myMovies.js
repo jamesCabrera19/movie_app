@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 // context
 import { Context as SettingsContext } from "../context/settingsContext";
-import { withMovieContext } from "../components/withMovieContext";
+import { withExtractedMovies } from "../components/withExtractedMovies";
 // helper functions
 import { MovieRecommendation } from "../components/movieRecommendation";
 // components
@@ -13,8 +13,6 @@ const Movies = ({ movies, additionalProp }) => {
     const {
         state: { theme },
     } = useContext(SettingsContext);
-
-    // console.log(movies[0], movies[1]);
 
     return (
         <>
@@ -40,7 +38,7 @@ const Movies = ({ movies, additionalProp }) => {
     );
 };
 
-const ContentWithProps = withMovieContext(Movies, "MY_MOVIES");
+const ContentWithProps = withExtractedMovies(Movies, "MY_MOVIES");
 function MyMovies() {
     return <ContentWithProps additionalProp={null} />;
 }

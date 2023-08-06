@@ -7,40 +7,42 @@ import memoizeOne from "memoize-one";
 // helper functions
 import NavigationContext from "../context/navigation";
 //
-// helper functions
+// Helper function for filtering movies based on IDs
 const filteredMovies = memoizeOne((moviesIds, moviesArray) => {
     const uniqueMovies = new Set(moviesIds);
     return moviesArray.filter((el) => uniqueMovies.has(el.id));
 });
 
-export const withMovieContext = (WrappedComponent, defaultType) => {
+export const withExtractedMovies = (WrappedComponent, defaultType) => {
     // Return a new component that wraps the original component
     return (props) => {
         // Access the context values using useContext
-        // * when user clicks on genre 'see all' button the row ids are collected and passed down as params
+        // Get parameters from NavigationContext
         const {
             params: { ids, genre, type },
         } = useContext(NavigationContext);
-        //
+
+        // Get saved movie IDs from LikedMoviesContext
         const {
             state: { myMovies },
-        } = useContext(LikedMoviesContext); // saved movie ids
-        // data state
+        } = useContext(LikedMoviesContext);
+
+        // Get data state (movies and TV shows) from MovieContext
         const {
             state: { movies, tv_shows },
         } = useContext(MovieContext);
-        // theme state
+
+        // Get theme state from SettingsContext
         const {
             state: { theme },
         } = useContext(SettingsContext);
-        //
-        //
-        let myType = defaultType ? defaultType : type;
+
+        // Determine the type of movies to extract based on defaultType or type from NavigationContext
+        let selectedType = defaultType ? defaultType : type;
         let extractedMovies = [];
 
-        // console.log(myMovies);
-
-        switch (myType) {
+        // Switch statement to extract movies based on the selected type
+        switch (selectedType) {
             case "MOVIES":
                 extractedMovies = filteredMovies(ids, movies);
                 break;
@@ -48,6 +50,7 @@ export const withMovieContext = (WrappedComponent, defaultType) => {
                 extractedMovies = filteredMovies(ids, tv_shows);
                 break;
             case "MY_MOVIES":
+                // Combine filtered TV shows and movies to get user's liked content
                 const extractedTVshows = filteredMovies(myMovies, tv_shows);
                 const moviesFiltered = filteredMovies(myMovies, movies);
                 extractedMovies = [...extractedTVshows, ...moviesFiltered];

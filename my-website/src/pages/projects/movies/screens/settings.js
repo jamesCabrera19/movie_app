@@ -79,12 +79,13 @@ const SCREENS = [
 ];
 // APP // APP // APP // APP // APP // APP // APP // APP // APP
 function MySettings() {
+    // List of components/screens to be hidden in the NavigationBar
+    const hiddenComponents = ["General", "Account"];
     return (
         <div style={{ width: 700, margin: "auto", minHeight: "100vh" }}>
             <NavigationBar
                 components={SCREENS}
-                // disables navigation buttons
-                hide={["General", "Account"]}
+                hiddenComponents={hiddenComponents}
             />
         </div>
     );

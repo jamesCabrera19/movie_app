@@ -68,10 +68,13 @@ function App() {
         state: { theme },
     } = useContext(SettingsContext);
 
+    // List of components/screens to be hidden in the NavigationBar
+    const hiddenComponents = ["Results", "Video Screen"];
+
     return (
         <div style={{ backgroundColor: theme.backgroundColor }}>
             <NavigationBar
-                hide={["Results", "Video Screen"]}
+                hiddenComponents={hiddenComponents}
                 components={screens}
             />
             <Footer />
