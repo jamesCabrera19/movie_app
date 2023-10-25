@@ -25,16 +25,19 @@ const RenderModalCards = ({ results }) => {
                 flexWrap: "wrap",
             }}
         >
-            {results.map((el) => (
-                <TheModal
-                    key={el.id}
-                    {...el}
-                    title={el.title || el.name}
-                    poster={el.backdrop_path || el.poster_path}
-                    release_date={el.release_date || el.first_air_date}
-                    type={"MOVIES"}
-                />
-            ))}
+            {results.map((el) => {
+                console.log(el);
+                return (
+                    <TheModal
+                        key={el.id}
+                        {...el}
+                        title={el.title || el.name}
+                        poster={el.backdrop_path || el.poster_path}
+                        release_date={el.release_date || el.first_air_date}
+                        type={"MOVIES"}
+                    />
+                );
+            })}
         </div>
     );
 };
@@ -140,7 +143,9 @@ const Search = () => {
         e.preventDefault();
         // input value
         const value = inputRef.current.value;
+        // checking for value before calling api
         if (value === "") return;
+        // disabling selectedGenre state before searching movie title
         if (selectedGenre) setSelectedGenre(null);
         // making api call
         fetchMovies(value, "search");
@@ -173,12 +178,11 @@ const Search = () => {
             flexDirection: "column",
         },
         form: {
-            width: 340,
+            width: 350,
             borderRadius: 10,
             height: 50,
             display: "flex",
             overflow: "hidden",
-            justifyContent: "space-around",
         },
         formInput: {
             width: "75%",
@@ -189,7 +193,7 @@ const Search = () => {
         formButton: {
             width: "25%",
             color: theme.fontColor,
-            border: "2px solid white",
+            border: "0px solid white",
             backgroundColor: theme.panelBackgroundColor,
             borderBottomRightRadius: 10,
             borderTopRightRadius: 10,

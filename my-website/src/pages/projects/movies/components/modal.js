@@ -20,14 +20,21 @@ import useLikedMovies from "../hooks/useLikedMovies";
 
 // Define initial movie properties
 const initMovieProps = {
+    adult: false,
+    backdrop_path: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
     poster: "/irwQcdjwtjLnaA0iErabab9PrmG.jpg",
     title: "Movie App",
+    original_title: "Movie App",
     overview:
         "App built utilizing the most latest versions of React, NextJS, React createContext API, and Axios.",
     release_date: "11/11/22",
     vote_average: 10,
     original_language: "EN",
     id: 129182,
+    genre_ids: [],
+    popularity: 0.6,
+    video: false,
+    vote_count: 0,
 };
 const ModalButtons = ({ buttons }) => {
     const {
@@ -296,8 +303,26 @@ const TheModal = React.memo((props) => {
     // Function to close the modal
     const handleClose = () => setShow(false);
 
+    // function to check and replace null values
+    const initializeProps = (props) => {
+        // Get an array of property names in props
+        const propNames = Object.keys(props);
+
+        // Iterate through the property names
+        propNames.forEach((prop) => {
+            if (!props[prop]) {
+                console.log(prop, prop.title);
+            }
+            if (!props[prop]) {
+                props[prop] = initMovieProps[props];
+            }
+        });
+        return props;
+    };
     // Function to open the modal
     const handleShow = () => {
+        // checking for null props
+
         setMovie(props); // Set the movie data to the props received
         setShow(true); // Set the show state to true, showing the modal
         updateValue(`${props.title},`); // Update the local storage value with the movie title
