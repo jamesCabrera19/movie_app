@@ -1,13 +1,9 @@
-import { useState, useEffect, useRef, useContext } from "react";
-import DataFetch from "../hooks/useFetch";
-import memoizeOne from "memoize-one";
+import { useState, useRef, useContext } from "react";
 import { genres } from "../components/utils";
 import { Text } from "../components/text";
 import { TheModal } from "../components/modal";
 import movieApi from "../movieAPI/index";
 import { Context as settingsContext } from "../context/settingsContext";
-import { Context as movieContext } from "../context/movieContext";
-import { SpinningRow } from "../components/carousel";
 
 //
 
@@ -26,7 +22,7 @@ const RenderModalCards = ({ results }) => {
             }}
         >
             {results.map((el) => {
-                console.log(el);
+                // console.log(el);
                 return (
                     <TheModal
                         key={el.id}
@@ -43,9 +39,18 @@ const RenderModalCards = ({ results }) => {
 };
 // Extracted functional component for rendering search results
 const SearchResults = ({ isLoading, searchResults, apiCalled, fontColor }) => {
+    const styles = {
+        defaultHeight: {
+            minHeight: "40vh",
+        },
+        search: {
+            display: "flex",
+            justifyContent: "center",
+        },
+    };
     const renderResults = () => {
         if (!apiCalled) {
-            return <div style={{ minHeight: "40vh" }} />;
+            return <div style={styles.defaultHeight} />;
         } else if (isLoading) {
             return (
                 <Text variant="headlineLarge" color={fontColor}>
@@ -54,7 +59,7 @@ const SearchResults = ({ isLoading, searchResults, apiCalled, fontColor }) => {
             );
         } else if (!searchResults.length) {
             return (
-                <div style={{ minHeight: "40vh" }}>
+                <div style={styles.defaultHeight}>
                     <Text variant="headlineLarge" color={fontColor}>
                         No results found.
                     </Text>
@@ -63,12 +68,7 @@ const SearchResults = ({ isLoading, searchResults, apiCalled, fontColor }) => {
         } else {
             return (
                 <>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                        }}
-                    >
+                    <div style={styles.search}>
                         <Text variant="headlineLarge" color={fontColor}>
                             Search Results
                         </Text>

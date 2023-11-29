@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 // context
 import { Context as SettingsContext } from "../context/settingsContext";
 import { withExtractedMovies } from "../components/withExtractedMovies";

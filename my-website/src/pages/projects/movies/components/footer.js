@@ -162,46 +162,52 @@ const Footer = ({}) => {
     const { state } = useContext(SettingsContext);
     const { panelBackgroundColor, fontColor, buttonFontColor } = state.theme;
 
-    const FooterButton = ({ label, children }) => {
+    const styles = {
+        button: {
+            padding: "10px 20px",
+            backgroundColor: buttonFontColor,
+            color: "#fff",
+            border: `1px solid ${fontColor}`,
+            borderRadius: "5px",
+            cursor: "pointer",
+        },
+        footerContainer: {
+            background: panelBackgroundColor,
+            padding: "20px",
+            textAlign: "center",
+            marginTop: 50,
+        },
+        anchor: {
+            marginLeft: "10px",
+            color: "#333",
+            textDecoration: "none",
+        },
+    };
+
+    const FooterBtn = ({ label, children, link }) => {
         return (
-            <button
-                style={{
-                    padding: "10px 20px",
-                    backgroundColor: buttonFontColor,
-                    color: "#fff",
-                    border: `1px solid ${fontColor}`,
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                }}
+            <a
+                href={link} //
+                target="_blank"
+                rel="noopener noreferrer"
+                style={styles.anchor}
             >
-                {label || children}
-            </button>
+                <button style={styles.button}>{label || children}</button>
+            </a>
         );
     };
 
     return (
-        <footer
-            style={{
-                background: panelBackgroundColor,
-                padding: "20px",
-                textAlign: "center",
-                marginTop: 50,
-            }}
-        >
+        <footer style={styles.footerContainer}>
             {/* <ContactForm /> */}
             <Text color={fontColor}>Developed by: Jaime Cabrera</Text>
-            <FooterButton label="Contact" />
-            <a
-                href="https://github.com/jamesCabrera19"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                    marginLeft: "10px",
-                    color: "#333",
-                    textDecoration: "none",
-                }}
-            >
-                <FooterButton>
+
+            <FooterBtn
+                label="Contact"
+                link={"https://github.com/jamesCabrera19"}
+            />
+            <a>
+                <FooterBtn link={"https://github.com/jamesCabrera19"}>
                     <FaGithubSquare
                         size={20}
                         style={{
@@ -210,7 +216,7 @@ const Footer = ({}) => {
                         }}
                     />
                     GitHub
-                </FooterButton>
+                </FooterBtn>
             </a>
         </footer>
     );

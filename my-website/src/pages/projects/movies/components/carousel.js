@@ -14,6 +14,17 @@ export const SpinningRow = () => {
     } = useContext(MovieContext);
 
     const NUMBER_OF_IMAGES = 18;
+    const styles = {
+        container: {
+            marginTop: -100,
+            marginBottom: 50,
+        },
+        img: {
+            borderRadius: 10,
+            boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
+            margin: "0 5px",
+        },
+    };
 
     const images = movies.slice(0, NUMBER_OF_IMAGES).map((el) => (
         <div className={_styles.slide} key={el.id}>
@@ -23,22 +34,13 @@ export const SpinningRow = () => {
                 src={el.poster_path}
                 height={100}
                 width={70}
-                style={{
-                    borderRadius: 10,
-                    boxShadow: "0 1px 1px rgba(0, 0, 0, 0.5)",
-                    margin: "0 5px",
-                }}
+                style={styles.img}
             />
         </div>
     ));
 
     return (
-        <div
-            style={{
-                marginTop: -100,
-                marginBottom: 50,
-            }}
-        >
+        <div style={styles.container}>
             <div className={_styles.slider}>
                 <div className={_styles.slideTrack}>
                     {images}
